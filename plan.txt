@@ -1,0 +1,28 @@
+1. Definitions (??)
+ 1.1 Parameterized problem
+ 1.2 Treewidth + (nice) decomposition
+ 1.3 SETH & ETH
+
+2. Spanning star forest 
+ 2.1 definition
+ 2.2 Proof of the lemma: G has spanning star forest iff G has no isolated vertices
+ 2.3 Linear algorithm. (Optional: induction)
+ 2.4 #stars parametrization
+   a. Problem is NP-complete (W[2]-hard) Dominating Set
+
+3. Spanning star forest extension
+ 3.1 Definition + parameterization options
+ 3.2 |V(F)| parametrization
+   a. NP-completeness, ETH and SETH implications.
+   b. Proof of no kernelization algorithm.
+   c. Branching algorithm.
+ 3.3 |V(G) \ V(F)| parametrization
+   a. NP-completeness
+   b. Kernelization algorithm
+   c. Branching algorithm
+ 3.4 3SAT equivalence (i.e. SSFE => 3-SAT reduction)
+ 3.5 Treewidth parametrization
+
+4. Further investigations:
+
+
