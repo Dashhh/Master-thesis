@@ -78,12 +78,14 @@
 
 % Tu jest dobre miejsce na Twoje własne makra i~środowiska:
 
+\usepackage{chngcntr}
+\usepackage{amsthm}
+
 \newtheorem{defi}{Definition}
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}{Lemma}
 \newtheorem{claim}{Claim}
 
-\usepackage{chngcntr}
 \counterwithin{theorem}{chapter}
 \counterwithin{defi}{chapter}
 \counterwithin{lemma}{chapter}
@@ -171,17 +173,28 @@ możliwości.  Wykorzystujemy je w~niniejszej pracy.
 
 \chapter{Spanning Star Forest Problem}\label{r:losers}
 
-For a given graph $G$, we say that $G'$ is a \emph{Spanning Star Forest} $S$
+For a given graph $G$, we say that $S$ is a \emph{Spanning Star Forest}
 if every connected component $C$ is a star. In the 
 \emph{Spanning Star Forest Problem} given a graph $G$, the objective is
-to determine whether there exists a \emph{Spanning Star Forest}. It turns
-out that the problem formulated in such a way is relatively simple. Although, 
-various parametrizations described in this paper make it more complex.
+to determine whether there exists a \emph{Spanning Star Forest}. 
+
+It turns out that the problem formulated in such a way is relatively 
+simple. Although, various parametrizations described in this paper 
+make it more complex. The following lemma easily clarifies all the 
+concerns.
 
 \begin{lemma}\label{SSF lemma}
  A graph $G$ has a Spanning Star Forest if and only if it does not contain
  any isolated vertices.
 \end{lemma}
+
+\begin{proof}
+	If $G$ has a Spanning Star Forest $S$, then trivially 
+	$\forall_{v \in V(G)} 1 \leq deg_S(v) \leq deg_G(v)$. Thus, none of the
+	vertices is isolated.
+	
+	For the opposite direction
+\end{proof}
 
 \begin{theorem}
 	Decision version of Spanning Star Forest Problem can be solved in linear
