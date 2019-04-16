@@ -123,20 +123,14 @@ możliwości.  Wykorzystujemy je w~niniejszej pracy.
 
 \section{Structures}
 
-\begin{defi}\label{Graph}
- 	Graph
-\end{defi}
-
-%TODO - Tree? Forest?
-
-\begin{defi}\label{Star}
-	Star
-\end{defi}
-
-\begin{defi}\label{Spaning tree}
-	Spanning tree
-\end{defi}
-+Additional notation: e.g. $deg_G(v)$
+A simple graph $G$ is a pair $(V,E)$ where $V$ denotes a set of vertices
+and $E$ denotes a set of undirected edges. Let $deg_G(v)$ denote a degree
+of vertex v in graph $G$. Let $G \setminus \{v\}$ be the abbreviation for
+$G'=(V(G) \setminus \{v\}, E(G) \setminus \{(u,v): u \in V(G)\})$.A \emph{tree} $T$ is a graph where two
+vertices are connected by excatly one path. A \emph{spanning tree} $T$ of a
+graph $G$ is a graph which includes all of the vertices of $G$, with minimum
+possible number of edges. A \emph{star} $S$ is a tree of size at least 2
+for which at most 1 vertex has a degree greater than $1$.
 
 
 \section{Parameterized complexity}
@@ -190,10 +184,29 @@ concerns.
 
 \begin{proof}
 	If $G$ has a Spanning Star Forest $S$, then trivially 
-	$\forall_{v \in V(G)} 1 \leq deg_S(v) \leq deg_G(v)$. Thus, none of the
+	$\forall_{v \in V(G)}\ 1 \leq deg_S(v) \leq deg_G(v)$. Thus, none of the
 	vertices is isolated.
 	
-	For the opposite direction
+	%TODO |V(G)|=2 wychodzi poza linię.
+	For the opposite direction, we prove the lemma by induction on $|V(G)|$.
+	Assume ${|V(G)|=2}$. The statement trivially holds because a graph representing
+	an edge is a correct Spanning Star Forest. Let $|V(G)| >2$ and let $v$ be an
+	arbitrary vertex. From the inductive assumption, let $S$ be a Spanning Star
+	Forest of a graph $G \setminus \{v\}$, $u$ be a vertex such that $(u,v)
+	\in E(G)$ and $w$ be a vertex such that $w \in N_S(u)$. Consider the 3
+	following cases:
+	\begin{enumerate}
+		\item Let $deg_S(u) > 1$. Then, $S'=\big(V(S) \cup \{v\}, E(S) \cup \{(u,v)\}\big)$ is a correct solution for graph $G$.
+		\item Let $deg_S(u) = deg_S(w) = 1$. Then, $S'=\big(V(S) \cup {v}, E(S) \cup
+		(u,v)\big)$ is a correct solution for graph $G$.
+		\item Let $deg_S(w) > 1$. The, $S'=\big(V(S) \cup \{v\}, 
+		(E(S) \cup \{(u,v)\}) \setminus \{(u,w)\}\big)$ is a correct solution for graph $G$.
+	\end{enumerate}
+		Observe that in graph $G$ there are no isolated vertices. Thus, one can
+		always extend a solution inductively.
+		
+	
+	
 \end{proof}
 
 \begin{theorem}
