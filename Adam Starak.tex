@@ -204,15 +204,21 @@ concerns.
 	\end{enumerate}
 		Observe that in graph $G$ there are no isolated vertices. Thus, one can
 		always extend a solution inductively.
-		
-	
 	
 \end{proof}
+
+	Application of Lemma \ref{SSF lemma} yields the following result for Spanning
+	Star Forest Problem:
 
 \begin{theorem}
 	Decision version of Spanning Star Forest Problem can be solved in linear
 	time.
 \end{theorem}
+
+\begin{proof}
+	Given an input $G = (V,E)$ we answer YES if $\forall_{v \in V(G)}\ 
+	deg_G(v) \neq 0$ and NO otherwise.
+\end{proof}
 
 \section{Obtaining a solution}
 
