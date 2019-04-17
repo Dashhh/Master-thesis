@@ -80,6 +80,7 @@
 
 \usepackage{chngcntr}
 \usepackage{amsthm}
+\usepackage[]{algorithm2e}
 
 \newtheorem{defi}{Definition}
 \newtheorem{theorem}{Theorem}
@@ -89,6 +90,7 @@
 \counterwithin{theorem}{chapter}
 \counterwithin{defi}{chapter}
 \counterwithin{lemma}{chapter}
+\counterwithin{claim}{chapter}
 
 % koniec definicji
 
@@ -175,7 +177,7 @@ to determine whether there exists a \emph{Spanning Star Forest}.
 It turns out that the problem formulated in such a way is relatively 
 simple. Although, various parametrizations described in this paper 
 make it more complex. The following lemma easily clarifies all the 
-concerns.
+concerns about hardness.
 
 \begin{lemma}\label{SSF lemma}
  A graph $G$ has a Spanning Star Forest if and only if it does not contain
@@ -190,23 +192,24 @@ concerns.
 	%TODO |V(G)|=2 wychodzi poza linię.
 	For the opposite direction, we prove the lemma by induction on $|V(G)|$.
 	Assume ${|V(G)|=2}$. The statement trivially holds because a graph representing
-	an edge is a correct Spanning Star Forest. Let $|V(G)| >2$ and let $v$ be an
-	arbitrary vertex. From the inductive assumption, let $S$ be a Spanning Star
+	an edge is a correct Spanning Star Forest. Let $|V(G)| >2$ and let $v$ be 
+	a vertex such that $G \setminus \{v\}$ has no isolated vertices. (If no such
+	vertex exists, it holds that $\forall_{v \in V(G)}\ deg_G(v)=1$ so $G$ itself
+	is a correct Spanning Star Forest) From the inductive assumption, let $S$ be a Spanning Star
 	Forest of a graph $G \setminus \{v\}$, $u$ be a vertex such that $(u,v)
 	\in E(G)$ and $w$ be a vertex such that $w \in N_S(u)$. Consider the 3
 	following cases:
 	\begin{enumerate}
-		\item Let $deg_S(u) > 1$. Then, $S'=\big(V(S) \cup \{v\}, E(S) \cup \{(u,v)\}\big)$ is a correct solution for graph $G$.
-		\item Let $deg_S(u) = deg_S(w) = 1$. Then, $S'=\big(V(S) \cup {v}, E(S) \cup
+		\item $deg_S(u) > 1$. Then, $S'=\big(V(S) \cup \{v\}, E(S) \cup \{(u,v)\}\big)$ is a correct solution for graph $G$.
+		\item $deg_S(u) = deg_S(w) = 1$. Then, $S'=\big(V(S) \cup {v}, E(S) \cup
 		(u,v)\big)$ is a correct solution for graph $G$.
-		\item Let $deg_S(w) > 1$. The, $S'=\big(V(S) \cup \{v\}, 
+		\item $deg_S(w) > 1$. Then, $S'=\big(V(S) \cup \{v\}, 
 		(E(S) \cup \{(u,v)\}) \setminus \{(u,w)\}\big)$ is a correct solution for graph $G$.
 	\end{enumerate}
 		Observe that in graph $G$ there are no isolated vertices. Thus, one can
 		always extend a solution inductively.
 	
 \end{proof}
-
 	Application of Lemma \ref{SSF lemma} yields the following result for Spanning
 	Star Forest Problem:
 
@@ -216,25 +219,79 @@ concerns.
 \end{theorem}
 
 \begin{proof}
-	Given an input $G = (V,E)$ we answer YES if $\forall_{v \in V(G)}\ 
+	Given an input $G = (V,E)$ the answer is YES if $\forall_{v \in V(G)}\ 
 	deg_G(v) \neq 0$ and NO otherwise.
 \end{proof}
 
 \section{Obtaining a solution}
 
 In this section the focus will be set on obtaining an arbitrary solution for
-a given instance of the \emph{Spanning Star Forest Problem}.
+a given instance of \emph{Spanning Star Forest Problem}. Firstly, let's
+introduce 2 claims in order to normalize the instance and make the algorithm
+look more clear.
+
+\begin{claim} \label{SSF sum}
+	Family of disjoint Spanning Star Forests is a Spanning Star Forest.
+\end{claim}
+
+\begin{claim} \label{Spanning tree SSF}
+	$G$ has a Spanning Star Forest if and only if it's spanning tree $T$ has.
+\end{claim}
+
+The first claim can be trivially proven by the definition of 
+\emph{Spanning Star Forest Problem} while the second one follows directly from
+Lemma \ref{SSF lemma}. Equipped with this information, all that is left to do,
+is to design an algorithm which solves \emph{Spanning Star Forest Problem} for 
+trees.
+
+\begin{algorithm}\label{alg1}
+	\KwData{Graph G}
+	\KwResult{Spanning Star Forest of T}
+	$T \leftarrow$ $SpanningTree(G)$\;
+	$S \leftarrow$ $\emptyset$\;
+	\For{v: postorder(T) and v $\notin$ V(S)}{
+		\eIf{v is not a root}{
+			S $\leftarrow S \cup \{(u,v)\}$ where $u = parent(v)$
+		}{
+			S $\leftarrow S \cup \{(u,v)\}$ where $u$ is any of the root's children
+		}
+	}
+	\Return S
+	\caption{Obtaining a Spanning Star Forest from a tree.}
+\end{algorithm}
+
+\begin{lemma}\label{alg1 correctness}
+	Algorithm \ref{alg1} is correct.
+\end{lemma}
+
+\begin{proof}
+	Assume contrary, that the algorithm yields an incorrect solution $S$. Consider
+	the first case: a path $(u,v),(v,w),(w,z)$ exists in $S$ where $u$ is $v$'s 
+	child, $v$ is $w$'s child and $w$ is $z$'s child. But, if $u$ is $w$'s
+	grandchild and $(u,v),(v,w) \in S$ it means that $w$ is a root. Contradiction
+	because	$w$ cannot be $z$'s child.
+	Now, suppose the alternative relationship: $u$ is $v$'s child, $v$ and $z$ are
+	$w$'s children. Provided that vertices were visited in postorder, edge $(v,w)$
+	should not have been added because $v$ was introduced by $u$ and $w$ was
+	introduced by $z$.
+\end{proof}
 
 \begin{theorem}
-	A solution for a Spanning Star Forest Problem can be found in linear time.
+	A solution for Spanning Star Forest Problem can be found in linear time.
 \end{theorem}
+
+\begin{proof}
+	Spanning tree of any graph can be found in linear time. The loop has $n$ 
+	iterations (every vertex is visited once), each of which takes constant time.
+	Thus, the total runtime is linear.
+\end{proof}
 
 \section{Spanning Star Forest parameterized by the number of stars}
 
-In the \emph{Spanning Star Forest Problem} parameterized by the number of
+In \emph{Spanning Star Forest Problem} parameterized by the number of
 stars, given a graph $G$ and a natural number $k$, the objective is to
 determine whether there exists a \emph{Spanning Star Forest} $S$ such that
-the number of components is less than $k$.
+the number of connected components is less than $k$.
 
 It is natural to ask whether one can find a solution that minimizes the number
 of connected components. Even though the problem looks slightly different
@@ -244,6 +301,29 @@ number of stars is NP-Complete. The following theorem proves the statement:
 \begin{theorem}
 	Spanning Star Forest Parameterized by the number of stars is NP-Complete.
 \end{theorem}
+
+
+
+\begin{proof}
+	Membership in NP: given an oracle $(O,k)$, check whether the number of
+	components in $O$ is less than $k$ and whether every connected component 
+	forms a star. The task can be easily done in polynomial time.
+	
+	A reduction from \emph{Dominating Set} completes the proof. Here, an input
+	is a graph $G$ and an integer $k$ and the task is to find a set 
+	$S \subseteq V(G)$ such that $|S|\leq k$ and:
+	
+	$$\bigcup_{v \in S} \big(N_G(v) \cup \{v\}\big) = V(G)$$.
+	
+	Now, given an instance $(G,k)$ of \emph{Dominating Set} let $I = \{v: v$ is 
+	isolated in $G\}$. All that remains, is to prove that $(G \setminus I,
+	k-|I|)$ is a YES-instance for \emph{Spanning Star Forest Problem} 
+	parameterized by the number of stars if and only if $(G,k)$ is a YES-instance 
+	for \emph{Dominating Set Problem}. The forward implication is simple.
+	
+	
+\end{proof}
+
 
 \begin{lemma}
 	There exists a reduction from Spanning Star Forest parameterized by the
