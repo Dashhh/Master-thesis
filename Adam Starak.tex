@@ -86,6 +86,10 @@
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}{Lemma}
 \newtheorem{claim}{Claim}
+\newcommand{\ssf}{\emph{Spanning Star Forest}}
+\newcommand{\ssfp}{\emph{Spanning Star Forest Problem}}
+\newcommand{\domset}{\emph{Dominating Set Problem}}
+\newcommand{\kssf}{\emph{Spanning Star Forest Problem} parameterized by the number of stars}
 
 \counterwithin{theorem}{chapter}
 \counterwithin{defi}{chapter}
@@ -132,7 +136,7 @@ $G'=(V(G) \setminus \{v\}, E(G) \setminus \{(u,v): u \in V(G)\})$.A \emph{tree} 
 vertices are connected by excatly one path. A \emph{spanning tree} $T$ of a
 graph $G$ is a graph which includes all of the vertices of $G$, with minimum
 possible number of edges. A \emph{star} $S$ is a tree of size at least 2
-for which at most 1 vertex has a degree greater than $1$.
+for which at most 1 vertex has a degree greater than $1$. A vertex in a \emph{star} that has the greatest degree is called a \emph{center} while the others are called \emph{rays}.
 
 
 \section{Parameterized complexity}
@@ -169,36 +173,19 @@ for which at most 1 vertex has a degree greater than $1$.
 
 \chapter{Spanning Star Forest Problem}\label{r:losers}
 
-For a given graph $G$, we say that $S$ is a \emph{Spanning Star Forest}
-if every connected component $C$ is a star. In the 
-\emph{Spanning Star Forest Problem} given a graph $G$, the objective is
-to determine whether there exists a \emph{Spanning Star Forest}. 
+For a given graph $G$, we say that $S$ is a \ssf{} if every connected component $C$ is a star. In the \ssfp{} given a graph $G$, the objective is to determine whether there exists a \ssf{}.
 
-It turns out that the problem formulated in such a way is relatively 
-simple. Although, various parametrizations described in this paper 
-make it more complex. The following lemma easily clarifies all the 
-concerns about hardness.
+It turns out that the problem formulated in such a way is relatively simple. Although, various parametrizations described in this paper make it more complex. The following lemma easily clarifies all the concerns about it's hardness.
 
 \begin{lemma}\label{SSF lemma}
- A graph $G$ has a Spanning Star Forest if and only if it does not contain
- any isolated vertices.
+ A graph $G$ has a Spanning Star Forest if and only if it does not contain any isolated vertices.
 \end{lemma}
 
 \begin{proof}
-	If $G$ has a Spanning Star Forest $S$, then trivially 
-	$\forall_{v \in V(G)}\ 1 \leq deg_S(v) \leq deg_G(v)$. Thus, none of the
-	vertices is isolated.
+	If $G$ has a \ssf{} $S$, then trivially for all $v \in V(G)\ 1 \leq deg_S(v) \leq deg_G(v)$. Thus, none of the vertices is isolated.
 	
 	%TODO |V(G)|=2 wychodzi poza linię.
-	For the opposite direction, we prove the lemma by induction on $|V(G)|$.
-	Assume ${|V(G)|=2}$. The statement trivially holds because a graph representing
-	an edge is a correct Spanning Star Forest. Let $|V(G)| >2$ and let $v$ be 
-	a vertex such that $G \setminus \{v\}$ has no isolated vertices. (If no such
-	vertex exists, it holds that $\forall_{v \in V(G)}\ deg_G(v)=1$ so $G$ itself
-	is a correct Spanning Star Forest) From the inductive assumption, let $S$ be a Spanning Star
-	Forest of a graph $G \setminus \{v\}$, $u$ be a vertex such that $(u,v)
-	\in E(G)$ and $w$ be a vertex such that $w \in N_S(u)$. Consider the 3
-	following cases:
+	For the opposite direction, we prove the lemma by induction on $|V(G)|$. Assume ${|V(G)|=2}$. The statement trivially holds because a graph representing an edge is a correct \ssf. Let $|V(G)| >2$. Suppose that there does not exist a vertex $v$ such that $G \setminus \{v\}$ has no isolated vertices. Then, it holds that for all $v \in V(G)\ deg_G(v)=1$ so $G$ itself	is a correct \ssf{}. Now, suppose that $v$ is a vertex such that $G \setminus \{v\}$ has no isolated vertices. From the inductive assumption, let $S$ be a \ssf{} of a graph $G \setminus \{v\}$, $u$ be a vertex such that $(u,v) \in E(G)$ and $w$ be a vertex such that $w \in N_S(u)$. Consider the 3 following cases:
 	\begin{enumerate}
 		\item $deg_S(u) > 1$. Then, $S'=\big(V(S) \cup \{v\}, E(S) \cup \{(u,v)\}\big)$ is a correct solution for graph $G$.
 		\item $deg_S(u) = deg_S(w) = 1$. Then, $S'=\big(V(S) \cup {v}, E(S) \cup
@@ -206,29 +193,22 @@ concerns about hardness.
 		\item $deg_S(w) > 1$. Then, $S'=\big(V(S) \cup \{v\}, 
 		(E(S) \cup \{(u,v)\}) \setminus \{(u,w)\}\big)$ is a correct solution for graph $G$.
 	\end{enumerate}
-		Observe that in graph $G$ there are no isolated vertices. Thus, one can
-		always extend a solution inductively.
+		Observe that in graph $G$ there are no isolated vertices. Thus, one can always extend a solution inductively.
 	
 \end{proof}
-	Application of Lemma \ref{SSF lemma} yields the following result for Spanning
-	Star Forest Problem:
+	Application of Lemma \ref{SSF lemma} yields the following result for \ssfp{}.
 
 \begin{theorem}
-	Decision version of Spanning Star Forest Problem can be solved in linear
-	time.
+	Decision version of Spanning Star Forest Problem can be solved in linear time.
 \end{theorem}
 
 \begin{proof}
-	Given an input $G = (V,E)$ the answer is YES if $\forall_{v \in V(G)}\ 
-	deg_G(v) \neq 0$ and NO otherwise.
+	Given an input $G = (V,E)$ the answer is YES if for all $v \in V(G)\ deg_G(v) \neq 0$ and NO otherwise.
 \end{proof}
 
 \section{Obtaining a solution}
 
-In this section the focus will be set on obtaining an arbitrary solution for
-a given instance of \emph{Spanning Star Forest Problem}. Firstly, let's
-introduce 2 claims in order to normalize the instance and make the algorithm
-look more clear.
+In this section we focus on obtaining an arbitrary solution for a given instance of \ssfp{}. Firstly, let us introduce 2 claims in order to normalize the instance and make the algorithm look more clear.
 
 \begin{claim} \label{SSF sum}
 	Family of disjoint Spanning Star Forests is a Spanning Star Forest.
@@ -238,11 +218,7 @@ look more clear.
 	$G$ has a Spanning Star Forest if and only if it's spanning tree $T$ has.
 \end{claim}
 
-The first claim can be trivially proven by the definition of 
-\emph{Spanning Star Forest Problem} while the second one follows directly from
-Lemma \ref{SSF lemma}. Equipped with this information, all that is left to do,
-is to design an algorithm which solves \emph{Spanning Star Forest Problem} for 
-trees.
+The first claim can be trivially proven by the definition of \ssfp{} while the second one follows directly from Lemma \ref{SSF lemma}. Equipped with this information, all that is left to do, is to design an algorithm which solves \ssfp{} for trees.
 
 \begin{algorithm}\label{alg1}
 	\KwData{Graph G}
@@ -268,8 +244,8 @@ trees.
 	Assume contrary, that the algorithm yields an incorrect solution $S$. Consider
 	the first case: a path $(u,v),(v,w),(w,z)$ exists in $S$ where $u$ is $v$'s 
 	child, $v$ is $w$'s child and $w$ is $z$'s child. But, if $u$ is $w$'s
-	grandchild and $(u,v),(v,w) \in S$ it means that $w$ is a root. Contradiction
-	because	$w$ cannot be $z$'s child.
+	grandchild and $(u,v),(v,w) \in S$, then it means that $w$ is a root. 
+	Contradiction because $w$ cannot be $z$'s child.
 	Now, suppose the alternative relationship: $u$ is $v$'s child, $v$ and $z$ are
 	$w$'s children. Provided that vertices were visited in postorder, edge $(v,w)$
 	should not have been added because $v$ was introduced by $u$ and $w$ was
@@ -281,54 +257,63 @@ trees.
 \end{theorem}
 
 \begin{proof}
-	Spanning tree of any graph can be found in linear time. The loop has $n$ 
+	Spanning tree of any graph can be found in linear time. The main loop has $n$ 
 	iterations (every vertex is visited once), each of which takes constant time.
 	Thus, the total runtime is linear.
 \end{proof}
 
 \section{Spanning Star Forest parameterized by the number of stars}
 
-In \emph{Spanning Star Forest Problem} parameterized by the number of
-stars, given a graph $G$ and a natural number $k$, the objective is to
-determine whether there exists a \emph{Spanning Star Forest} $S$ such that
-the number of connected components is less than $k$.
+In \ssfp{} parameterized by the number of stars, given a graph $G$ and a natural number $k$, the objective is to determine whether there exists a \ssf{} $S$ such that the number of connected components is less than $k$.
 
-It is natural to ask whether one can find a solution that minimizes the number
-of connected components. Even though the problem looks slightly different
-than the previous one, \emph{Spanning Star Forest} parameterized by the 
-number of stars is NP-Complete. The following theorem proves the statement:
+It is natural to ask whether one can find a solution that minimizes the number of connected components. The problem formulated in that way looks slightly different than the previous one. From the other hand, the problem resembles \domset{}, which is defined as follows:
 
-\begin{theorem}
+\begin{defi}
+	Dominating Set Problem: Given a graph $G$ and a positive integer k find a set $D$ such that $|D| \leq k$ and every vertex from the graph is adjacent to one of the vertices from $D$.
+\end{defi}
+
+It turns out, that the second comparison is true and \kssf{} is NP-Complete. The following theorem proves the statement:
+
+\begin{theorem}\label{SSF DOM}
 	Spanning Star Forest Parameterized by the number of stars is NP-Complete.
 \end{theorem}
 
-
-
 \begin{proof}
-	Membership in NP: given an oracle $(O,k)$, check whether the number of
-	components in $O$ is less than $k$ and whether every connected component 
-	forms a star. The task can be easily done in polynomial time.
+	Membership in NP: given an oracle $(O,k)$, we check whether the number of	components in $O$ is less than $k$ and whether every connected component	forms a star. The task can be easily done in polynomial time.\\
 	
-	A reduction from \emph{Dominating Set} completes the proof. Here, an input
-	is a graph $G$ and an integer $k$ and the task is to find a set 
-	$S \subseteq V(G)$ such that $|S|\leq k$ and:
+	We show hardness by a reduction from \domset{} that completes the proof. Let $(G,k)$ be an instance of it. We create a graph	$G'$ as follows: for every isolated vertex $v \in V(G)$ introduce a vertex $v'$ and an edge $(v,v')$. Now, we claim that $(G,k)$ is a YES-instance for \domset{} if and only if $(G'.k)$ is a YES-instance for \kssf{}. 
 	
-	$$\bigcup_{v \in S} \big(N_G(v) \cup \{v\}\big) = V(G)$$.
+	The backward implication is simple. Suppose $S$ is a solution for $(G',k)$. We claim that a set $D$ representing centers of stars is a correct dominating set. Obviously $|D| \leq k$ because there are at most $k$ connected components. Every vertex from $G'$ is adjacent to one of the centers. If there exists a vertex $v' \in D$ such that $v' \notin V(G)$ we transform the solution as follows: $D := (D \setminus \{v'\})\cup \{v\}$. 
 	
-	Now, given an instance $(G,k)$ of \emph{Dominating Set} let $I = \{v: v$ is 
-	isolated in $G\}$. All that remains, is to prove that $(G \setminus I,
-	k-|I|)$ is a YES-instance for \emph{Spanning Star Forest Problem} 
-	parameterized by the number of stars if and only if $(G,k)$ is a YES-instance 
-	for \emph{Dominating Set Problem}. The forward implication is simple.
+	To prove the forward implication, let $D$ be a solution for $(G,k)$. Without a loss of generality, assume that $D$ is an optimal solution. That is, the size of set $D$ is minimal. To create a correct solution $S$ for a \ssf{} instance, apply exhaustively the following rules in order:
+	\begin{enumerate}
+		\item Suppose $v \in D$ and $deg_S(v)=0$. If $N_{G'}(v) = \{u\}$, then add edge $(v,u)$ to the solution and remove $u$ from $G'$.
+		\item Suppose $v \in D$ and $deg_S(v) = 0$. Add a random edge $(v,u)$ where $u \notin D$ to the solution and remove $u$ from $G'$.
+		\item Add a random edge $(v,u)$ where $v \in D$ and $u \notin D$ and remove u from $G'$.
+	\end{enumerate}
+
+	To prove the correctness of the rules, assume contrary, that $S$ is not a valid \ssf{} of size at most $k$. Firstly, let us focus on the number of components. Obviously, $S$ has $|D|$ connected components because only edges $(v,u)$ where $v \in D$ and $u \notin D$ were introduced and $deg_S(u)=1$ for every $u \notin D$ because the vertices were deleted right after introduction of an edge. Additionally, we can infer that $S$ does not contain a path of length 4 which would prove the contrary. 
 	
+	So, assume that there exists $v \in V(S) \setminus D$ such that $deg_S(v)=0$. Contradiction, one can apply rule 3 because $v$ must have been dominated by a vertex in $G$. Now, assume that $v \in D$. Consider the following cases:
+	\begin{enumerate}
+		\item There exists $u \in N(v)$ such that $u \in D$. Contradiction, $D$ was said to be the optimal dominating set whereas $D \setminus \{u\}$ is a valid, smaller solution for a graph $G$.
+		\item Suppose $u \in N_{G'}(v)$ and $w \in N_S(u)$. If $deg_S(w) > 1$, then rule 1 should have been applied to the edge $(v,u)$. Otherwise, if $deg_S(w)=1$, it is not an optimal solution for a dominating set because $((D \setminus \{v,w\}) \cup u)$ is a valid, smaller solution for a graph $G$.
+	\end{enumerate}
 	
 \end{proof}
+
+
 
 
 \begin{lemma}
 	There exists a reduction from Spanning Star Forest parameterized by the
 	number of stars to Dominating Set.
 \end{lemma}
+\begin{proof}
+	Let $(G,k)$ be an instance of \ssfp{}. We create an instance $(G',k')$ for \domset{} as follows: let $G'=G$ and if $G$ contains an isolated vertex, then $k'=0$. Otherwise, the value remains the same. Now, we claim that $(G,k)$ is a YES-instance for \ssfp{} if and only if $(G',k')$ is a YES-instance for \domset.
+	
+	To prove the following reduction one can use the method which was described in Theorem \ref{SSF DOM} with a little remark: if an instance $(G,k)$ contains an isolated vertex, then obviously it is a NO-instance for \ssfp{} and so is $(G',k')$ for \domset{} because $G'$ is not an empty graph.
+\end{proof}
 
 
 \begin{thebibliography}{99}
