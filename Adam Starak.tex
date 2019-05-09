@@ -352,8 +352,62 @@ As an example, the following theorem described in
 can be transfered to \kssf{}.
 
 \begin{theorem}
-	Unless \cnfsat{} can be solved in time $\mathcal{O}^*((2-\epsilon')^n)$ for some $\epsilon' > 0$ there do not exist constant $\epsilon > 0$, $k \geq 3$ and an algorithm solving \domsetp{} parameterized by the number of stars in time $\mathcal{O}^*(N^{k-\epsilon})$, where $N$ is the number of vertices of the input graph.
+	Unless \cnfsat{} can be solved in time $\mathcal{O}^*((2-\epsilon')^n)$ for some $\epsilon' > 0$ there do not exist constant $\epsilon > 0$, $k \geq 3$ and an algorithm solving \domsetp{} parameterized by the number of stars in time $\mathcal{O}^*(N^{k-\epsilon})$, where $N$ is the number of vertices of the input graph. 
 \end{theorem}
+
+\chapter{Spanning Star Forest Problem with isolated edges}
+
+In this chapter, we significantly change the problem. Let $G$ be a graph and $F \subseteq E(G)$. In the Spanning Star Forest Problem with isolated edges the question that we want to answer now is that whether there exists a \ssf{} $S$ such that $F \subseteq E(S)$. Hardness of the problem lays in deciding which ends of the isolated edges are centers and which are rays. We used three different parameters: number of isolated edges, number of non-isolated edges and treewidth. 
+
+\section{Instance normalization} 
+
+Observe that a star is a primitive structure. The star's maximal radius is equal to 3. It means that we can look at the problem rather locally than globally. Notice that this time we do not have any limit on the number of connected components. As it was said before, the hardness of the problem lays in choosing which of the endings of an isolated. Thus, it might worth trying to normalize instance i.e. try to remove vertices that are "far enough" from isolated vertices.
+
+Let $(G, F)$ be an arbitrary instance of Spanning Star Forest Problem with isolated edges. Firstly, consider edge cases.
+ 
+\begin{claim}
+	If graph $G$ contains an isolated vertex, it is a NO-instance
+\end{claim}
+
+\begin{claim}
+	If in graph $G$ there exists a path of size at least 3 made from isolated edges, it is a NO-instance
+\end{claim}
+
+\begin{claim}
+	If there exists a vertex $v$ such that it is connected to the both endings of an isolated edge, then remove $v$ from $G$.
+\end{claim}
+
+Suppose that isolated edges form a star of size at least 3. Then, the center is already set. Thus, we can remove from the instance all the vertices that are adjacent to the pre-created centers.
+
+\begin{claim}
+	Let $C = \{v: |N_G(v) \cap V(F)| > 1\}$. Update $G= G \setminus N_G(C)$.
+\end{claim}
+
+Now, let $V_P = \{v: (v,u) \in (E(G) \setminus F) \text{ and } v \notin V(F)\}$ and $V_{NP} = V(G) \setminus V_P$. Finally, $G_{NP} = G[V_{NP}]$ and $G_P = G[V_P]$. Notice an immediate consequence of the partitioning of graph $G$.
+
+\begin{claim}\label{gp cut}
+	$G_P$ always has a solution
+\end{claim}
+
+To prove the claim we can apply lemma \ref{SSF lemma}. $G_P$ does not have any isolated edges nor isolated vertices. All that is left to do is to prove that edges between $G_P$ and $G_{NP}$, that were lost during partitioning, does not have any effect on the solution. The following theorem proves the intuition.
+
+\begin{lemma}
+	An instance $(G,F)$ has a solution if and only if $(G_{NP},F)$ has one.
+\end{lemma}
+
+\begin{proof}
+	The backward implication is trivial. Suppose $S$ is a solution for an instance $(G_{NP},F)$. We can partition $G$ into $G_P$ and $G_{NP}$ and find a solution, say $S'$, for a graph $G_P$. Then, $S \cup S'$ is a correct solution for $G$.
+	
+	Now, consider the forward implication. By the claim \ref{gp cut} vertices $V(G) \setminus V(G_{NP})$ form a star forest. Let $S$ be a solution for an instance $(G, F)$. Assume contrary that there exists a vertex $v \in V(G_{NP})$ does not belong to any star. Trivially, vertices from $V(F)$ are covered. Thus, $v \in V(G_{NP}) \setminus V(F)$. But, $\{(v,u): (v,u) \in E(G_{NP}) \} = \{(v,u): (v,u) \in E(G)\}$ which means that there exists an edge $(v,u) \in E(S)$ such that $(v,u) \in E(G_{NP})$. Contradiction.
+	
+\end{proof}
+
+
+\section{Parametrization by the number of isolated edges}
+
+\section{Parametrization by the number of non-isolated edges}
+
+\section{Parametrization by treewidth}
 
 \begin{thebibliography}{99}
 \addcontentsline{toc}{chapter}{Bibliografia}
