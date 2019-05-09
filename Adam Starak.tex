@@ -80,20 +80,25 @@
 
 \usepackage{chngcntr}
 \usepackage{amsthm}
+\usepackage{amsmath}
 \usepackage[]{algorithm2e}
 
 \newtheorem{defi}{Definition}
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}{Lemma}
 \newtheorem{claim}{Claim}
+\newtheorem{corollary}{Corollary}
 \newcommand{\ssf}{\emph{Spanning Star Forest}}
 \newcommand{\ssfp}{\emph{Spanning Star Forest Problem}}
-\newcommand{\domset}{\emph{Dominating Set Problem}}
+\newcommand{\domset}{\emph{Dominating Set}}
+\newcommand{\domsetp}{\emph{Dominating Set Problem}}
 \newcommand{\kssf}{\emph{Spanning Star Forest Problem} parameterized by the number of stars}
+\newcommand{\cnfsat}{\emph{CNF-SAT}}
 
 \counterwithin{theorem}{chapter}
 \counterwithin{defi}{chapter}
 \counterwithin{lemma}{chapter}
+\counterwithin{corollary}{chapter}
 \counterwithin{claim}{chapter}
 
 % koniec definicji
@@ -178,7 +183,7 @@ For a given graph $G$, we say that $S$ is a \ssf{} if every connected component 
 It turns out that the problem formulated in such a way is relatively simple. Although, various parametrizations described in this paper make it more complex. The following lemma easily clarifies all the concerns about it's hardness.
 
 \begin{lemma}\label{SSF lemma}
- A graph $G$ has a Spanning Star Forest if and only if it does not contain any isolated vertices.
+ A graph $G$ has a \ssf{} if and only if it does not contain any isolated vertices.
 \end{lemma}
 
 \begin{proof}
@@ -199,7 +204,7 @@ It turns out that the problem formulated in such a way is relatively simple. Alt
 	Application of Lemma \ref{SSF lemma} yields the following result for \ssfp{}.
 
 \begin{theorem}
-	Decision version of Spanning Star Forest Problem can be solved in linear time.
+	Decision version of \ssfp{} can be solved in linear time.
 \end{theorem}
 
 \begin{proof}
@@ -211,11 +216,11 @@ It turns out that the problem formulated in such a way is relatively simple. Alt
 In this section we focus on obtaining an arbitrary solution for a given instance of \ssfp{}. Firstly, let us introduce 2 claims in order to normalize the instance and make the algorithm look more clear.
 
 \begin{claim} \label{SSF sum}
-	Family of disjoint Spanning Star Forests is a Spanning Star Forest.
+	Family of disjoint {\normalfont Spanning Star Forests} is a \ssf{}.
 \end{claim}
 
 \begin{claim} \label{Spanning tree SSF}
-	$G$ has a Spanning Star Forest if and only if it's spanning tree $T$ has.
+	$G$ has a \ssf{} if and only if it's spanning tree $T$ has.
 \end{claim}
 
 The first claim can be trivially proven by the definition of \ssfp{} while the second one follows directly from Lemma \ref{SSF lemma}. Equipped with this information, all that is left to do, is to design an algorithm which solves \ssfp{} for trees.
@@ -264,57 +269,91 @@ The first claim can be trivially proven by the definition of \ssfp{} while the s
 
 \section{Spanning Star Forest parameterized by the number of stars}
 
-In \ssfp{} parameterized by the number of stars, given a graph $G$ and a natural number $k$, the objective is to determine whether there exists a \ssf{} $S$ such that the number of connected components is less than $k$.
+In \kssf{}, given a graph $G$ and a natural number $k$, the objective is to determine whether there exists a \ssf{} $S$ such that the number of connected components is at most $k$.
 
-It is natural to ask whether one can find a solution that minimizes the number of connected components. The problem formulated in that way looks slightly different than the previous one. From the other hand, the problem resembles \domset{}, which is defined as follows:
+It is natural to ask whether one can find a solution that minimizes the number of connected components. The problem formulated in that way looks slightly different than the previous one. From the other hand, the problem resembles \domsetp{}, which is defined as follows:
 
 \begin{defi}
-	Dominating Set Problem: Given a graph $G$ and a positive integer k find a set $D$ such that $|D| \leq k$ and every vertex from the graph is adjacent to one of the vertices from $D$.
+	\domsetp: Given a graph $G$ and a positive integer $k$ find a set $D$ such that $|D| \leq k$ and every vertex from the graph is adjacent to one of the vertices from $D$.
 \end{defi}
 
-It turns out, that the second comparison is true and \kssf{} is NP-Complete. The following theorem proves the statement:
+It turns out, that the second comparison is true and \kssf{} is NP-Complete. But, before we begin, let us introduce one more definition and a lemma that supports a reduction.
 
-\begin{theorem}\label{SSF DOM}
-	Spanning Star Forest Parameterized by the number of stars is NP-Complete.
+\begin{defi}
+	Dominating mapping: Given an instance $(G,k)$ of Dominating Set Problem and a solution $D$, a dominating mapping is a function $m:V(G) \setminus D \rightarrow D$ such that satisfies $(x,m(x)) \in E(G)$ for all $x \in Dom(m)$.
+\end{defi}
+
+\begin{lemma}\label{dom mapping}
+	Let $(G,k)$ be an instance of \domsetp{} without isolated vertices and let $D$ be a solution of minimal size. Then, there exists a dominating mapping $m$ such that $m$ is surjective.
+\end{lemma}
+
+\begin{proof}
+	Suppose contrary that such a mapping does not exist i.e. for every mapping $m$ there exists a vertex $v \in D$ such that $v \notin im(m)$. Let us break the proof into 4 cases:
+	\begin{enumerate}
+		\item Suppose $N_G(v) = \emptyset$. Contradiction, $G$ has no isolated vertices.
+		\item Suppose $u \in N_G(v) \cap D$. Contradiction, $D$ was said to be a solution of minimal size whereas $D \setminus \{u\}$ is a valid, smaller solution.
+		\item Suppose $u \in N_{G}(v) \setminus D$ and $w \in N_G(u) \cap im(m)$. If $|m^{-1}(w)|=1$, then $((D \setminus \{v,w\}) \cup u)$ is a valid, smaller solution for a graph $G$. Contradiction.
+		\item Suppose $u \in N_{G}(v) \setminus D$ and $w \in N_G(u) \cap im(m)$. If $|m^{-1}(w)| > 1$ then a mapping:
+		\begin{equation*}
+			m'(x) = \begin{cases}
+			v, & \text{if x = u} \\
+			m(x), &\text{otherwise} \\
+			\end{cases}
+		\end{equation*}
+		is a valid mapping that satisfies $im(m) \subset im(m')$. Thus, one can create a new mapping $m''$ inductively such that $m''$ is surjective. Contradiction, we assumed that no such mapping exists. 
+	\end{enumerate}
+	
+	Since all the possible cases led to a contradiction, we may claim that there exists a dominating mapping $f$ such that f is surjective.  
+\end{proof}
+
+Armed with the lemma, we are ready to prove the main theorem of the chapter.
+
+\begin{theorem}\label{dom ssf}
+	\kssf{} is NP-Complete.
 \end{theorem}
 
 \begin{proof}
 	Membership in NP: given an oracle $(O,k)$, we check whether the number of	components in $O$ is less than $k$ and whether every connected component	forms a star. The task can be easily done in polynomial time.\\
 	
-	We show hardness by a reduction from \domset{} that completes the proof. Let $(G,k)$ be an instance of it. We create a graph	$G'$ as follows: for every isolated vertex $v \in V(G)$ introduce a vertex $v'$ and an edge $(v,v')$. Now, we claim that $(G,k)$ is a YES-instance for \domset{} if and only if $(G'.k)$ is a YES-instance for \kssf{}. 
+	We show hardness by a reduction from \domsetp{} that completes the proof. Let $(G,k)$ be an instance of it. We create a graph	$G'$ as follows: for every isolated vertex $v \in V(G)$ introduce a vertex $v'$ and an edge $(v,v')$. Now, we claim that $(G,k)$ is a YES-instance for \domsetp{} if and only if $(G'.k)$ is a YES-instance for \kssf{}. 
 	
-	The backward implication is simple. Suppose $S$ is a solution for $(G',k)$. We claim that a set $D$ representing centers of stars is a correct dominating set. Obviously $|D| \leq k$ because there are at most $k$ connected components. Every vertex from $G'$ is adjacent to one of the centers. If there exists a vertex $v' \in D$ such that $v' \notin V(G)$ we transform the solution as follows: $D := (D \setminus \{v'\})\cup \{v\}$. 
+	The backward implication is simple. Suppose $S$ is a solution for $(G',k)$. We claim that a set $D$ representing centers of stars is a correct \domset{}. Obviously $|D| \leq k$ because there are at most $k$ connected components. Every vertex from $G'$ is adjacent to one of the centers. If there exists a vertex $v' \in D$ such that $v' \notin V(G)$ we transform the solution as follows: $D := (D \setminus \{v'\})\cup \{v\}$. 
 	
-	To prove the forward implication, let $D$ be a solution for $(G,k)$. Without a loss of generality, assume that $D$ is an optimal solution. That is, the size of set $D$ is minimal. To create a correct solution $S$ for a \ssf{} instance, apply exhaustively the following rules in order:
-	\begin{enumerate}
-		\item Suppose $v \in D$ and $deg_S(v)=0$. If $N_{G'}(v) = \{u\}$, then add edge $(v,u)$ to the solution and remove $u$ from $G'$.
-		\item Suppose $v \in D$ and $deg_S(v) = 0$. Add a random edge $(v,u)$ where $u \notin D$ to the solution and remove $u$ from $G'$.
-		\item Add a random edge $(v,u)$ where $v \in D$ and $u \notin D$ and remove u from $G'$.
-	\end{enumerate}
-
-	To prove the correctness of the rules, assume contrary, that $S$ is not a valid \ssf{} of size at most $k$. Firstly, let us focus on the number of components. Obviously, $S$ has $|D|$ connected components because only edges $(v,u)$ where $v \in D$ and $u \notin D$ were introduced and $deg_S(u)=1$ for every $u \notin D$ because the vertices were deleted right after introduction of an edge. Additionally, we can infer that $S$ does not contain a path of length 4 which would prove the contrary. 
-	
-	So, assume that there exists $v \in V(S) \setminus D$ such that $deg_S(v)=0$. Contradiction, one can apply rule 3 because $v$ must have been dominated by a vertex in $G$. Now, assume that $v \in D$. Consider the following cases:
-	\begin{enumerate}
-		\item There exists $u \in N(v)$ such that $u \in D$. Contradiction, $D$ was said to be the optimal dominating set whereas $D \setminus \{u\}$ is a valid, smaller solution for a graph $G$.
-		\item Suppose $u \in N_{G'}(v)$ and $w \in N_S(u)$. If $deg_S(w) > 1$, then rule 1 should have been applied to the edge $(v,u)$. Otherwise, if $deg_S(w)=1$, it is not an optimal solution for a dominating set because $((D \setminus \{v,w\}) \cup u)$ is a valid, smaller solution for a graph $G$.
-	\end{enumerate}
+	To prove the forward implication, let $D$ be a solution of minimal size for $(G,k)$. Obviously, $D$ is also a minimal solution for a graph $G'$. Thus, by lemma \ref{dom mapping}. there exists a mapping $m$ that is surjective. Now, we claim that a graph $S=(V(G'),\{(x,m(x)): x \in Dom(m)\})$ is a correct solution for \ssfp{}. Trivially, there are no isolated vertices in $S$. Moreover, there is no path of length 4 because $S$ consists of edges $(v,u)$ such that $v \in D$, $u \notin D$ and for all $u \in V(S) \setminus D$ $deg_S(u)=1$.
 	
 \end{proof}
 
+The theorem implies that \kssf{} is as hard as \domsetp{}. Thus, we can immediately obtain the following corollary.
 
+\begin{corollary}
+	\kssf{} is {\normalfont W[2]-complete}.
+\end{corollary}
 
+The problems look so similar that one could ask whether the reverse reduction is true. Indeed, with a small twist to the previous idea one can prove the reverse reduction instantly.  
 
-\begin{lemma}
-	There exists a reduction from Spanning Star Forest parameterized by the
-	number of stars to Dominating Set.
-\end{lemma}
+\begin{theorem}\label{ssf dom}
+	There exists a reduction from \kssf{} to \domsetp{}.
+\end{theorem}
+
 \begin{proof}
 	Let $(G,k)$ be an instance of \ssfp{}. We create an instance $(G',k')$ for \domset{} as follows: let $G'=G$ and if $G$ contains an isolated vertex, then $k'=0$. Otherwise, the value remains the same. Now, we claim that $(G,k)$ is a YES-instance for \ssfp{} if and only if $(G',k')$ is a YES-instance for \domset.
 	
-	To prove the following reduction one can use the method which was described in Theorem \ref{SSF DOM} with a little remark: if an instance $(G,k)$ contains an isolated vertex, then obviously it is a NO-instance for \ssfp{} and so is $(G',k')$ for \domset{} because $G'$ is not an empty graph.
+	To prove the following reduction one can use the method which was described in Theorem \ref{ssf dom} with a little remark: if an instance $(G,k)$ contains an isolated vertex, then obviously it is a NO-instance for \ssfp{} and so is $(G',k')$ for \domset{} because $G'$ is not an empty graph.
 \end{proof}
 
+One can observe now the immediate corollary of the theorem \ref{dom ssf} and theorem \ref{ssf dom}.
+
+\begin{corollary}
+	Every theorem that is true for \domsetp{} if and only if it is true for a \kssf{}.
+\end{corollary}
+
+As an example, the following theorem described in 
+%TODO dodaj ref%
+can be transfered to \kssf{}.
+
+\begin{theorem}
+	Unless \cnfsat{} can be solved in time $\mathcal{O}^*((2-\epsilon')^n)$ for some $\epsilon' > 0$ there do not exist constant $\epsilon > 0$, $k \geq 3$ and an algorithm solving \domsetp{} parameterized by the number of stars in time $\mathcal{O}^*(N^{k-\epsilon})$, where $N$ is the number of vertices of the input graph.
+\end{theorem}
 
 \begin{thebibliography}{99}
 \addcontentsline{toc}{chapter}{Bibliografia}
