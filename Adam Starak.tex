@@ -82,6 +82,7 @@
 \usepackage{amsthm}
 \usepackage{amsmath}
 \usepackage[]{algorithm2e}
+\usepackage{enumitem}
 
 \newtheorem{defi}{Definition}
 \newtheorem{theorem}{Theorem}
@@ -94,6 +95,8 @@
 \newcommand{\domsetp}{\emph{Dominating Set Problem}}
 \newcommand{\kssf}{\emph{Spanning Star Forest Problem} parameterized by the number of stars}
 \newcommand{\cnfsat}{\emph{CNF-SAT}}
+\newcommand{\ssfe}{\emph{Spanning Star Forest Extension Problem}}
+\newcommand{\tsat}{\emph{3-SAT}}
 
 \counterwithin{theorem}{chapter}
 \counterwithin{defi}{chapter}
@@ -134,51 +137,73 @@ możliwości.  Wykorzystujemy je w~niniejszej pracy.
 
 \section{Structures}
 
-A simple graph $G$ is a pair $(V,E)$ where $V$ denotes a set of vertices
-and $E$ denotes a set of undirected edges. Let $deg_G(v)$ denote a degree
-of vertex v in graph $G$. Let $G \setminus \{v\}$ be the abbreviation for
-$G'=(V(G) \setminus \{v\}, E(G) \setminus \{(u,v): u \in V(G)\})$.A \emph{tree} $T$ is a graph where two
-vertices are connected by excatly one path. A \emph{spanning tree} $T$ of a
-graph $G$ is a graph which includes all of the vertices of $G$, with minimum
-possible number of edges. A \emph{star} $S$ is a tree of size at least 2
-for which at most 1 vertex has a degree greater than $1$. A vertex in a \emph{star} that has the greatest degree is called a \emph{center} while the others are called \emph{rays}.
+A simple graph $G$ is a pair $(V,E)$ where $V$ denotes a set of vertices and $E$ denotes a set of undirected edges. Let $deg_G(v)$ denote a degree of vertex v in graph $G$. Let $G \setminus \{v\}$ be the abbreviation for $G'=(V(G) \setminus \{v\}, E(G) \setminus \{(u,v): u \in V(G)\})$. For a set $X \subset V(G)$ we denote $G[X]$ as a graph induced by vertices from $X$. A \emph{tree} $T$ is a graph where two vertices are connected by excatly one path. A \emph{spanning tree} $T$ of a graph $G$ is a graph which includes all of the vertices of $G$, with minimum possible number of edges. A \emph{star} $S$ is a tree of size at least 2 for which at most 1 vertex has a degree greater than $1$. A vertex in a \emph{star} that has the greatest degree is called a \emph{center} while the others are called \emph{rays}.
 
+All the further definitions are taken from 
+%TODO: cytat do parameterized algorithms%
 
 \section{Parameterized complexity}
 
 \begin{defi}\label{Parameterized problem}
-	Parameterized problem
+	A parameterized problem is a language $L \subseteq \ \Sigma^* \times \mathbf{N}$, where $\Sigma$ is a fixed, finite alphabet. For an instance $(x,k) \in L$, $k$ is called the parameter.
 \end{defi}
 
 \begin{defi}\label{FPT algorithm}
-	FPT algorithm
+	For a parameterized problem $Q$, an FPT algorithm is an algorithm $\mathcal{A}$ which, for any input $(x,k)$, decides whether $(x,k) \in Q$ in time $\mathcal{O}(f(k)\cdot n^c)$ where c is independent of $n,c$ and $f$ is a computable function.
 \end{defi}
 
 \begin{defi}\label{Kernel}
-	Kernel
-\end{defi}
-
-\begin{defi}\label{Kernelization algorithm}
-	Kernelization algorithm
+	A kernel for a parameterized problem $Q$ is an algorithm $\mathcal{A}$ that, given an instance $(x,k) \in Q$, works in polynomial time and returns an equivalent instance $(x',k') \in Q$
+	such that $|x'| + k' \leq g(k)$ for a computable function $g$.
 \end{defi}
 
 \section{Graph decomposition}
 
-\begin{defi}\label{Pathwidth}
-	Path decomposition and pathwidth
-\end{defi}
+\subsection{Path decomposition}
 
-\begin{defi}\label{Treewidth}
-	Tree decomposition and treewidth
-\end{defi}
+A path decomposition of a graph $G$ is a sequence $\mathcal{P} = (X_1, X_2, ..., X_r)$ of bags where $X_i \subseteq V(G)$ for each $i \in \{1,2, ..., r\}$ such that the following equations hold:
+\begin{itemize}
+	\item[(P1)] $\bigcup^r_{i=1} X_i = V(G)$.
+	\item[(P2)] For every edge $(v,u) \in E(G)$ there exists a bag $X_p$ such that $u,v \in X_p$.
+	\item[(P3)] For every $u \in V(G)$, if $u \in X_i \cap X_j$ for some $i < k$, then $u \in X_k$ for every $i < k < j$.
+\end{itemize}
+The width of a decomposition $\mathcal{P}$ is denoted as $w(P) = \max_{1\leq i\leq r} |X_i| - 1$. The pathwidth of a graph $G$ is the minimum possible width of a path decomposition i.e. $pw(G) = \min_{\mathcal{P}} w(P)$.\\
 
-\begin{defi}\label{nice tree decomposition}
-	Nice tree decomposition
-\end{defi}
+\noindent
+A nice path decomposition of a graph $G$ is a path decomposition $\mathcal{P}$ that satisfies:
+\begin{itemize}
+	\item $X_0 = \emptyset$
+	\item For every $i \in \{1,2,...,r\}$ there is either a vertex $v \notin X_i$ such that $X_{i+1} = X_i \cup \{v\}$ or there is a vertex $w \in X_i$ such that $X_{i+1} = X_i \setminus \{w\}$.
+\end{itemize}
+
+Nice path decomposition form is useful for designing dynamic-programming algorithm. It is worth to mention that any path decomposition $\mathcal{P}$ can be transformed into a nice path decomposition $\mathcal{P'}$ is polynomial time.
+
+\subsection{Tree decomposition}
+
+A tree decomposition is a generalization of a path decomposition. Formally, a tree decomposition of a graph $G$ is a pair $\mathcal{T} = (T, \{X_t\}_{t\in V(T)})$ where $\mathcal{T}$ is a tree whose every node $t$ is assigned to a vertex subset $X_t \subseteq V(G)$, called a bag, such that the following three conditions hold:
+\begin{itemize}
+	\item[(T1)] $\bigcup_{t\in V(T)}X_t = V(G)$.
+	\item[(T2)] For every $(v,u) \in E(G)$ there exists a bag $t$ of $\mathcal{T}$ such that $v,u \in X_t$.
+	\item[(T3)] For every $v \in V(G)$ the set $T_v = \{t \in V(T): v \in X_t\}$ induces a connected subtree of T.
+\end{itemize}
+
+Similarly, the width of a tree decomposition $\mathcal{T} = (T,\{X_t\}_{t\in V(T)})$, denoted as $w(\mathcal{T})$, is equal to $\max_{t \in V(T)} |X_t| - 1$. The treewidth of a graph $G$, denoted as $pw(G)$, is the minimal width over all tree decompositions of $G$.
+\\
+\\
+A nice tree decomposition of a graph $G$ is a tree decomposition $(T, \{X_t\}_{t \in V(T)})$ such that
+\begin{itemize}
+	\item $X_i = \emptyset$ is $i$ is either root or leaf.
+	\item Every non-leaf node is of one of the three following types:
+	\begin{itemize}
+		\item \textbf{Introduce node}: a node $t$ with exactly one child $t'$ such that $X_t = X_{t'} \cup \{v\}$ for some vertex $v \notin X_{t'}$.
+		\item \textbf{Forget node}: a node $t$ with exactly one child $t'$ such that $X_t = X_{t'} \setminus \{w\}$ for some vertex $w \in X_{t'}$
+		\item \textbf{Join node}: a node $t$ with exactly two children $t_1$, $t_2$ such that $X_t = X_{t_1} = X_{t_2}$.
+	\end{itemize}
+\end{itemize}
 
 \chapter{Spanning Star Forest Problem}\label{r:losers}
 
-For a given graph $G$, we say that $S$ is a \ssf{} if every connected component $C$ is a star. In the \ssfp{} given a graph $G$, the objective is to determine whether there exists a \ssf{}.
+For a given graph $G$, we say that $S$ is a \ssf{} if every connected component $C$ is a star. In \ssfp{} given a graph $G$, the objective is to determine whether there exists a \ssf{}.
 
 It turns out that the problem formulated in such a way is relatively simple. Although, various parametrizations described in this paper make it more complex. The following lemma easily clarifies all the concerns about it's hardness.
 
@@ -189,11 +214,10 @@ It turns out that the problem formulated in such a way is relatively simple. Alt
 \begin{proof}
 	If $G$ has a \ssf{} $S$, then trivially for all $v \in V(G)\ 1 \leq deg_S(v) \leq deg_G(v)$. Thus, none of the vertices is isolated.
 	
-	%TODO |V(G)|=2 wychodzi poza linię.
-	For the opposite direction, we prove the lemma by induction on $|V(G)|$. Assume ${|V(G)|=2}$. The statement trivially holds because a graph representing an edge is a correct \ssf. Let $|V(G)| >2$. Suppose that there does not exist a vertex $v$ such that $G \setminus \{v\}$ has no isolated vertices. Then, it holds that for all $v \in V(G)\ deg_G(v)=1$ so $G$ itself	is a correct \ssf{}. Now, suppose that $v$ is a vertex such that $G \setminus \{v\}$ has no isolated vertices. From the inductive assumption, let $S$ be a \ssf{} of a graph $G \setminus \{v\}$, $u$ be a vertex such that $(u,v) \in E(G)$ and $w$ be a vertex such that $w \in N_S(u)$. Consider the 3 following cases:
+	For the opposite direction, we prove the lemma by induction on $|V(G)|$. Assume $|V(G)|=2$. The statement trivially holds because a graph representing an edge is a correct \ssf. Let $|V(G)| >2$. Suppose that there does not exist a vertex $v$ such that $G \setminus \{v\}$ has no isolated vertices. Then, it holds that for all $v \in V(G)\ deg_G(v)=1$ so $G$ itself	is a correct \ssf{}. Now, suppose that $v$ is a vertex such that $G \setminus \{v\}$ has no isolated vertices. From the inductive assumption, let $S$ be a \ssf{} of a graph $G \setminus \{v\}$, $u$ be a vertex such that $(u,v) \in E(G)$ and $w$ be a vertex such that $w \in N_S(u)$. Consider the 3 following cases:
 	\begin{enumerate}
 		\item $deg_S(u) > 1$. Then, $S'=\big(V(S) \cup \{v\}, E(S) \cup \{(u,v)\}\big)$ is a correct solution for graph $G$.
-		\item $deg_S(u) = deg_S(w) = 1$. Then, $S'=\big(V(S) \cup {v}, E(S) \cup
+		\item $deg_S(u) = deg_S(w) = 1$. Then, $S'=\big(V(S) \cup \{v\}, E(S) \cup
 		(u,v)\big)$ is a correct solution for graph $G$.
 		\item $deg_S(w) > 1$. Then, $S'=\big(V(S) \cup \{v\}, 
 		(E(S) \cup \{(u,v)\}) \setminus \{(u,w)\}\big)$ is a correct solution for graph $G$.
@@ -280,7 +304,7 @@ It is natural to ask whether one can find a solution that minimizes the number o
 It turns out, that the second comparison is true and \kssf{} is NP-Complete. But, before we begin, let us introduce one more definition and a lemma that supports a reduction.
 
 \begin{defi}
-	Dominating mapping: Given an instance $(G,k)$ of Dominating Set Problem and a solution $D$, a dominating mapping is a function $m:V(G) \setminus D \rightarrow D$ such that satisfies $(x,m(x)) \in E(G)$ for all $x \in Dom(m)$.
+	Given an instance $(G,k)$ of Dominating Set Problem that does not contain any isolated vertices and a solution $D$, a dominating mapping is a function $m:V(G) \setminus D \rightarrow D$ such that satisfies $(x,m(x)) \in E(G)$ for all $x \in Dom(m)$.
 \end{defi}
 
 \begin{lemma}\label{dom mapping}
@@ -303,10 +327,10 @@ It turns out, that the second comparison is true and \kssf{} is NP-Complete. But
 		is a valid mapping that satisfies $im(m) \subset im(m')$. Thus, one can create a new mapping $m''$ inductively such that $m''$ is surjective. Contradiction, we assumed that no such mapping exists. 
 	\end{enumerate}
 	
-	Since all the possible cases led to a contradiction, we may claim that there exists a dominating mapping $f$ such that f is surjective.  
+	Since all the possible cases led to a contradiction, we may conclude that there exists a dominating mapping $f$ such that $f$ is surjective.  
 \end{proof}
 
-Armed with the lemma, we are ready to prove the main theorem of the chapter.
+Armed with the lemma, we are ready to prove the main theorem of the section.
 
 \begin{theorem}\label{dom ssf}
 	\kssf{} is NP-Complete.
@@ -344,7 +368,7 @@ The problems look so similar that one could ask whether the reverse reduction is
 One can observe now the immediate corollary of the theorem \ref{dom ssf} and theorem \ref{ssf dom}.
 
 \begin{corollary}
-	Every theorem that is true for \domsetp{} if and only if it is true for a \kssf{}.
+	Every theorem is true for \domsetp{} if and only if it is true for a \kssf{}.
 \end{corollary}
 
 As an example, the following theorem described in 
@@ -355,33 +379,27 @@ can be transfered to \kssf{}.
 	Unless \cnfsat{} can be solved in time $\mathcal{O}^*((2-\epsilon')^n)$ for some $\epsilon' > 0$ there do not exist constant $\epsilon > 0$, $k \geq 3$ and an algorithm solving \domsetp{} parameterized by the number of stars in time $\mathcal{O}^*(N^{k-\epsilon})$, where $N$ is the number of vertices of the input graph. 
 \end{theorem}
 
-\chapter{Spanning Star Forest Problem with isolated edges}
+\chapter{Spanning Star Forest Extension Problem}
 
-In this chapter, we significantly change the problem. Let $G$ be a graph and $F \subseteq E(G)$. In the Spanning Star Forest Problem with isolated edges the question that we want to answer now is that whether there exists a \ssf{} $S$ such that $F \subseteq E(S)$. Hardness of the problem lays in deciding which ends of the isolated edges are centers and which are rays. We used three different parameters: number of isolated edges, number of non-isolated edges and treewidth. 
+In this chapter, we significantly change the problem. Let $G$ be a graph and $F \subseteq E(G)$. In the \ssfe{} the question that we want to answer now is that whether there exists a \ssf{} $S$ such that $F \subseteq E(S)$. Hardness of the problem lays in deciding which end of every isolated edge is a center and which one is a ray. We used three different parameters: number of isolated edges, number of non-isolated edges and treewidth. 
 
-\section{Instance normalization} 
+\section{General overview}
+
+\subsection{Instance normalization} 
 
 Observe that a star is a primitive structure. The star's maximal radius is equal to 3. It means that we can look at the problem rather locally than globally. Notice that this time we do not have any limit on the number of connected components. As it was said before, the hardness of the problem lays in choosing which of the endings of an isolated. Thus, it might worth trying to normalize instance i.e. try to remove vertices that are "far enough" from isolated vertices.
 
-Let $(G, F)$ be an arbitrary instance of Spanning Star Forest Problem with isolated edges. Firstly, consider edge cases.
- 
-\begin{claim}
-	If graph $G$ contains an isolated vertex, it is a NO-instance
-\end{claim}
+Let $(G, F)$ be an arbitrary instance of \ssfe{}. Firstly, consider trivial cases.
 
-\begin{claim}
-	If in graph $G$ there exists a path of size at least 3 made from isolated edges, it is a NO-instance
-\end{claim}
-
-\begin{claim}
-	If there exists a vertex $v$ such that it is connected to the both endings of an isolated edge, then remove $v$ from $G$.
-\end{claim}
+\begin{enumerate}[leftmargin=*,label=\textbf{Reduction \arabic{enumi}}]
+	\item If graph $G$ contains an isolated vertex, it is a NO-instance.
+	\item If in graph $G$ there exists a path of size at least 3 made from isolated edges, it is a NO-instance.
+\end{enumerate}
 
 Suppose that isolated edges form a star of size at least 3. Then, the center is already set. Thus, we can remove from the instance all the vertices that are adjacent to the pre-created centers.
-
-\begin{claim}
-	Let $C = \{v: |N_G(v) \cap V(F)| > 1\}$. Update $G= G \setminus N_G(C)$.
-\end{claim}
+\begin{enumerate}[leftmargin=*,label=\textbf{Reduction \arabic{enumi}},resume]
+	\item $C = \{v: |N_G(v) \cap V(F)| > 1\}$. Update $G= G \setminus N_G(C)$.
+\end{enumerate}
 
 Now, let $V_P = \{v: (v,u) \in (E(G) \setminus F) \text{ and } v \notin V(F)\}$ and $V_{NP} = V(G) \setminus V_P$. Finally, $G_{NP} = G[V_{NP}]$ and $G_P = G[V_P]$. Notice an immediate consequence of the partitioning of graph $G$.
 
@@ -398,12 +416,50 @@ To prove the claim we can apply lemma \ref{SSF lemma}. $G_P$ does not have any i
 \begin{proof}
 	The backward implication is trivial. Suppose $S$ is a solution for an instance $(G_{NP},F)$. We can partition $G$ into $G_P$ and $G_{NP}$ and find a solution, say $S'$, for a graph $G_P$. Then, $S \cup S'$ is a correct solution for $G$.
 	
-	Now, consider the forward implication. By the claim \ref{gp cut} vertices $V(G) \setminus V(G_{NP})$ form a star forest. Let $S$ be a solution for an instance $(G, F)$. Assume contrary that there exists a vertex $v \in V(G_{NP})$ does not belong to any star. Trivially, vertices from $V(F)$ are covered. Thus, $v \in V(G_{NP}) \setminus V(F)$. But, $\{(v,u): (v,u) \in E(G_{NP}) \} = \{(v,u): (v,u) \in E(G)\}$ which means that there exists an edge $(v,u) \in E(S)$ such that $(v,u) \in E(G_{NP})$. Contradiction.
+	Now, consider the forward implication. Let $S$ be a solution for an instance $(G, F)$. Assume contrary that there exists a vertex $v \in V(G_{NP})$ does not belong to any star. Trivially, vertices from $V(F)$ are covered. Thus, $v \in V(G_{NP}) \setminus V(F)$. If $v \in V(G_{NP}) \setminus V(F)$ it follows that for all $(v,u) \in E(G)$ $(v,u) \in E(G_{NP}))$. If it was not true, the vertex $v$ would have been place in the graph $G_P$. Thus, there exists an edge $(v,u) \in E(S)$ such that $(v,u) \in E(G_{NP})$. Contradiction.
 	
 \end{proof}
+\noindent
+Ultimately, we can state the last rule.
+\begin{enumerate}[leftmargin=*,label=\textbf{Reduction \arabic{enumi}},resume]
+	\item Update $G = G \setminus G_P$.
+\end{enumerate}
 
+\subsection{NP-completeness}
+
+After exhaustive application of rules, any graph has a simple structure. Let $(G,F)$ be an instance of \ssfe{} after normalization. Then, $G$ consists of vertices of two types: ones that have only edges to vertices from $V(F)$ and ones that have exactly one isolated edge (and potentially many non-isolated). Such a representation substantially simplifies further investigations. Indeed, we can prove that the problem parameterized by the number of isolated edges is NP-complete.
+
+
+
+\begin{theorem}
+	\ssfe{} is NP-complete.
+\end{theorem}
+
+\begin{proof}
+	Membership in NP: Given a solution $S$ for instance $(G,F)$ check whether $F \subseteq S$ and whether $S$ is a correct \ssf{}.
+	\\\\
+	To prove hardness, we show a reduction from \tsat{}. Let $\phi$ be an arbitrary instance. We create a graph $G$ as follows: for every variable $x_i$ we introduce vertices $x_i,\neg x_i$ and an isolated edge $(x_i,\neg x_i)$. For every clause $c_i$ we introduce a vertex $c_i$. For every $x_k$ (symmetrically $\neg x_k$) we introduce an edge $(x_k,c_p)$ if and only if $x_k$ is present in p'th clause. Now, we claim that $\phi$ is satisfiable if and only if $(G, F)$ has a \ssf{}. \\
+	Backward implication: Let $S$ be a solution for $(G,F)$. Then, a set of centers is a correct evaluation that satisfies the formula $\phi$ because every clause $S$ has a witness.\\
+	To prove the forward implication, assume there exists an evaluation $\sigma$ of variables that satisfies the formula. Let $C = \{l_i: \sigma(l_i) = 1\} $. Note that $C$ contains either $x_i$ or $\neg x_i$. Now, let us construct a solution $S$. Firstly, include all the isolated edges. Then, for every vertex representing a clause $c_i$ take a random $l_j$ such that $l_j \in N(c_i) \cap C$ and include edge $(c_i, l_j)$ into the solution. The operation is safe. All sets $ N(c_i) \cap C$ are nonempty because there exists a witness $l_k$ that satisfies the clause and there exists an edge between a literal and a clause.
+\end{proof}
+
+Surprisingly, \tsat{} is trivially encoded in \ssfe{}.
+
+\defi{\tsat}
+\lemma{Any CNF formula can be represented as a formula where each clause has size at most 3} \label{cnf to 3sat}
+\begin{lemma}
+	There exists a reduction from \ssfe{} to \tsat.
+\end{lemma}
+
+\begin{proof}
+	Let $(G,F)$ be an arbitrary normalized instance of \ssfe{}. We create a formula $\phi$ as follows: for every isolated edge $(u,v)$ we introduce literals $x$ and $\neg x$. For every vertex $v \in V(G)\setminus V(F)$ we introduce a clause $c_i$. Literal $l$ is present in a clause $c_j$ if and only if there exists an edge between vertices corresponding to $c_j$ and $l$. Application of lemma \ref{cnf to 3sat} to $\phi$ produces a formula $\phi'$ that is a correct instance of \tsat.
+	
+	Proof of correctness was previously described in the theorem. We omit it for the sake of clarity.
+\end{proof}
 
 \section{Parametrization by the number of isolated edges}
+
+
 
 \section{Parametrization by the number of non-isolated edges}
 
