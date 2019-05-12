@@ -387,7 +387,7 @@ In this chapter, we significantly change the problem. Let $G$ be a graph and $F 
 
 \subsection{Instance normalization} 
 
-Observe that a star is a primitive structure. The star's maximal radius is equal to 3. It means that we can look at the problem rather locally than globally. Notice that this time we do not have any limit on the number of connected components. As it was said before, the hardness of the problem lays in choosing which of the endings of an isolated. Thus, it might worth trying to normalize instance i.e. try to remove vertices that are "far enough" from isolated vertices.
+Observe that a star is a primitive structure. The star's maximal radius is equal to 3. It means that we can look at the problem rather locally than globally. Notice that this time we do not have any limit on the number of connected components. As it was said before, the hardness of the problem lays in choosing which of the endings of an isolated edge is a center. Thus, it might be possible to normalize instances i.e. try to remove vertices that are "far enough" from isolated vertices.
 
 Let $(G, F)$ be an arbitrary instance of \ssfe{}. Firstly, consider trivial cases.
 
@@ -398,13 +398,13 @@ Let $(G, F)$ be an arbitrary instance of \ssfe{}. Firstly, consider trivial case
 
 Suppose that isolated edges form a star of size at least 3. Then, the center is already set. Thus, we can remove from the instance all the vertices that are adjacent to the pre-created centers.
 \begin{enumerate}[leftmargin=*,label=\textbf{Reduction \arabic{enumi}},resume]
-	\item $C = \{v: |N_G(v) \cap V(F)| > 1\}$. Update $G= G \setminus N_G(C)$.
+	\item $C = \{v: |N_G(v) \cap V(F)| > 1\}$. Update $G= G \setminus (N_G(C) \cup C)$.
 \end{enumerate}
 
 Now, let $V_P = \{v: (v,u) \in (E(G) \setminus F) \text{ and } v \notin V(F)\}$ and $V_{NP} = V(G) \setminus V_P$. Finally, $G_{NP} = G[V_{NP}]$ and $G_P = G[V_P]$. Notice an immediate consequence of the partitioning of graph $G$.
 
 \begin{claim}\label{gp cut}
-	$G_P$ always has a solution
+	$G_P$ always has a solution.
 \end{claim}
 
 To prove the claim we can apply lemma \ref{SSF lemma}. $G_P$ does not have any isolated edges nor isolated vertices. All that is left to do is to prove that edges between $G_P$ and $G_{NP}$, that were lost during partitioning, does not have any effect on the solution. The following theorem proves the intuition.
@@ -445,21 +445,18 @@ After exhaustive application of rules, any graph has a simple structure. Let $(G
 
 Surprisingly, \tsat{} is trivially encoded in \ssfe{}.
 
-\defi{\tsat}
 \lemma{Any CNF formula can be represented as a formula where each clause has size at most 3} \label{cnf to 3sat}
 \begin{lemma}
 	There exists a reduction from \ssfe{} to \tsat.
 \end{lemma}
 
 \begin{proof}
-	Let $(G,F)$ be an arbitrary normalized instance of \ssfe{}. We create a formula $\phi$ as follows: for every isolated edge $(u,v)$ we introduce literals $x$ and $\neg x$. For every vertex $v \in V(G)\setminus V(F)$ we introduce a clause $c_i$. Literal $l$ is present in a clause $c_j$ if and only if there exists an edge between vertices corresponding to $c_j$ and $l$. Application of lemma \ref{cnf to 3sat} to $\phi$ produces a formula $\phi'$ that is a correct instance of \tsat.
+	Let $(G,F)$ be an arbitrary normalized instance of \ssfe{}. We create a formula $\phi$ as follows: for every isolated edge $(u,v)$ we introduce literals $x$ and $\neg x$. For every vertex $v \in V(G)\setminus V(F)$ we introduce a clause $c_v$. Literal $l$ is present in a clause $c_j$ if and only if there exists an edge between vertices corresponding to $c_i$ and $l$. Application of lemma \ref{cnf to 3sat} to $\phi$ produces a formula $\phi'$ that is a correct instance of \tsat.
 	
 	Proof of correctness was previously described in the theorem. We omit it for the sake of clarity.
 \end{proof}
 
 \section{Parametrization by the number of isolated edges}
-
-
 
 \section{Parametrization by the number of non-isolated edges}
 
