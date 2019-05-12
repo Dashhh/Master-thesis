@@ -7,3 +7,6 @@ rblarba-en.toc
 *.gz
 *.log
 *.aux
+*.nav
+*.out
+*.snm
