@@ -11,10 +11,19 @@
 	minimum size=15pt,
 	inner sep=0pt
 ]
+\tikzstyle{vertex2} = [
+draw=black,
+shape=circle,
+fill=green,
+minimum size=25pt,
+inner sep=0pt
+]
 \tikzstyle{edge} = [draw,very thick,-]
 \tikzstyle{pstyle} = [very thick]
 \tikzstyle{highlight} = [ultra thick]
 \tikzstyle{iso} = [very thick,color=red]
+
+\newcommand{\nextslide}[1]{\onslide<+(1)->{#1}}
 
 \title{Spanning Star Forest Problem}
 \author{Adam Starak}
@@ -790,6 +799,303 @@
 		\item[] Number of edges: $\leq 2k^2$
 		\item[] Number of edges: $\leq k + 2k^2$.
 	\end{itemize}
+\end{frame}
+
+
+
+
+
+\begin{frame}[t]{SSFE parameterized by $tw(G)$}
+\small
+\textbf{Dynamic table}. $dp[t, f]$ where $t$ is node from a tree decomposition and $f:X_t \rightarrow \{true, false\}$ defined as follows:
+\begin{align*}
+f(v) =& \begin{cases}
+true, & \text{$v \in V(F)$ and $v$ is a center.} \\
+true, & \text{$v \notin V(F)$ and $v$ is a part of a Star Tree.} \\
+false, &\text{otherwise.}
+\end{cases}\\
+f_{v \rightarrow p}(u) =& \begin{cases}
+p, &\text{ if u=v.}\\
+f(u), &\text{ otherwise.}
+\end{cases}
+\end{align*}
+
+\end{frame}
+
+\begin{frame}[t]{SSFE parameterized by $tw(G)$}
+\textbf{Leaf node}. An empty graph is a correct Spanning Star Forest.
+\begin{center}
+$dp[t,f] = true$
+\end{center}
+\end{frame}
+
+\newcommand\nextpicture[2]{
+\only<+(1)>{
+\centering
+\begin{tikzpicture}[node distance=3cm]
+
+\node[vertex2,label=below:#1] (A) {u};
+\node[vertex2,label=below:#2] (B) [right of=A] {v};
+
+\path[iso] (A) edge node {} (B);
+\end{tikzpicture}
+}
+}
+
+\begin{frame}[t]{SSFE parameterized by $tw(G)$}
+\small
+\textbf{Introduce vertex $v \in V(F)$}.\\
+\onslide<+(1)->{
+We assign $false$ if both vertices of an isolated vertex $(u,v)$ have the same value.
+}
+\vfill
+\large
+\onslide<+(1)->{
+\begin{equation*}
+dp[t,f_{v \rightarrow p}] = \begin{cases}
+false, &\text{if $u \in X_t$ and $f(u)=p$.} \\
+dp[t',f], &\text{otherwise.}
+\end{cases}
+\end{equation*}
+}
+
+\vfill
+
+\nextpicture{{$f(u)=1$}}{{$f(v)=0$}}
+\nextpicture{{$f(u)=0$}}{{$f(v)=1$}}
+\nextpicture{{$u \notin X_t$}}{{$f(v)=0$}}
+\nextpicture{{$u \notin X_t$}}{{$f(v)=1$}}
+
+\end{frame}
+
+\begin{frame}[t]{SSFE parameterized by $tw(G)$}
+\small
+\textbf{Introduce vertex $v \notin V(F)$}.\\
+\onslide<+(1)->{
+Vertex is isolated. Thus, the only correct possibility is to assign 0.
+}
+\vfill
+\large
+\onslide<+(1)->{
+\begin{equation*}
+dp[t,f_{v \rightarrow p}] = \begin{cases}
+dp[t',f], &\text{ if $p=0$.} \\
+false, &\text{otherwise.}
+\end{cases}
+\end{equation*}
+}
+\vfill
+\end{frame}
+
+\begin{frame}[t]{SSFE parameterized by $tw(G)$}
+\small
+\textbf{Introduce edge $(u,v) \in F$}\\
+\nextslide{
+We can skip this part. We assigned proper values during vertex introduction.
+}
+\end{frame}
+
+\begin{frame}[t]{SSFE parameterized by $tw(G)$}
+\small
+\textbf{Forget $v \in V(F)$}\\
+\nextslide{
+The vertex is covered anyway. We get the maxial value.
+}
+\vfill
+\large
+\nextslide{
+\begin{equation*}
+dp[t,f_{|v}] = dp[t',f_{v \rightarrow 0}] \lor dp[t',f_{v \rightarrow 1}]
+\end{equation*}
+}
+\vfill
+\end{frame}
+
+\begin{frame}[t]{SSFE parameterized by $tw(G)$}
+\small
+\textbf{Forget $v \notin V(F)$}\\
+\nextslide{
+The vertex needs to be covered. So, we pass the value if and only if 1 is assigned to vertex $v$.
+}
+\vfill
+\large
+\nextslide{
+\begin{equation*}
+dp[t,f_{|v}] = \begin{cases}
+dp[t',f], &\text{ if f(v)=1.}\\
+false, &\text{ otherwise.}
+\end{cases}
+\end{equation*}
+}
+\vfill
+\end{frame}
+
+\renewcommand\nextpicture[4]{
+\only<+(1)>{
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\centering
+\textbf{Before}\\ \bigskip
+
+
+\begin{tikzpicture}[node distance=2cm]
+
+\node[vertex2,label=below:{$f(w)=#1$}] (A) {w};
+\node[vertex2,label=below:{$f(u)=#2$}] (B) [right of=A] {u};
+\node[vertex2,label=above:{$f(v)=#3$}] (C) [above right of=A] {v};
+
+\path[iso] (A) edge node {} (B);
+\path[highlight] (B) edge node {} (C);
+\end{tikzpicture}
+\end{column}
+\begin{column}{0.5\textwidth}
+\centering
+\textbf{After}\\ \bigskip
+
+\begin{tikzpicture}[node distance=2cm]
+
+\node[vertex2,label=below:{$f(w)=#1$}] (A) {w};
+\node[vertex2,label=below:{$f(u)=#2$}] (B) [right of=A] {u};
+\node[vertex2,label=above:{$f(v)=#4$}] (C) [above right of=A] {v};
+
+\path[iso] (A) edge node {} (B);
+\path[highlight] (B) edge node {} (C);
+\end{tikzpicture}
+\end{column}
+\end{columns}
+}
+
+}
+
+\begin{frame}[t]{SSFE parameterized by $tw(G)$}
+\small
+\textbf{Introduce edge $(u,v) \notin F$, $v \notin V(F)$}\\
+\nextslide{
+We change the value of vertex $v$ from 0 to 1 if and only if $u$ is a center ($f(u)=1$):
+}
+\nextslide{
+\begin{align*}
+dp[t,f_{v \rightarrow 1}] =& \begin{cases}
+dp[t',f_{v \rightarrow 0}] \lor dp[t',f_{v \rightarrow 1}], &
+\text{ if $f(u)=1$}\\
+dp[t',f_{v \rightarrow 1}], &\text{ otherwise.}
+\end{cases}\\ \bigskip
+dp[t,f_{v \rightarrow 0}] =& dp[t',f_{v \rightarrow 0}]
+\end{align*}
+}
+\nextpicture{0}{1}{0}{0}
+\nextpicture{0}{1}{0}{1}
+\nextpicture{1}{0}{0}{0}
+\nextpicture{1}{0}{1}{1}
+\end{frame}
+
+\newcommand\drawpic[3]{
+\begin{tikzpicture}[node distance=2cm]
+
+\node[vertex2,label=below:{$f(w)=#1$}] (A) {w};
+\node[vertex2,label=below:{$f(u)=#2$}] (B) [right of=A] {u};
+\node[vertex2,label=above:{$f(v)=#3$}] (C) [above right of=A] {v};
+
+\path[iso] (A) edge node {} (B);
+\path[highlight] (B) edge node {} (C);
+\end{tikzpicture}
+}
+
+\renewcommand\nextpicture[6]{
+\only<+(1)>{
+\begin{columns}
+\begin{column}{0.33\textwidth}
+\centering
+\textbf{($t_1$)}\\ \bigskip
+\drawpic{#1}{#2}{#3}
+\end{column}
+\begin{column}{0.33\textwidth}
+\centering
+\textbf{($t_2$)}\\ \bigskip
+\drawpic{#1}{#2}{#4}
+\end{column}
+\begin{column}{0.33\textwidth}
+\centering
+\textbf{($t$)}\\ \bigskip
+\drawpic{#1}{#2}{#5}
+\end{column}
+\end{columns}
+\centering
+\bigskip
+#6
+}
+}
+
+\newcommand\badpic[3]{
+\only<+(1)>{
+\vfill
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\centering
+\textbf{$(t_1)$}\\ \bigskip
+
+\begin{tikzpicture}[node distance=2cm]
+
+\node[vertex2,label=below:{$f(w)=#1$}] (A) {w};
+\node[vertex2,label=below:{$f(u)=#2$}] (B) [right of=A] {u};
+\node[vertex2,label=above:{$f(v)=?$}] (C) [above right of=A] {v};
+
+\path[iso] (A) edge node {} (B);
+\path[highlight] (B) edge node {} (C);
+\end{tikzpicture}
+\end{column}
+\begin{column}{0.5\textwidth}
+\centering
+\textbf{$(t_2)$}\\ \bigskip
+
+\begin{tikzpicture}[node distance=2cm]
+
+\node[vertex2,label=below:{$f(w)=#2$}] (A) {w};
+\node[vertex2,label=below:{$f(u)=#1$}] (B) [right of=A] {u};
+\node[vertex2,label=above:{$f(v)=?$}] (C) [above right of=A] {v};
+
+\path[iso] (A) edge node {} (B);
+\path[highlight] (B) edge node {} (C);
+\end{tikzpicture}
+\end{column}
+\end{columns}
+\centering
+\bigskip
+#3
+}
+}
+
+\begin{frame}[t]{SSFE parameterized by $tw(G)$}
+\small
+\textbf{Join nodes $t_1$, $t_2$}
+\badpic{0}{1}{}
+\badpic{1}{0}{$\forall v \in V(F) \cap X_t\ f(v) = f_1(v) = f_2(v)$}
+\nextpicture{0}{1}{1}{1}{1}{}
+\nextpicture{0}{1}{1}{0}{1}{}
+\nextpicture{0}{1}{0}{1}{1}{$C_2 = \forall v ((V(G) \setminus V(F)) \cap X_t)\ f(v) = f_1(v) \lor f_2(v)$}
+\end{frame}
+
+\begin{frame}[t]{SSFE parameterized by $tw(G)$}
+\nextslide{
+\begin{equation*}
+dp[t,f] = \begin{cases}
+\bigvee\limits_{f_1,f_2} dp[t_1,f_1] \land dp[t_2,f_2], &\text{ if $C_1$ and $C_2$ holds.} \\
+false, &\text{ otherwise.}
+\end{cases}
+\end{equation*}
+}
+
+\setlength{\leftmargini}{2pt}
+\begin{itemize}[<+(1)->]
+\item[] There are $2^{|X_t|}$ functions. Each can be calculated naively in time $\mathcal{O}^*(2^{|X_t|})$.
+\item[] Applying cover product, we can calculate all of the functions $f$ in time $\mathcal{O}^*(2^|X_t|)$ 
+\end{itemize}
+\begin{block}<+(1)->{SSFE parameterized by $tw(G)$}
+There exists an algorithm solving SSFE parameterized by treewidth in time $\mathcal{O}^*(2^{tw(G)})$.
+\end{block}
+\begin{block}<+(1)->{Lower bound}
+Assuming SETH, there does not exist an algorithm solving SSFE parameterized by $tw(G)$ in time $\mathcal{O}^*((2-\epsilon)^{tw(G)})$.
+\end{block}
 \end{frame}
 
 \end{document}
