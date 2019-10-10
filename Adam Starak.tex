@@ -1,4 +1,4 @@
-%
+ %
 % Niniejszy plik stanowi przykład formatowania pracy magisterskiej na
 % Wydziale MIM UW.  Szkielet użytych poleceń można wykorzystywać do
 % woli, np. formatujac wlasna prace.
@@ -133,11 +133,11 @@ w~próbach efektywnej implementacji.  Opracowana przez prof. Fifaka
 teoria fetorów $\sigma$-$\rho$ otwiera w~tej dziedzinie nowe
 możliwości.  Wykorzystujemy je w~niniejszej pracy.
 
-\chapter{Basic definitions}\label{r:pojecia}
+\chapter{Preliminaries}\label{r:pojecia}
 
 \section{Structures}
 
-A simple graph $G$ is a pair $(V,E)$ where $V$ denotes a set of vertices and $E$ denotes a set of undirected edges. Let $deg_G(v)$ denote a degree of vertex v in graph $G$. Let $G \setminus \{v\}$ be the abbreviation for $G'=(V(G) \setminus \{v\}, E(G) \setminus \{(u,v): u \in V(G)\})$. For a set $X \subset V(G)$ we denote $G[X]$ as a graph induced by vertices from $X$. A \emph{tree} $T$ is a graph where two vertices are connected by excatly one path. A \emph{spanning tree} $T$ of a graph $G$ is a graph which includes all of the vertices of $G$, with minimum possible number of edges. A \emph{star} $S$ is a tree of size at least 2 for which at most 1 vertex has a degree greater than $1$. A vertex in a \emph{star} that has the greatest degree is called a \emph{center} while the others are called \emph{rays}.
+A simple graph $G$ is a pair $(V,E)$ where $V$ denotes a set of vertices and $E$ denotes a set of undirected edges. Let $deg_G(v)$ denote a degree of vertex $v$ in graph $G$ which is the number of adjacent vertices. Let $G \setminus v$ be the abbreviation for $G'=(V(G) \setminus \{v\}, E(G) \setminus \{(u,v): u \in V(G)\})$. For a set $X \subseteq V(G)$ we define by $G[X]$ the graph induced by vertices from $X$. A \emph{tree} $T$ is a connected graph which has exactly $|V(T)|-1$ edges. A \emph{spanning tree} $T$ of a graph $G$ is a tree which includes all of the vertices of $G$, with the minimum possible number of edges. A \emph{star} $S$ is a tree of size at least $2$ for which at most one vertex has a degree greater than $1$. A vertex in a \emph{star} that has the greatest degree is called a \emph{center} while the others are called \emph{rays}.
 
 All the further definitions are taken from 
 %TODO: cytat do parameterized algorithms%
@@ -149,7 +149,7 @@ All the further definitions are taken from
 \end{defi}
 
 \begin{defi}\label{FPT algorithm}
-	For a parameterized problem $Q$, an FPT algorithm is an algorithm $\mathcal{A}$ which, for any input $(x,k)$, decides whether $(x,k) \in Q$ in time $\mathcal{O}(f(k)\cdot n^c)$ where c is independent of $n,c$ and $f$ is a computable function.
+	For a parameterized problem $Q$, an FPT algorithm is an algorithm $\mathcal{A}$ which, for any input $(x,k)$, decides whether $(x,k) \in Q$ in time $f(k)\cdot n^c$ where c is a constant, independent of $n,k$, and $f$ is a computable function.
 \end{defi}
 
 \begin{defi}\label{Kernel}
