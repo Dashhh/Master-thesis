@@ -53,7 +53,7 @@
   }
 
 % miesiąc i~rok:
-\date{May 2017}
+\date{\monthyeardate\today}
 
 %Podać dziedzinę wg klasyfikacji Socrates-Erasmus:
 \dziedzina{ 
@@ -83,8 +83,12 @@
 \usepackage{amsmath}
 \usepackage[]{algorithm2e}
 \usepackage{enumitem}
+\usepackage{datetime}
 
-\newtheorem{defi}{Definition}
+\newdateformat{monthyeardate}{%
+	\monthname[\THEMONTH], \THEYEAR}
+
+\newtheorem{definition}{Definition}
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}{Lemma}
 \newtheorem{claim}{Claim}
@@ -99,7 +103,7 @@
 \newcommand{\tsat}{\emph{3-SAT}}
 
 \counterwithin{theorem}{chapter}
-\counterwithin{defi}{chapter}
+\counterwithin{definition}{chapter}
 \counterwithin{lemma}{chapter}
 \counterwithin{corollary}{chapter}
 \counterwithin{claim}{chapter}
@@ -139,60 +143,54 @@ możliwości.  Wykorzystujemy je w~niniejszej pracy.
 
 A simple graph $G$ is a pair $(V,E)$ where $V$ denotes a set of vertices and $E$ denotes a set of undirected edges. Let $deg_G(v)$ denote a degree of vertex $v$ in graph $G$ which is the number of adjacent vertices. Let $G \setminus v$ be the abbreviation for $G'=(V(G) \setminus \{v\}, E(G) \setminus \{(u,v): u \in V(G)\})$. For a set $X \subseteq V(G)$ we define by $G[X]$ the graph induced by vertices from $X$. A \emph{tree} $T$ is a connected graph which has exactly $|V(T)|-1$ edges. A \emph{spanning tree} $T$ of a graph $G$ is a tree which includes all of the vertices of $G$, with the minimum possible number of edges. A \emph{star} $S$ is a tree of size at least $2$ for which at most one vertex has a degree greater than $1$. A vertex in a \emph{star} that has the greatest degree is called a \emph{center} while the others are called \emph{rays}.
 
-All the further definitions are taken from 
-%TODO: cytat do parameterized algorithms%
-
 \section{Parameterized complexity}
 
-\begin{defi}\label{Parameterized problem}
-	A parameterized problem is a language $L \subseteq \ \Sigma^* \times \mathbf{N}$, where $\Sigma$ is a fixed, finite alphabet. For an instance $(x,k) \in L$, $k$ is called the parameter.
-\end{defi}
+\begin{definition}\label{Parameterized problem}
+	A \textup{parameterized problem} is a language $L \subseteq \ \Sigma^* \times \mathbf{N}$, where $\Sigma$ is a fixed, finite alphabet. For an instance $(x,k) \in L$, $k$ is called the parameter.
+\end{definition}
 
-\begin{defi}\label{FPT algorithm}
-	For a parameterized problem $Q$, an FPT algorithm is an algorithm $\mathcal{A}$ which, for any input $(x,k)$, decides whether $(x,k) \in Q$ in time $f(k)\cdot n^c$ where c is a constant, independent of $n,k$, and $f$ is a computable function.
-\end{defi}
+\begin{definition}\label{FPT algorithm}
+	For a parameterized problem $Q$, an \textup{FPT algorithm} is an algorithm $\mathcal{A}$ which, for any input $(x,k)$, decides whether $(x,k) \in Q$ in time $f(k)\cdot n^c$ where c is a constant, independent of $n,k$, and $f$ is a computable function.
+\end{definition}
 
-\begin{defi}\label{Kernel}
-	A kernel for a parameterized problem $Q$ is an algorithm $\mathcal{A}$ that, given an instance $(x,k) \in Q$, works in polynomial time and returns an equivalent instance $(x',k') \in Q$
-	such that $|x'| + k' \leq g(k)$ for a computable function $g$.
-\end{defi}
+\begin{definition}\label{Kernel}
+	A \textup{kernel} for a parameterized problem $Q$ is an algorithm $\mathcal{A}$ that, given an instance $(x,k) \in Q$, works in polynomial time and returns an equivalent instance $(x',k') \in Q$
+	such that $|x'| + k' \leq g(k)$ for a computable function $g$, called the \textup{size} of the kernel.
+\end{definition}
 
-\section{Graph decomposition}
+\section{The W-hierarchy}
 
-\subsection{Path decomposition}
+As opposed to NP-complete problems, which are equivalent with respect to polynomial-time reductions, it is not clear whether or not the rule applies for hard parameterized problem. As an example, it is proven that there exists a parameterized reduction from Independent Set to Dominating Set. However, nobody has proven that the problems are interreducible. The W-hierarchy, proposed by Downey and Fellows, is an attempt to classify hard parameterized problems. 
 
-A path decomposition of a graph $G$ is a sequence $\mathcal{P} = (X_1, X_2, ..., X_r)$ of bags where $X_i \subseteq V(G)$ for each $i \in \{1,2, ..., r\}$ such that the following equations hold:
-\begin{itemize}
-	\item[(P1)] $\bigcup^r_{i=1} X_i = V(G)$.
-	\item[(P2)] For every edge $(v,u) \in E(G)$ there exists a bag $X_p$ such that $u,v \in X_p$.
-	\item[(P3)] For every $u \in V(G)$, if $u \in X_i \cap X_j$ for some $i < k$, then $u \in X_k$ for every $i < k < j$.
-\end{itemize}
-The width of a decomposition $\mathcal{P}$ is denoted as $w(P) = \max_{1\leq i\leq r} |X_i| - 1$. The pathwidth of a graph $G$ is the minimum possible width of a path decomposition i.e. $pw(G) = \min_{\mathcal{P}} w(P)$.\\
+\begin{definition}
+	A Boolean circuit is a directed acyclic graph where the nodes are labeled in the following way:
+	\begin{itemize}
+		\item every node of indegree $0$ is an input node.
+		\item every node of indegree $1$ is an negation node.
+		\item every node of indegree $\geq 2$ is either an and-node or or-node.
+	\end{itemize}
+	
+	Additionally, exactly one of the nodes with outdegree 0 is labeled as the output node. The depth of the circuit is the maximum length of a path from an input node to the output node.
+\end{definition}
 
-\noindent
-A nice path decomposition of a graph $G$ is a path decomposition $\mathcal{P}$ that satisfies:
-\begin{itemize}
-	\item $X_0 = \emptyset$
-	\item For every $i \in \{1,2,...,r\}$ there is either a vertex $v \notin X_i$ such that $X_{i+1} = X_i \cup \{v\}$ or there is a vertex $w \in X_i$ such that $X_{i+1} = X_i \setminus \{w\}$.
-\end{itemize}
+Assigning 0-1 values to the input nodes determines the value of every node in the obvious way. In particular, if the value of the output gate is 1 in an assignment to the input nodes, then we say that the assignment satisfies the circuit.
+\\\\
+In Weighted Circuit Satisfiability problem, we are given a circuit $C$ and an integer $k$, the task is to decide if $C$ has a satisfying assignment of weight exactly $k$.
 
-Nice path decomposition form is useful for designing dynamic-programming algorithm. It is worth to mention that any path decomposition $\mathcal{P}$ can be transformed into a nice path decomposition $\mathcal{P'}$ is polynomial time.
+\section{Tree decomposition}
 
-\subsection{Tree decomposition}
-
-A tree decomposition is a generalization of a path decomposition. Formally, a tree decomposition of a graph $G$ is a pair $\mathcal{T} = (T, \{X_t\}_{t\in V(T)})$ where $\mathcal{T}$ is a tree whose every node $t$ is assigned to a vertex subset $X_t \subseteq V(G)$, called a bag, such that the following three conditions hold:
+Formally, a tree decomposition of a graph $G$ is a pair $\mathcal{T} = (T, \{X_t\}_{t\in V(T)})$ where $\mathcal{T}$ is a tree whose every node $t$ is assigned a vertex subset $X_t \subseteq V(G)$, called a bag, such that the following three conditions hold:
 \begin{itemize}
 	\item[(T1)] $\bigcup_{t\in V(T)}X_t = V(G)$.
 	\item[(T2)] For every $(v,u) \in E(G)$ there exists a bag $t$ of $\mathcal{T}$ such that $v,u \in X_t$.
 	\item[(T3)] For every $v \in V(G)$ the set $T_v = \{t \in V(T): v \in X_t\}$ induces a connected subtree of T.
 \end{itemize}
 
-Similarly, the width of a tree decomposition $\mathcal{T} = (T,\{X_t\}_{t\in V(T)})$, denoted as $w(\mathcal{T})$, is equal to $\max_{t \in V(T)} |X_t| - 1$. The treewidth of a graph $G$, denoted as $pw(G)$, is the minimal width over all tree decompositions of $G$.
-\\
-\\
+The width of a tree decomposition $\mathcal{T} = (T,\{X_t\}_{t\in V(T)})$, denoted as $w(\mathcal{T})$, is equal to $\max_{t \in V(T)} |X_t| - 1$. The treewidth of a graph $G$, denoted as $tw(G)$, is the minimal width over all tree decompositions of $G$.
+\\\\
 A nice tree decomposition of a graph $G$ is a tree decomposition $(T, \{X_t\}_{t \in V(T)})$ such that
 \begin{itemize}
-	\item $X_i = \emptyset$ is $i$ is either root or leaf.
+	\item $X_i = \emptyset$ if $i$ is either root or leaf.
 	\item Every non-leaf node is of one of the three following types:
 	\begin{itemize}
 		\item \textbf{Introduce node}: a node $t$ with exactly one child $t'$ such that $X_t = X_{t'} \cup \{v\}$ for some vertex $v \notin X_{t'}$.
@@ -201,7 +199,11 @@ A nice tree decomposition of a graph $G$ is a tree decomposition $(T, \{X_t\}_{t
 	\end{itemize}
 \end{itemize}
 
-\chapter{Spanning Star Forest Problem}\label{r:losers}
+\subsection{Path decomposition}
+
+A path decomposition $\mathcal{P}=(P,\{X_p\}_{p \in V(P)})$ of a graph $G$ is a specific case of a tree decomposition. Namely, $P$ forms a path. In addition, the pathwidth of a graph $G$, denoted as $pw(G)$, is the minimal width over all path decompositions of $G$. A nice path decomposition of a graph $G$ is a path decomposition $(P,\{X_p\}_{p \in V(P)})$ such that there exists a root, one leaf and all the inner nodes are either an introduce node or forget node.
+
+\chapter{Spanning Star Forest problem}\label{r:losers}
 
 For a given graph $G$, we say that $S$ is a \ssf{} if every connected component $C$ is a star. In \ssfp{} given a graph $G$, the objective is to determine whether there exists a \ssf{}.
 
@@ -297,15 +299,15 @@ In \kssf{}, given a graph $G$ and a natural number $k$, the objective is to dete
 
 It is natural to ask whether one can find a solution that minimizes the number of connected components. The problem formulated in that way looks slightly different than the previous one. From the other hand, the problem resembles \domsetp{}, which is defined as follows:
 
-\begin{defi}
+\begin{definition}
 	\domsetp: Given a graph $G$ and a positive integer $k$ find a set $D$ such that $|D| \leq k$ and every vertex from the graph is adjacent to one of the vertices from $D$.
-\end{defi}
+\end{definition}
 
 It turns out, that the second comparison is true and \kssf{} is NP-Complete. But, before we begin, let us introduce one more definition and a lemma that supports a reduction.
 
-\begin{defi}
+\begin{definition}
 	Given an instance $(G,k)$ of Dominating Set Problem that does not contain any isolated vertices and a solution $D$, a dominating mapping is a function $m:V(G) \setminus D \rightarrow D$ such that satisfies $(x,m(x)) \in E(G)$ for all $x \in Dom(m)$.
-\end{defi}
+\end{definition}
 
 \begin{lemma}\label{dom mapping}
 	Let $(G,k)$ be an instance of \domsetp{} without isolated vertices and let $D$ be a solution of minimal size. Then, there exists a dominating mapping $m$ such that $m$ is surjective.
