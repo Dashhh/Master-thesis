@@ -84,6 +84,7 @@
 \usepackage[]{algorithm2e}
 \usepackage{enumitem}
 \usepackage{datetime}
+\usepackage{amssymb}
 
 \newdateformat{monthyeardate}{%
 	\monthname[\THEMONTH], \THEYEAR}
@@ -93,17 +94,20 @@
 \newtheorem{lemma}{Lemma}
 \newtheorem{claim}{Claim}
 \newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
 
 \newcommand{\wcs}{Weighted Circuit Satisfiability}
 
 %Spanning Star Forest
 \newcommand{\SSF}{Spanning Star Forest}
 \newcommand{\ssf}{spanning star forest}
-\newcommand{\ssfp}{\sc{Spanning Star Forest}}
+\newcommand{\ssfp}{{\sc Spanning Star Forest} problem}
+\newcommand{\dssfp}{{\sc Decision Spanning Star Forest} problem}
+\newcommand{\mssfp}{{\sc Maximal Spanning Star Forest} problem}
 
 
 \newcommand{\domset}{\emph{Dominating Set}}
-\newcommand{\domsetp}{\emph{Dominating Set Problem}}
+\newcommand{\domsetp}{{\sc Dominating Set Problem}}
 \newcommand{\kssf}{\emph{Spanning Star Forest Problem} parameterized by the number of stars}
 \newcommand{\cnfsat}{\emph{CNF-SAT}}
 \newcommand{\ssfe}{\emph{Spanning Star Forest Extension Problem}}
@@ -114,6 +118,7 @@
 \counterwithin{lemma}{chapter}
 \counterwithin{corollary}{chapter}
 \counterwithin{claim}{chapter}
+\counterwithin{proposition}{chapter}
 
 % koniec definicji
 
@@ -148,7 +153,7 @@ możliwości.  Wykorzystujemy je w~niniejszej pracy.
 
 \section{Structures}
 
-A simple graph $G$ is a pair $(V,E)$ where $V$ denotes a set of vertices and $E$ denotes a set of undirected edges. Let $deg_G(v)$ denote a degree of vertex $v$ in graph $G$ which is the number of adjacent vertices. Let $G \setminus v$ be the abbreviation for $G'=(V(G) \setminus \{v\}, E(G) \setminus \{(u,v): u \in V(G)\})$. For a set $X \subseteq V(G)$ we define by $G[X]$ the graph induced by vertices from $X$. A \emph{tree} $T$ is a connected graph which has exactly $|V(T)|-1$ edges. A \emph{spanning tree} $T$ of a graph $G$ is a tree which includes all of the vertices of $G$, with the minimum possible number of edges. A \emph{star} $S$ is a tree of size at least $2$ for which at most one vertex has a degree greater than $1$. A vertex in a \emph{star} that has the greatest degree is called a \emph{center} while the others are called \emph{rays}. A \emph{star} of size 2 has two \emph{candidates} to become a \emph{center}.
+A simple graph $G$ is a pair $(V,E)$ where $V$ denotes a set of vertices and $E$ denotes a set of undirected edges. Let $deg_G(v)$ denote a degree of vertex $v$ in graph $G$ which is the number of adjacent vertices. Let $G \setminus v$ be the abbreviation for $G'=(V(G) \setminus \{v\}, E(G) \setminus \{(u,v): u \in V(G)\})$. For a set $X \subseteq V(G)$ we define by $G[X]$ the graph induced by vertices from $X$. A graph $P_k$ is a path of length $k$. A \emph{tree} $T$ is a connected graph which has exactly $|V(T)|-1$ edges. A \emph{spanning tree} $T$ of a graph $G$ is a tree which includes all of the vertices of $G$, with the minimum possible number of edges. A \emph{star} $S$ is a tree of size at least $2$ for which at most one vertex has a degree greater than $1$. A vertex in a \emph{star} that has the greatest degree is called a \emph{center} while the others are called \emph{rays}. A \emph{star} of size 2 has two \emph{candidates} to become a \emph{center}.
 
 \section{Parameterized complexity}
 
@@ -210,11 +215,13 @@ A nice tree decomposition of a graph $G$ is a tree decomposition $(T, \{X_t\}_{t
 
 A path decomposition $\mathcal{P}=(P,\{X_p\}_{p \in V(P)})$ of a graph $G$ is a specific case of a tree decomposition. Namely, $P$ forms a path. In addition, the pathwidth of a graph $G$, denoted as $pw(G)$, is the minimal width over all path decompositions of $G$. A nice path decomposition of a graph $G$ is a path decomposition $(P,\{X_p\}_{p \in V(P)})$ such that there exists a root, one leaf and all the inner nodes are either an introduce node or forget node.
 
-\chapter{Spanning Star Forest problem}\label{r:losers}
+\chapter{Spanning Star Forest}\label{r:losers}
+
+In this chapter we show three different variants of the \ssfp{}. We start with its decision version. Then, we propose an algorithm working in linear time that finds an arbitrary \ssf{}. In the last section, we constrain the number of stars that a solution can have. The problem formulated in such a way turns out to be NP-complete.
 
 \section{Decision Spanning Star Forest problem}
 
-For a given graph $G$, we say that $S$ is a \ssf{} if $S$ is a subgraph of $G$ that contains all vertices of $G$ and every connected component of $S$ is a star. In {\sc \SSF{}} problem given a graph $G$, the objective is to determine whether there exists a \ssf{}.
+For a given graph $G$, we say that $S$ is a \ssf{} if $S$ is a subgraph of $G$ that contains all vertices of $G$ and every connected component of $S$ is a star. In decision version \ssfp{} given a graph $G$, the objective is to determine whether there exists a \ssf{}.
 
 It turns out that the problem formulated in such a way is relatively simple. Although, various variants described in this paper make it more complex. The following lemma easily clarifies all the concerns about its hardness.
 
@@ -225,84 +232,93 @@ It turns out that the problem formulated in such a way is relatively simple. Alt
 \begin{proof}
 	If $G$ has a \ssf{} $S$, then trivially for all $v \in V(G)\ 1 \leq deg_S(v) \leq deg_G(v)$. Thus, none of the vertices is isolated.
 	
-	For the opposite direction, we prove the lemma by induction on $|V(G)|$. Assume $|V(G)|=2$. The statement trivially holds because a graph consisting of one edge is a correct \ssf{}. Let $|V(G)| >2$. Suppose that for every vertex $v$, graph $G \setminus v$ has an isolated vertex. Then, it holds that for all $v \in V(G)\ deg_G(v)=1$. Thus, $G$ consists of a set of disjoint edges which is a correct \ssf{}. Now, suppose contrary, that there exists a vertex $v$ such that $G \setminus v$ has no isolated vertices. From the inductive assumption, let $S$ be a \ssf{} of a graph $G \setminus v$, $u$ be a vertex such that $(u,v) \in E(G)$ and $w \in N_S[u]$. Consider the two following cases:
+	For the opposite direction, we prove the lemma by induction on $|V(G)|$. Assume $|V(G)|=2$. The statement trivially holds because a graph consisting of one edge and two vertices is a correct \ssf{}. Let $|V(G)| >2$. Suppose that for every vertex $v$, graph $G \setminus v$ has an isolated vertex. Then, it holds that for all $v \in V(G)\ deg_G(v)=1$. Thus, $G$ consists of a set of disjoint edges which is a correct \ssf{}. Now, suppose contrary, that there exists a vertex $v$ such that $G \setminus v$ has no isolated vertices. From the inductive assumption, let $S$ be a \ssf{} of a graph $G \setminus v$, $u$ be a vertex such that $(u,v) \in E(G)$ and $w \in N_S[u]$. Consider the two following cases:
 	\begin{enumerate}
 		\item Suppose $u$ is a ray. It implies that $w$ is a center and $deg_S(w) \geq 2$. Then, $S'=\big(V(S) \cup \{v\},(E(S) \cup \{(u,v)\}) \setminus \{(u,w)\}\big)$ is a correct solution for graph $G$.
 		\item Otherwise, $u$ is either a candidate or a center. Then, $S'=\big(V(S) \cup \{v\}, E(S) \cup \{(u,v)\}\big)$ is a correct solution for graph $G$.
 	\end{enumerate}
 	
 \end{proof}
-	Application of Lemma \ref{SSF lemma} yields the following result for {\sc \SSF{}} problem.
+	Application of Lemma \ref{SSF lemma} yields the following result for \dssfp{}.
 
 \begin{theorem}
-	Decision version of {\sc \SSF{}} problem can be solved in linear time.
+	\dssfp{} can be solved in linear time.
 \end{theorem}
 
 \begin{proof}
 	Given a graph $G = (V,E)$ the answer is YES if for all $v \in V(G)\ deg_G(v) \neq 0$ and NO otherwise.
 \end{proof}
 
-\section{Obtaining a solution}
+\section{Spanning Star Forest Problem}
 
-In this section we focus on obtaining an arbitrary solution for a given instance of {\sc \SSF{}}. Firstly, let us introduce two claims which help to normalize an instance and make the algorithm look more clear.
+In this section we focus on obtaining an arbitrary solution for a given instance of \ssfp{}. Firstly, let us introduce two claims which help to normalize an instance and make the algorithm more clear to the reader.
 
 \begin{claim} \label{SSF sum}
-	Family of disjoint {\normalfont Spanning Star Forests} is a \ssf{}.
+	Family of disjoint \ssf{} is a \ssf{}.
 \end{claim}
 
 \begin{claim} \label{Spanning tree SSF}
 	$G$ has a \ssf{} if and only if its spanning tree $T$ has.
 \end{claim}
 
-The first claim can be trivially proven by the definition of \ssf{} while the second one follows directly from Lemma \ref{SSF lemma}. Equipped with this information, all that is left to do, is to design an algorithm which solves for trees.
+The first claim can be trivially proven by the definition of a \ssf{} while the second one follows directly from Lemma \ref{SSF lemma}. Equipped with this information, all that is left to do, is to design an algorithm which solves the problem for trees.
 
 \begin{algorithm}\label{alg1}
 	\KwData{Connected graph $G$}
 	\KwResult{\ssf{} of $G$}
 	$T \leftarrow$ $SpanningTree(G)$\;
 	$S \leftarrow$ $\emptyset$\;
-	\For{v: postorder(T) and v $\notin$ V(S)}{
-		\eIf{v is not a root}{
-			$S \leftarrow S \cup \{(u,v)\}$ where $u = parent(v)$
-		}{
-			$S \leftarrow S \cup \{(u,v)\}$ where $u$ is any of the root's children
+	\For{$v$: $postorder(T)$ and $v$ is not a root}{
+		\If{$v \notin V(S)$}{
+			$S \leftarrow S \cup \{(u,v)\}$ where $u = parent(v)$\;
 		}
 	}
-	\Return $S$
-	\caption{Obtaining a Spanning Star Forest from a tree.}
+	$v \leftarrow root(T)$\;
+	\If{$v \notin V(S)$}{
+		$S \leftarrow S \cup \{(u,v)\}$ where $u$ is a child of $v$\;
+	}
+	\Return $S$\;
+	\caption{Obtaining a spanning star forest from a connected graph.}
 \end{algorithm}
 
-Firstly, the algorithm creates a spanning tree $T$. Next, it does a simple bottom-up traversal. If the current node $v$, which is not a root, has not been added to the soultion yet, the algorithm adds it together with its parent. If the root has not been added to the solution before the last iteration, we can add any edge to the solution which finishes the algorithm. If the input graph is not connected, we can run the algorithm separately on each component and then merge results based on claim \ref{SSF sum}.
+Firstly, the algorithm creates a spanning tree $T$. Then, it does a simple bottom-up traversal. If the current node $v$ has not been added to the solution yet, the algorithm adds it together with its parent. If the root has not been added to the solution during the for loop, we add an arbitrary edge to the solution which finishes the algorithm. If the input graph is not connected, we run the algorithm separately on each component and then merge results based on claim \ref{SSF sum}.
+
+There is one non-trivial operation that the algorithm does. Specifically, if the root has not  been added during the for loop, we connect the root to any existing star without checking whether it remains a correct star.
+
+\begin{proposition}\label{ssf root}
+	If $(u_1,u_2),(u_2,u_3) \in E(S)$, $u_2 = parent(u_1)$ and $u_3=parent(u_2)$, then $u_3$ is the root.
+\end{proposition}
+
+\begin{proof}
+	Suppose contrary, that $u_3$ is not the root. Then, both $(u_1,u_2)$ and $(u_2,u_3)$ have been added during the for loop. Contradiction because $u_2$ has been added to the solution during $u_1$'s iteration and the algorithm should not have added the edge $(u_2,u_3)$. Thus, $u_3$ is the root.
+\end{proof}
+
+From the Proposition \ref{ssf root} we infer that no two consecutive parents are added to the solution unless the last node is the root. It means that every root's child is either a center or a candidate. Thus, adding an arbitrary root's edge is a correct step in the algorithm. Moreover, there are no paths of length greater than $2$. If there was one, it would mean that the root is connected to two different vertices which is false.
 
 \begin{lemma}\label{alg1 correctness}
 	Algorithm \ref{alg1} is correct.
 \end{lemma}
 
 \begin{proof}
-	Assume contrary, that the algorithm yields an incorrect solution $S$. Consider
-	the first case: a path $(u,v),(v,w),(w,z)$ exists in $S$ where $u$ is $v$'s 
-	child, $v$ is $w$'s child and $w$ is $z$'s child. But, if $u$ is $w$'s
-	grandchild and $(u,v),(v,w) \in S$, then it means that $w$ is a root. 
-	Contradiction because $w$ cannot be $z$'s child.
-	Now, suppose the alternative relationship: $u$ is $v$'s child, $v$ and $z$ are
-	$w$'s children. Provided that vertices were visited in postorder, edge $(v,w)$
-	should not have been added because $v$ was introduced by $u$ and $w$ was
-	introduced by $z$.
+	Clearly, $S$ is a forest. So, it suffices to check that there are no isolated vertices and the solution does not induce a path of length $3$. The first claim is true because we enumerate over all vertices and pair them up with its parent if a vertex has not been added to the solution in previous iteration. So is the second claim based on the information inferred from Proposition \ref{ssf root}.
 \end{proof}
 
+Having proven the correctness of Algorithm \ref{alg1} we proceed to the complexity analysis.
+
 \begin{theorem}
-	A solution for {\sc \SSF{}} problem can be found in linear time.
+	A solution for \ssfp{} can be found in linear time.
 \end{theorem}
 
 \begin{proof}
-	Spanning tree of any graph can be found in linear time. The main loop has $n$ 
-	iterations (every vertex is visited once), each of which takes constant time.
+	An arbitrary spanning tree of any graph can be found in linear time. The main loop has $n-1$ iterations (every vertex is processed once), each of which takes constant time.
 	Thus, the total runtime is linear.
 \end{proof}
 
-\section{Spanning Star Forest parameterized by the number of stars}
+The problem stated without any constraints is simple. Both decision and normal version of the problem can be solved in linear time. The next variations investigated in this paper yield more complex results.
 
-In \kssf{}, given a graph $G$ and a natural number $k$, the objective is to determine whether there exists a \ssf{} $S$ such that the number of connected components is at most $k$.
+\section{Maximal Spanning Star Forest problem}
+
+In \mssfp{}, given a graph $G$ and a natural number $k$, the objective is to determine whether there exists a \ssf{} $S$ such that the number of connected components is at most $k$.
 
 It is natural to ask whether one can find a solution that minimizes the number of connected components. The problem formulated in that way looks slightly different than the previous one. From the other hand, the problem resembles \domsetp{}, which is defined as follows:
 
@@ -310,43 +326,45 @@ It is natural to ask whether one can find a solution that minimizes the number o
 	\domsetp: Given a graph $G$ and a positive integer $k$ find a set $D$ such that $|D| \leq k$ and every vertex from the graph is adjacent to one of the vertices from $D$.
 \end{definition}
 
-It turns out, that the second comparison is true and \kssf{} is NP-Complete. But, before we begin, let us introduce one more definition and a lemma that supports a reduction.
+At first glance, one can say that a center is related to a dominating vertex whereas ray is related to dominated vertex. Candidates might be represented by either a dominating or dominated vertex. However, we cannot finish our research at this point because in \domsetp{} isolated dominating vertices are allowed and some vertices are dominated by multiple neighbors. 
+
+To give a systematic parameterized reduction between these two problems, we need to get a better understanding of \domsetp{}.
 
 \begin{definition}
-	Given an instance $(G,k)$ of Dominating Set Problem that does not contain any isolated vertices and a solution $D$, a dominating mapping is a function $m:V(G) \setminus D \rightarrow D$ such that satisfies $(x,m(x)) \in E(G)$ for all $x \in Dom(m)$.
+	Given an instance $(G,k)$ of Dominating Set Problem that does not contain any isolated vertices and a solution $D$, a {\normalfont domination mapping} is a function $m:V(G) \setminus D \rightarrow D$ such that satisfies $(x,m(x)) \in E(G)$ for all $x \in Dom(m)$.
 \end{definition}
 
 \begin{lemma}\label{dom mapping}
-	Let $(G,k)$ be an instance of \domsetp{} without isolated vertices and let $D$ be a solution of minimal size. Then, there exists a dominating mapping $m$ such that $m$ is surjective.
+	Let $G$ be a graph without isolated vertices and let $D$ be a dominating set of minimal size. Then, there exists a domination mapping $m$ such that $m$ is surjective.
 \end{lemma}
 
 \begin{proof}
-	Suppose contrary that such a mapping does not exist i.e. for every mapping $m$ there exists a vertex $v \in D$ such that $v \notin im(m)$. Let us break the proof into 4 cases:
+	Let $m$ be a dominating mapping that maximizes $|im(m)|$. If $m$ is surjective, then the proof is finished. Otherwise, there exists a vertex $v$ such that $v \notin im(m)$. Consider the following cases::
 	\begin{enumerate}
 		\item Suppose $N_G(v) = \emptyset$. Contradiction, $G$ has no isolated vertices.
 		\item Suppose $u \in N_G(v) \cap D$. Contradiction, $D$ was said to be a solution of minimal size whereas $D \setminus \{u\}$ is a valid, smaller solution.
-		\item Suppose $u \in N_{G}(v) \setminus D$ and $w \in N_G(u) \cap im(m)$. If $|m^{-1}(w)|=1$, then $((D \setminus \{v,w\}) \cup u)$ is a valid, smaller solution for a graph $G$. Contradiction.
-		\item Suppose $u \in N_{G}(v) \setminus D$ and $w \in N_G(u) \cap im(m)$. If $|m^{-1}(w)| > 1$ then a mapping:
+		\item Suppose $u \in N_{G}(v) \setminus D$ and $w = m(u)$. If $|m^{-1}(w)|=1$, then $((D \setminus \{v,w\}) \cup u)$ is a valid, smaller solution for a graph $G$. Contradiction.
+		\item Suppose $u \in N_{G}(v) \setminus D$ and $w = m(u)$. If $|m^{-1}(w)| > 1$ then a mapping:
 		\begin{equation*}
 			m'(x) = \begin{cases}
-			v, & \text{if x = u} \\
+			v, & \text{if }x = u \\
 			m(x), &\text{otherwise} \\
 			\end{cases}
 		\end{equation*}
-		is a valid mapping that satisfies $im(m) \subset im(m')$. Thus, one can create a new mapping $m''$ inductively such that $m''$ is surjective. Contradiction, we assumed that no such mapping exists. 
+		is a valid mapping that satisfies $im(m) \subsetneq im(m')$. Thus, one can create a new mapping $m''$ inductively such that $m''$ is surjective. Contradiction, we assumed that no such mapping exists. 
 	\end{enumerate}
 	
-	Since all the possible cases led to a contradiction, we may conclude that there exists a dominating mapping $f$ such that $f$ is surjective.  
+	Since all the first three cases led to a contradiction and the last one shows how to inductively expand the image of a domination mapping, we may conclude that there exists a domination mapping $m$ such that $m$ is surjective.  
 \end{proof}
 
 Armed with the lemma, we are ready to prove the main theorem of the section.
 
 \begin{theorem}\label{dom ssf}
-	\kssf{} is NP-Complete.
+	\mssfp{} is NP-Complete.
 \end{theorem}
 
 \begin{proof}
-	Membership in NP: given an oracle $(O,k)$, we check whether the number of	components in $O$ is less than $k$ and whether every connected component	forms a star. The task can be easily done in polynomial time.\\
+	Membership in NP: The witness is a spanning star forest $S$. The verifier checks if all the vertices from input graph are included in $S$, there are no isolated vertices and $S$ does not induce a $P_3$. 
 	
 	We show hardness by a reduction from \domsetp{} that completes the proof. Let $(G,k)$ be an instance of it. We create a graph	$G'$ as follows: for every isolated vertex $v \in V(G)$ introduce a vertex $v'$ and an edge $(v,v')$. Now, we claim that $(G,k)$ is a YES-instance for \domsetp{} if and only if $(G'.k)$ is a YES-instance for \kssf{}. 
 	
