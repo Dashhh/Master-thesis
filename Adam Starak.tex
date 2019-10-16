@@ -98,16 +98,17 @@
 
 \newcommand{\wcs}{Weighted Circuit Satisfiability}
 
-%Spanning Star Forest
-\newcommand{\SSF}{Spanning Star Forest}
+\newenvironment{sproof}{%
+	\renewcommand{\proofname}{Proof (sketch).}\proof}{\endproof}
+
 \newcommand{\ssf}{spanning star forest}
-\newcommand{\ssfp}{{\sc Spanning Star Forest} problem}
-\newcommand{\dssfp}{{\sc Decision Spanning Star Forest} problem}
-\newcommand{\mssfp}{{\sc Maximal Spanning Star Forest} problem}
+\newcommand{\ssfp}{{\sc Spanning Star Forest}}
+\newcommand{\dssfp}{{\sc Decision Spanning Star Forest}}
+\newcommand{\mssfp}{{\sc Maximal Spanning Star Forest}}
+\newcommand{\ssfep}{{\sc Spanning Star Forest Extension}}
+\newcommand{\domset}{dominating set}
+\newcommand{\domsetp}{{\sc Dominating Set} problem}
 
-
-\newcommand{\domset}{\emph{Dominating Set}}
-\newcommand{\domsetp}{{\sc Dominating Set Problem}}
 \newcommand{\kssf}{\emph{Spanning Star Forest Problem} parameterized by the number of stars}
 \newcommand{\cnfsat}{\emph{CNF-SAT}}
 \newcommand{\ssfe}{\emph{Spanning Star Forest Extension Problem}}
@@ -153,7 +154,7 @@ możliwości.  Wykorzystujemy je w~niniejszej pracy.
 
 \section{Structures}
 
-A simple graph $G$ is a pair $(V,E)$ where $V$ denotes a set of vertices and $E$ denotes a set of undirected edges. Let $deg_G(v)$ denote a degree of vertex $v$ in graph $G$ which is the number of adjacent vertices. Let $G \setminus v$ be the abbreviation for $G'=(V(G) \setminus \{v\}, E(G) \setminus \{(u,v): u \in V(G)\})$. For a set $X \subseteq V(G)$ we define by $G[X]$ the graph induced by vertices from $X$. A graph $P_k$ is a path of length $k$. A \emph{tree} $T$ is a connected graph which has exactly $|V(T)|-1$ edges. A \emph{spanning tree} $T$ of a graph $G$ is a tree which includes all of the vertices of $G$, with the minimum possible number of edges. A \emph{star} $S$ is a tree of size at least $2$ for which at most one vertex has a degree greater than $1$. A vertex in a \emph{star} that has the greatest degree is called a \emph{center} while the others are called \emph{rays}. A \emph{star} of size 2 has two \emph{candidates} to become a \emph{center}.
+A simple graph $G$ is a pair $(V,E)$ where $V$ denotes a set of vertices and $E$ denotes a set of undirected edges. Let $deg_G(v)$ denote a degree of vertex $v$ in graph $G$ which is the number of adjacent vertices. Let $G \setminus v$ be the abbreviation for $G'=(V(G) \setminus \{v\}, E(G) \setminus \{(u,v): u \in V(G)\})$. For a set $X \subseteq V(G)$ we define by $G[X]$ the graph induced by vertices from $X$. A graph $P_k$ is a path of length $k$. A graph $C_k$ is a cycle of length $k$. A \emph{tree} $T$ is a connected graph which has exactly $|V(T)|-1$ edges. A \emph{spanning tree} $T$ of a graph $G$ is a tree which includes all of the vertices of $G$, with the minimum possible number of edges. A \emph{star} $S$ is a tree of size at least $2$ for which at most one vertex has a degree greater than $1$. A vertex in a \emph{star} that has the greatest degree is called a \emph{center} while the others are called \emph{rays}. A \emph{star} of size 2 has two \emph{candidates} to become a \emph{center}.
 
 \section{Parameterized complexity}
 
@@ -168,6 +169,10 @@ A simple graph $G$ is a pair $(V,E)$ where $V$ denotes a set of vertices and $E$
 \begin{definition}\label{Kernel}
 	A \textup{kernel} for a parameterized problem $Q$ is an algorithm $\mathcal{A}$ that, given an instance $(x,k) \in Q$, works in polynomial time and returns an equivalent instance $(x',k') \in Q$
 	such that $|x'| + k' \leq g(k)$ for a computable function $g$, called the \textup{size} of the kernel.
+\end{definition}
+
+\begin{definition}
+	{\normalfont Parameterized reduction.}
 \end{definition}
 
 \section{The W-hierarchy}
@@ -326,7 +331,7 @@ It is natural to ask whether one can find a solution that minimizes the number o
 	\domsetp: Given a graph $G$ and a positive integer $k$ find a set $D$ such that $|D| \leq k$ and every vertex from the graph is adjacent to one of the vertices from $D$.
 \end{definition}
 
-At first glance, one can say that a center is related to a dominating vertex whereas ray is related to dominated vertex. Candidates might be represented by either a dominating or dominated vertex. However, we cannot finish our research at this point because in \domsetp{} isolated dominating vertices are allowed and some vertices are dominated by multiple neighbors. 
+At first glance, one can say that a center is related to a dominating vertex whereas a ray is related to a dominated vertex. Candidates might be represented by either a dominating or dominated vertex. However, we cannot finish our research at this point because in \domsetp{} isolated dominating vertices are allowed and some vertices are dominated by multiple neighbors. 
 
 To give a systematic parameterized reduction between these two problems, we need to get a better understanding of \domsetp{}.
 
@@ -364,66 +369,56 @@ Armed with the lemma, we are ready to prove the main theorem of the section.
 \end{theorem}
 
 \begin{proof}
-	Membership in NP: The witness is a spanning star forest $S$. The verifier checks if all the vertices from input graph are included in $S$, there are no isolated vertices and $S$ does not induce a $P_3$. 
+	Membership in NP: The witness is a spanning star forest $S$. The verifier checks if all the vertices from input graph are included in $S$, there are no isolated vertices and $S$ does not induce a $P_3$ nor $C_{> 2}$.
+	\\\\
+	Hardness: We show hardness by a reduction from \domsetp{} that completes the proof. Given graph $G$ and integer $k$, in PTIME, for every isolated vertex $v \in V(G)$ introduce a vertex $v'$ and an edge $(v,v')$. Now, we claim that $(G,k)$ is a YES-instance of \domsetp{} if and only if $(G',k)$ is a YES-instance of \mssfp{}. 
 	
-	We show hardness by a reduction from \domsetp{} that completes the proof. Let $(G,k)$ be an instance of it. We create a graph	$G'$ as follows: for every isolated vertex $v \in V(G)$ introduce a vertex $v'$ and an edge $(v,v')$. Now, we claim that $(G,k)$ is a YES-instance for \domsetp{} if and only if $(G'.k)$ is a YES-instance for \kssf{}. 
+	The backward implication is simple. Suppose $S$ is a solution for $(G',k)$. We create the \domset{} $D$ as follows: for every star of size $2$ pick an arbitrary candidate that is present in graph $G$ and for every star of size greater than $2$ pick a center. Obviously $|D| \leq k$ because there are at most $k$ connected components in $S$. Every vertex from $G'$ is adjacent to one of the centers or candidates that we chose during construction of a set $D$.
 	
-	The backward implication is simple. Suppose $S$ is a solution for $(G',k)$. We claim that a set $D$ representing centers of stars is a correct \domset{}. Obviously $|D| \leq k$ because there are at most $k$ connected components. Every vertex from $G'$ is adjacent to one of the centers. If there exists a vertex $v' \in D$ such that $v' \notin V(G)$ we transform the solution as follows: $D := (D \setminus \{v'\})\cup \{v\}$. 
-	
-	To prove the forward implication, let $D$ be a solution of minimal size for $(G,k)$. Obviously, $D$ is also a minimal solution for a graph $G'$. Thus, by lemma \ref{dom mapping}. there exists a mapping $m$ that is surjective. Now, we claim that a graph $S=(V(G'),\{(x,m(x)): x \in Dom(m)\})$ is a correct solution for \ssfp{}. Trivially, there are no isolated vertices in $S$. Moreover, there is no path of length 4 because $S$ consists of edges $(v,u)$ such that $v \in D$, $u \notin D$ and for all $u \in V(S) \setminus D$ $deg_S(u)=1$.
+	To prove the forward implication, let $D$ be a solution of minimal size for $(G,k)$. Obviously, $D$ is also a minimal dominating set for the graph $G'$ as $D$ contains every isolated vertex. Thus, by Lemma \ref{dom mapping}. there exists a mapping $m$ that is surjective. Now, we claim that the graph $S=(V(G'),\{(x,m(x)): x \in Dom(m)\})$ is a correct solution for the instance $(G',k)$ of \mssfp{}. By surjectivity, there are no isolated vertices in $S$. Moreover, there is no path nor cycle of length $3$ because $m$ maps vertices from $V(G') \setminus D$ to $D$ and for all $v \in V(G') \setminus D$, $deg_S(v)=1$.
 	
 \end{proof}
 
-The theorem implies that \kssf{} is as hard as \domsetp{}. Thus, we can immediately obtain the following corollary.
-
-\begin{corollary}
-	\kssf{} is {\normalfont W[2]-complete}.
-\end{corollary}
-
-The problems look so similar that one could ask whether the reverse reduction is true. Indeed, with a small twist to the previous idea one can prove the reverse reduction instantly.  
+The problems look so similar that one could ask whether the reverse reduction is true. Indeed, with a small twist in the previous idea, one can prove the reverse reduction instantly. In the proof we only point out the construction because the concept of proving the instance equivalence remains the same.
 
 \begin{theorem}\label{ssf dom}
-	There exists a reduction from \kssf{} to \domsetp{}.
+	There exists a parameterized reduction from \mssfp{} to \domsetp{} parameterized by the size of dominating set.
 \end{theorem}
 
-\begin{proof}
-	Let $(G,k)$ be an instance of \ssfp{}. We create an instance $(G',k')$ for \domset{} as follows: let $G'=G$ and if $G$ contains an isolated vertex, then $k'=0$. Otherwise, the value remains the same. Now, we claim that $(G,k)$ is a YES-instance for \ssfp{} if and only if $(G',k')$ is a YES-instance for \domset.
+\begin{sproof}
+	Let $(G,k)$ be an instance of \mssfp{}. We create the instance $(G',k')$ for \domset{} as follows: let $G'=G$. If $G$ contains an isolated vertex, then $k'=0$. Otherwise, the value remains the same. Now, we claim that $(G,k)$ is a YES-instance for \mssfp{} if and only if $(G',k')$ is a YES-instance for \domset.
 	
-	To prove the following reduction one can use the method which was described in Theorem \ref{ssf dom} with a little remark: if an instance $(G,k)$ contains an isolated vertex, then obviously it is a NO-instance for \ssfp{} and so is $(G',k')$ for \domset{} because $G'$ is not an empty graph.
-\end{proof}
+	To prove the following reduction one can use the method which was described in Theorem \ref{ssf dom} with a little remark: if an instance $(G,k)$ contains an isolated vertex, then obviously it is a NO-instance for \mssfp{} and so is $(G',k')$ for \domset{} because $G'$ is not an empty graph.
+\end{sproof}
 
-One can observe now the immediate corollary of the theorem \ref{dom ssf} and theorem \ref{ssf dom}.
+The theorem implies that \mssfp{} is as hard as \domsetp{} and the problems are \emph{interreducible}. Thus, we can immediately obtain the following corollary.
 
 \begin{corollary}
-	Every theorem is true for \domsetp{} if and only if it is true for a \kssf{}.
+	\mssfp{} is {\normalfont W[2]-complete}.
 \end{corollary}
-
-As an example, the following theorem described in 
-%TODO dodaj ref%
-can be transfered to \kssf{}.
-
-\begin{theorem}
-	Unless \cnfsat{} can be solved in time $\mathcal{O}^*((2-\epsilon')^n)$ for some $\epsilon' > 0$ there do not exist constant $\epsilon > 0$, $k \geq 3$ and an algorithm solving \domsetp{} parameterized by the number of stars in time $\mathcal{O}^*(N^{k-\epsilon})$, where $N$ is the number of vertices of the input graph. 
-\end{theorem}
 
 \chapter{Spanning Star Forest Extension Problem}
 
-In this chapter, we significantly change the problem. Let $G$ be a graph and $F \subseteq E(G)$. In the \ssfe{} the question that we want to answer now is that whether there exists a \ssf{} $S$ such that $F \subseteq E(S)$. Hardness of the problem lays in deciding which end of every isolated edge is a center and which one is a ray. We used three different parameters: number of isolated edges, number of non-isolated edges and treewidth. 
+In this chapter, we significantly change the problem. Let $G$ be a graph and $F \subseteq E(G)$ be a set of \emph{forced edges}. In the \ssfep{} the question, that we want to answer now, is whether there exists a \ssf{} $S$ such that $F \subseteq E(S)$. We used three different parameters: number of marked edges, number of non-marked edges and treewidth. 
 
-\section{General overview}
+\section{Preliminaries}
+
+\subsection{Notation}
+
+In further, we denote by $F$ a set of \emph{forced edges}. Vertices that have exactly one forced edge are called \emph{forced candidates}. Similarly, if a subset of $F$ forms a star of size greater than $3$ we introduce a \emph{forced center} and \emph{forced rays} consequently.
 
 \subsection{Instance normalization} 
 
-Observe that a star is a primitive structure. The star's maximal radius is equal to 3. It means that we can look at the problem rather locally than globally. Notice that this time we do not have any limit on the number of connected components. As it was said before, the hardness of the problem lays in choosing which of the endings of an isolated edge is a center. Thus, it might be possible to normalize instances i.e. try to remove vertices that are "far enough" from isolated vertices.
+Notice that this time we do not have any limit on the number of connected components. The hardness of the problem lays in choosing which of the forced candidates should become a forced center and which one should become a forced ray. Also, observe that a star is a primitive structure. The star's maximal radius is equal to $2$. It means that we can look at the problem rather locally than globally. Thus, it is possible to normalize instances i.e. try to remove vertices that are "far enough" from forced candidates.
 
-Let $(G, F)$ be an arbitrary instance of \ssfe{}. Firstly, consider trivial cases.
+Let $(G, F)$ be an arbitrary instance of \ssfep{}. Firstly, consider trivial cases.
 
 \begin{enumerate}[leftmargin=*,label=\textbf{Reduction \arabic{enumi}}]
 	\item If graph $G$ contains an isolated vertex, it is a NO-instance.
-	\item If in graph $G$ there exists a path of size at least 3 made from isolated edges, it is a NO-instance.
+	\item If $F$ induces in $G$ a path or a cycle of size at least $3$, it is a NO-instance.
 \end{enumerate}
 
-Suppose that isolated edges form a star of size at least 3. Then, the center is already set. Thus, we can remove from the instance all the vertices that are adjacent to the pre-created centers.
+Suppose that forced edges form a star of size at least $3$. Then, the forced center is already determined. Thus, we can remove from the instance all the vertices that are adjacent to the pre-created centers.
 \begin{enumerate}[leftmargin=*,label=\textbf{Reduction \arabic{enumi}},resume]
 	\item $C = \{v: |N_G(v) \cap V(F)| > 1\}$. Update $G= G \setminus (N_G(C) \cup C)$.
 \end{enumerate}
