@@ -108,9 +108,9 @@
 \newcommand{\ssfep}{{\sc Spanning Star Forest Extension}}
 \newcommand{\domset}{dominating set}
 \newcommand{\domsetp}{{\sc Dominating Set} problem}
+\newcommand{\cnfsat}{{\sc CNF-SAT}}
 
 \newcommand{\kssf}{\emph{Spanning Star Forest Problem} parameterized by the number of stars}
-\newcommand{\cnfsat}{\emph{CNF-SAT}}
 \newcommand{\ssfe}{\emph{Spanning Star Forest Extension Problem}}
 \newcommand{\tsat}{\emph{3-SAT}}
 
@@ -397,72 +397,107 @@ The theorem implies that \mssfp{} is as hard as \domsetp{} and the problems are 
 	\mssfp{} is {\normalfont W[2]-complete}.
 \end{corollary}
 
-\chapter{Spanning Star Forest Extension Problem}
+\chapter{Spanning Star Forest Extension}
 
-In this chapter, we significantly change the problem. Let $G$ be a graph and $F \subseteq E(G)$ be a set of \emph{forced edges}. In the \ssfep{} the question, that we want to answer now, is whether there exists a \ssf{} $S$ such that $F \subseteq E(S)$. We used three different parameters: number of marked edges, number of non-marked edges and treewidth. 
+In this chapter, we significantly change the problem. Let $G$ be a graph and $F \subseteq E(G)$ be a set of \emph{forced edges}. In the \ssfep{} the question, that we want to answer now, is whether there exists a \ssf{} $S$ such that $F \subseteq E(S)$. We used three different parameters: number of forced edges, number of free edges and treewidth. 
 
 \section{Preliminaries}
 
 \subsection{Notation}
 
-In further, we denote by $F$ a set of \emph{forced edges}. Vertices that have exactly one forced edge are called \emph{forced candidates}. Similarly, if a subset of $F$ forms a star of size greater than $3$ we introduce a \emph{forced center} and \emph{forced rays} consequently.
+In further, we denote by $F$ a set of \emph{forced edges}. Vertices that have exactly one forced edge are called \emph{forced candidates}. Similarly, if a subset of $F$ forms a \emph{forced star} of size greater than $3$ we call its particles a \emph{forced center} and \emph{forced rays} consequently. We denote by $F_R$ a set of all forced rays and by $F_C$ a set of all forced centers. Vertices that does not belong to $V(F)$ are called \emph{free vertices}.
 
 \subsection{Instance normalization} 
 
-Notice that this time we do not have any limit on the number of connected components. The hardness of the problem lays in choosing which of the forced candidates should become a forced center and which one should become a forced ray. Also, observe that a star is a primitive structure. The star's maximal radius is equal to $2$. It means that we can look at the problem rather locally than globally. Thus, it is possible to normalize instances i.e. try to remove vertices that are "far enough" from forced candidates.
+Notice that this time we do not have any limit on the number of connected components. The hardness of the problem lays in choosing which of the forced candidates should become a forced center and which one should become a forced ray. Also, observe that a star is a primitive structure. The star's maximal radius is equal to $2$. It means that we can look at the problem rather locally than globally. Thus, it is possible to normalize instances i.e. try to remove vertices that are "far enough" from forced vertices.
 
 Let $(G, F)$ be an arbitrary instance of \ssfep{}. Firstly, consider trivial cases.
 
-\begin{enumerate}[leftmargin=*,label=\textbf{Reduction \arabic{enumi}}]
-	\item If graph $G$ contains an isolated vertex, it is a NO-instance.
-	\item If $F$ induces in $G$ a path or a cycle of size at least $3$, it is a NO-instance.
+\begin{enumerate}[leftmargin=*,label=\textbf{Reduction \arabic{enumi}},labelindent=0pt]
+	\item If graph $G$ contains an isolated vertex, then it is a NO-instance.
+	\item If $F$ induces in $G$ a path or a cycle of size at least $3$, then it is a NO-instance.
 \end{enumerate}
 
-Suppose that forced edges form a star of size at least $3$. Then, the forced center is already determined. Thus, we can remove from the instance all the vertices that are adjacent to the pre-created centers.
+For the sake of simplicity, if a vertex has one neighbor only, we can add the edge to the set of forced edges. There is no other way to create a spanning star forest without taking that particular edge.
+
 \begin{enumerate}[leftmargin=*,label=\textbf{Reduction \arabic{enumi}},resume]
-	\item $C = \{v: |N_G(v) \cap V(F)| > 1\}$. Update $G= G \setminus (N_G(C) \cup C)$.
+	\item If a free vertex $u$ satisfies $N[u] = \{v\}$, then add $(u,v)$ to $F$.
 \end{enumerate}
 
-Now, let $V_P = \{v: (v,u) \in (E(G) \setminus F) \text{ and } v \notin V(F)\}$ and $V_{NP} = V(G) \setminus V_P$. Finally, $G_{NP} = G[V_{NP}]$ and $G_P = G[V_P]$. Notice an immediate consequence of the partitioning of graph $G$.
+Suppose that a subset of forced edges forms a star of size at least $3$. Then, the forced center is already determined. Thus, we can remove from the instance all the edges that has exactly one end in forced ray and the other in a free vertex. 
+
+\begin{enumerate}[leftmargin=*,label=\textbf{Reduction \arabic{enumi}},resume,wide, labelwidth=!, labelindent=0pt]
+	\item Suppose $F_R$ is a set of forced rays. Remove the set of edges $\{(u,v): u \in F_R,\ v \in V(G) \setminus V(F)\}$
+\end{enumerate}
+
+Moreover, notice that after exhaustive application of previous reductions, for all $v \in F_R$, it is true that $deg(v)=1$. That is, forced rays are only connected to its forced centers. So, for every forced star, contracting the set of forced rays into a forced candidate, does not have an impact on the solution.
+
+\begin{enumerate}[leftmargin=*,label=\textbf{Reduction \arabic{enumi}},resume,wide, labelwidth=!, labelindent=0pt]
+	\item Suppose that $(G,F)$ is the output graph after exhaustive application of previous reductions. For every forced star, contract the set of forced rays into a forced candidate.
+\end{enumerate}
+
+Let us summarize our work and infer how an input graph looks like. Currently, no two forced edges have a common vertex. So, we immediately obtain the following:
+
+\begin{corollary}
+	After exhaustive application of Reduction 5, $F$ is a matching.
+\end{corollary}
+
+We can distinguish three types of different forced edges. Ones that have outgoing edges from both ends, one end and ones that have no outgoing edges. For the sake of clarity, we can remove isolated forced edges.
+
+\begin{enumerate}[leftmargin=*,label=\textbf{Reduction \arabic{enumi}},resume,wide, labelwidth=!, labelindent=0pt]
+	\item Remove isolated forced edges.
+\end{enumerate}
+
+Now, let us focus on the second part of a graph i.e. free vertices. As we have seen in previous chapter, by Lemma \ref{SSF lemma}, there exists a spanning star forest if and only if there are no isolated vertices. Let $V_P = \{u: (u,v) \in (E(G) \setminus F) \text{ and } u,v \notin V(F)\}$ and $V_{NP} = V(G) \setminus V_P$. Finally, $G_{NP} = G[V_{NP}]$ and $G_P = G[V_P]$. Notice the immediate consequence of the partitioning of the graph $G$.
 
 \begin{claim}\label{gp cut}
 	$G_P$ always has a solution.
 \end{claim}
 
-To prove the claim we can apply lemma \ref{SSF lemma}. $G_P$ does not have any isolated edges nor isolated vertices. All that is left to do is to prove that edges between $G_P$ and $G_{NP}$, that were lost during partitioning, does not have any effect on the solution. The following theorem proves the intuition.
+To prove the claim, we can simply apply lemma \ref{SSF lemma}. $G_P$ does not have any forced edges nor isolated vertices. All that is left to do is to prove that edges between $G_P$ and $G_{NP}$, that were lost during partitioning, does not have any impact on the solution. The following theorem proves the intuition.
 
-\begin{lemma}
+\begin{theorem}\label{GNP partition}
 	An instance $(G,F)$ has a solution if and only if $(G_{NP},F)$ has one.
-\end{lemma}
-
-\begin{proof}
-	The backward implication is trivial. Suppose $S$ is a solution for an instance $(G_{NP},F)$. We can partition $G$ into $G_P$ and $G_{NP}$ and find a solution, say $S'$, for a graph $G_P$. Then, $S \cup S'$ is a correct solution for $G$.
-	
-	Now, consider the forward implication. Let $S$ be a solution for an instance $(G, F)$. Assume contrary that there exists a vertex $v \in V(G_{NP})$ does not belong to any star. Trivially, vertices from $V(F)$ are covered. Thus, $v \in V(G_{NP}) \setminus V(F)$. If $v \in V(G_{NP}) \setminus V(F)$ it follows that for all $(v,u) \in E(G)$ $(v,u) \in E(G_{NP}))$. If it was not true, the vertex $v$ would have been place in the graph $G_P$. Thus, there exists an edge $(v,u) \in E(S)$ such that $(v,u) \in E(G_{NP})$. Contradiction.
-	
-\end{proof}
-\noindent
-Ultimately, we can state the last rule.
-\begin{enumerate}[leftmargin=*,label=\textbf{Reduction \arabic{enumi}},resume]
-	\item Update $G = G \setminus G_P$.
-\end{enumerate}
-
-\subsection{NP-completeness}
-
-After exhaustive application of rules, any graph has a simple structure. Let $(G,F)$ be an instance of \ssfe{} after normalization. Then, $G$ consists of vertices of two types: ones that have only edges to vertices from $V(F)$ and ones that have exactly one isolated edge (and potentially many non-isolated). Such a representation substantially simplifies further investigations. Indeed, we can prove that the problem parameterized by the number of isolated edges is NP-complete.
-
-
-
-\begin{theorem}
-	\ssfe{} is NP-complete.
 \end{theorem}
 
 \begin{proof}
-	Membership in NP: Given a solution $S$ for instance $(G,F)$ check whether $F \subseteq S$ and whether $S$ is a correct \ssf{}.
+	The backward implication is trivial. Suppose $S$ is a solution for $(G_{NP},F)$. We can partition $G$ into $G_P$ and $G_{NP}$ and find a solution, say $S'$, for a graph $G_P$. Then, $S \cup S'$ is a correct solution for $G$.
+	
+	Now, consider the forward implication. Let $S$ be a solution for $(G, F)$. Assume contrary that there exists a vertex $u \in V(G_{NP})$ that does not belong to any star. Trivially, vertices from $V(F)$ are covered. Thus, $u \in V(G_{NP}) \setminus V(F)$. If $u \in V(G_{NP}) \setminus V(F)$ it follows that for all $(u,v) \in E(G)$, $(u,v) \in E(G_{NP})$. If it was not true, the vertex $u$ would have been placed in the graph $G_P$ during partitioning. Thus, there exists an edge $(u,v) \in E(S)$ such that $(u,v) \in E(G_{NP})$. Contradiction because $u$ belongs to a star.
+	
+\end{proof}
+
+Theorem \ref{GNP partition} provides us the next rule:
+
+\begin{enumerate}[leftmargin=*,label=\textbf{Reduction \arabic{enumi}},resume]
+	\item Update $G = G_{NP}$.
+\end{enumerate}
+
+Now, we want to present the last set of reduction rules that we can infer after the application of previous ones:
+
+\begin{enumerate}[leftmargin=*,label=\textbf{Reduction \arabic{enumi}},resume]
+	\item If $u \notin V(F)$, $(u,v),(u,w) \in E(G)$ and $(v,w) \in F$, then remove $u$.
+	\item If $(u,v) \in F$ and $deg(u)=1$, then apply $G = G \setminus N[v]$.
+\end{enumerate}
+
+To sum up, after exhaustive application of reduction rules, we will either conclude that it is a NO-instance or output a very structured graph. There exists a matching $F$ consisting of all the forced candidates. Additionally, all the free vertices are connected to at least two different ends of forced edges.
+
+\section{NP-completeness}
+
+Let $(G,F)$ be an instance of \ssfep{} after normalization. Then, $G$ consists of vertices of two types: ones that have only edges to vertices from $V(F)$ and ones that have exactly one forced edge (and potentially many free ones). Such a representation substantially simplifies further investigations. Indeed, we can prove that the problem is NP-complete.
+
+\begin{theorem}
+	\ssfep{} is NP-complete.
+\end{theorem}
+
+\begin{proof}
+	Membership in NP: The witness is a spanning star forest $S$. The verifier checks if every connected component is a star and if every forced edge is included in the solution.
 	\\\\
-	To prove hardness, we show a reduction from \tsat{}. Let $\phi$ be an arbitrary instance. We create a graph $G$ as follows: for every variable $x_i$ we introduce vertices $x_i,\neg x_i$ and an isolated edge $(x_i,\neg x_i)$. For every clause $c_i$ we introduce a vertex $c_i$. For every $x_k$ (symmetrically $\neg x_k$) we introduce an edge $(x_k,c_p)$ if and only if $x_k$ is present in p'th clause. Now, we claim that $\phi$ is satisfiable if and only if $(G, F)$ has a \ssf{}. \\
-	Backward implication: Let $S$ be a solution for $(G,F)$. Then, a set of centers is a correct evaluation that satisfies the formula $\phi$ because every clause $S$ has a witness.\\
-	To prove the forward implication, assume there exists an evaluation $\sigma$ of variables that satisfies the formula. Let $C = \{l_i: \sigma(l_i) = 1\} $. Note that $C$ contains either $x_i$ or $\neg x_i$. Now, let us construct a solution $S$. Firstly, include all the isolated edges. Then, for every vertex representing a clause $c_i$ take a random $l_j$ such that $l_j \in N(c_i) \cap C$ and include edge $(c_i, l_j)$ into the solution. The operation is safe. All sets $ N(c_i) \cap C$ are nonempty because there exists a witness $l_k$ that satisfies the clause and there exists an edge between a literal and a clause.
+	Hardness: we show a reduction from \cnfsat{}. Let $\phi$ be an arbitrary instance. We create a graph $G$ as follows: for every variable $x_i$ we introduce vertices $x_i,\neg x_i$ and a forced edge $(x_i,\neg x_i)$. For every clause $c_i$ we introduce a vertex $c_i$. For every $x_k$ (symmetrically $\neg x_k$) we introduce an edge $(x_k,c_p)$ if and only if $x_k$ is present in p'th clause. Now, we claim that $\phi$ is satisfiable if and only if $(G, F)$ has a \ssf{}.
+	
+	Backward implication: Let $S$ be a solution for $(G,F)$. Then, a set of centers is a correct evaluation that satisfies the formula $\phi$ because every clause $S$ has a witness.
+	
+	To prove the forward implication, assume there exists an evaluation $\sigma$ of variables that satisfies the formula. Let $C = \{l_i: \sigma(l_i) = 1\} $. Note that $C$ contains either $x_i$ or $\neg x_i$. Now, let us construct a solution $S$. Firstly, include all the isolated edges. Then, for every vertex representing a clause $c_i$ take an arbitrary $l_j$ such that $l_j \in N(c_i) \cap C$ and include edge $(c_i, l_j)$ into the solution. The operation is safe. All sets $ N(c_i) \cap C$ are nonempty because there exists a witness $l_k$ that satisfies the clause and there exists an edge between a literal and a clause.
 \end{proof}
 
 Surprisingly, \tsat{} is trivially encoded in \ssfe{}.
