@@ -484,8 +484,52 @@ To sum up, after exhaustive application of reduction rules, we will either concl
 
 \section{NP-completeness}
 
+We are going to show NP-completeness of \ssfep{} by a reduction from \cnfsat{}. Let us begin with a recall:
+
+\begin{definition}
+	CNF-SAT
+\end{definition}
+
 Let $(G,F)$ be an instance of \ssfep{} after normalization. Then, $G$ consists of vertices of two types: ones that have only edges to vertices from $V(F)$ and ones that have exactly one forced edge (and potentially many free ones). Such a representation substantially simplifies further investigations. Indeed, we can prove that the problem is NP-complete.
 
+\begin{lemma}\label{ssfep reduction}
+	There exists a polynomial time reduction from \cnfsat{} to \ssfep{}.
+\end{lemma}
+
+\begin{proof}
+	Suppose $\phi$ is an arbitrary instance of \cnfsat{}. $\phi$ is a formula written in CNF, so let $C=\{C_1,...,C_m\}$ be a set of clauses and let $Vars=\{x_1,...,x_n\}$ be a set of variables occuring in $\phi$. For every clause $C_i$ we introduce a vertex $v_{C_i}$ and for every variable $x_i$ we introduce two vertices $v_{x_i},v_{\neg x_i}$ and a forced edge $(v_{x_i}, v_{\neg x_i})$. Now, for every occurrence of a literal $x_{l_i}$ in a clause $C_j$ we introduce an edge $(C_j, x_{l_i})$. Now, we say that $(G,F)$, that has been just described, has a spanning star forest if and only if there exists a satisfiable evaluation of variables.
+	
+	Forward implication: Let $S$ be a solution for $(G,F)$. Then, a set of centers is a correct evaluation that satisfies the formula $\phi$ because every clause $S$ has a witness.
+	
+	To prove the backward implication, assume there exists an evaluation $\sigma$ of variables that satisfies the formula. Let $tt = \{l_i: \sigma(l_i) = 1\} $. Note that $C$ contains either $x_i$ or $\neg x_i$. Now, let us construct a solution $S$. Firstly, include all the isolated edges. Then, for every vertex representing a clause $C_i$ take an arbitrary $l_j$ such that $l_j \in N(C_i) \cap tt$ and include edge $(C_i, l_j)$ into the solution. The operation is safe. The set $ N(C_i) \cap C$ is empty only if the clause $C_i$ is empty. But, if the clause $C_i$ is empty, then it is always satisfied. If the intersection is nonempty, then there exists a witness $l_k$ that satisfies the clause. Finally, there exists an edge between the literal and the clause that joins the clause vertex to a star.
+	
+\end{proof}
+
+As we can see, clauses and variables in \cnfsat{} are encoded as free vertices and forced edges in \ssfep{} respectively. Thus, we get the immediate corollary:
+
+\begin{corollary}\label{ssfep size}
+	A CNF-formula $\phi$ of $n$ variables and $m$ clauses can be reduced in polynomial time to a \ssfep{} instance of $n$ forced edges, $m$ free vertices and $\mathcal{O}(n\cdot m)$ free edges.
+\end{corollary}
+
+There is one more observation that we want to point out in this paper. Since a CNF-formula is trivially encoded as a spanning star forest extension instance, one can ask if the problems are interreducible. Indeed, it is true and we are going to present the construction only.
+
+\begin{lemma}\label{cnfsat reduction}
+	There exists a polynomial time reduction from \ssfep{} to \cnfsat{}.
+\end{lemma}
+
+\begin{sproof}
+	Suppose $(G,F)$ is an arbitrary instance of \ssfep{}. Every free vertex represents a separate clause. Every two forced candidates of a forced edge are represent literals $x_i$ and $\neg x_i$. An edge between a forced candidate and a free vertex indicates an occurrence of a literal in a clause.
+\end{sproof}
+
+Immediately, we obtain a symmetric corollary:
+
+\begin{corollary}
+	An instance $(G,F)$ of \ssfep{} can be reduced in polynomial time to a $\cnfsat{}$ instance of $|V(G) \setminus V(F)|$ clauses, $|F|$ variables. The length of the formula is equal to $|E(G) \setminus F|$.
+\end{corollary}
+
+Lemmas and corollaries described in this section are the key observations that we use in the next sections to prove lower bounds or reducibility.
+
+Ultimately, we can prove the main theorem of the section:
 \begin{theorem}
 	\ssfep{} is NP-complete.
 \end{theorem}
@@ -493,27 +537,18 @@ Let $(G,F)$ be an instance of \ssfep{} after normalization. Then, $G$ consists o
 \begin{proof}
 	Membership in NP: The witness is a spanning star forest $S$. The verifier checks if every connected component is a star and if every forced edge is included in the solution.
 	\\\\
-	Hardness: we show a reduction from \cnfsat{}. Let $\phi$ be an arbitrary instance. We create a graph $G$ as follows: for every variable $x_i$ we introduce vertices $x_i,\neg x_i$ and a forced edge $(x_i,\neg x_i)$. For every clause $c_i$ we introduce a vertex $c_i$. For every $x_k$ (symmetrically $\neg x_k$) we introduce an edge $(x_k,c_p)$ if and only if $x_k$ is present in p'th clause. Now, we claim that $\phi$ is satisfiable if and only if $(G, F)$ has a \ssf{}.
-	
-	Backward implication: Let $S$ be a solution for $(G,F)$. Then, a set of centers is a correct evaluation that satisfies the formula $\phi$ because every clause $S$ has a witness.
-	
-	To prove the forward implication, assume there exists an evaluation $\sigma$ of variables that satisfies the formula. Let $C = \{l_i: \sigma(l_i) = 1\} $. Note that $C$ contains either $x_i$ or $\neg x_i$. Now, let us construct a solution $S$. Firstly, include all the isolated edges. Then, for every vertex representing a clause $c_i$ take an arbitrary $l_j$ such that $l_j \in N(c_i) \cap C$ and include edge $(c_i, l_j)$ into the solution. The operation is safe. All sets $ N(c_i) \cap C$ are nonempty because there exists a witness $l_k$ that satisfies the clause and there exists an edge between a literal and a clause.
-\end{proof}
-
-Surprisingly, \tsat{} is trivially encoded in \ssfe{}.
-
-\lemma{Any CNF formula can be represented as a formula where each clause has size at most 3} \label{cnf to 3sat}
-\begin{lemma}
-	There exists a reduction from \ssfe{} to \tsat.
-\end{lemma}
-
-\begin{proof}
-	Let $(G,F)$ be an arbitrary normalized instance of \ssfe{}. We create a formula $\phi$ as follows: for every isolated edge $(u,v)$ we introduce literals $x$ and $\neg x$. For every vertex $v \in V(G)\setminus V(F)$ we introduce a clause $c_v$. Literal $l$ is present in a clause $c_j$ if and only if there exists an edge between vertices corresponding to $c_i$ and $l$. Application of lemma \ref{cnf to 3sat} to $\phi$ produces a formula $\phi'$ that is a correct instance of \tsat.
-	
-	Proof of correctness was previously described in the theorem. We omit it for the sake of clarity.
+	Hardness: It has been already proven in Lemma \ref{ssfep reduction} by a reduction from \ssfep{}.
 \end{proof}
 
 \section{Parametrization by the number of isolated edges}
+
+In this section, in addition to an instance $(G,F)$ we receive a parameter $k$ which is equal to a number of forced edges. We show two major results: \ssfep{} parameterized by the number of forced edges does not invoke a kernel of polynomial size and a lower bound under strong exponential hypothesis.
+
+\subsection{Or-cross-composition}
+
+\subsection{Nonexistence of a kernel}
+
+\subsection{Lower bound}
 
 \section{Parametrization by the number of non-isolated edges}
 
