@@ -540,13 +540,55 @@ Ultimately, we can prove the main theorem of the section:
 	Hardness: It has been already proven in Lemma \ref{ssfep reduction} by a reduction from \ssfep{}.
 \end{proof}
 
-\section{Parametrization by the number of isolated edges}
+\section{Parametrization by the number of forced edges}
 
 In this section, in addition to an instance $(G,F)$ we receive a parameter $k$ which is equal to a number of forced edges. We show two major results: \ssfep{} parameterized by the number of forced edges does not invoke a kernel of polynomial size and a lower bound under strong exponential hypothesis.
 
-\subsection{Or-cross-composition}
+\subsection{Cross-composition}
 
-\subsection{Nonexistence of a kernel}
+A \emph{cross-composition} is a framework for proving kernelization lower bounds. A technique, firstly introduced in 2008 by Bodleander et al. (ICALP 2008), has significantly increased the interest in kernelization. As a result, Bodleander, Jansen and Kratsch have published a straightforward schema to show a nonexistence of a kernel.
+
+The following definitions and corollary are taken from. %TODO paper name%.
+
+\begin{definition}\label{polynomial equivalence relation}
+	An equivalence relation $\mathcal{R}$ on $\Sigma^*$ is called a \textup{polynomial equivalence relation} if the following conditions hold:
+	\begin{enumerate}
+		\item There exists an algorithm $\mathcal{A}$ such that given given $x,y \in \Sigma^*$ decides whether $x \equiv_{\mathcal{R}} y$ in time $p(|x|+|y|)$ for a polynomial $p$..
+		\item Relation $\mathcal{R}$ restricted to the set $\Sigma^{\leq n}$ has at most polynomially many equivalence classes.
+	\end{enumerate}
+\end{definition}
+
+\begin{definition}\label{cross-composition}
+	Let $L \subseteq \Sigma^*$ be a language, $\mathcal{R}$ be an equivalence relation $Q \subseteq \Sigma^* \times \mathbb{N}$ be a parameterized problem. A \textup{cross-composition} of a language $L$ into $Q$ is an algorithm $\mathcal{A}$ that given an input $x_1,...,x_t \in L$, equivalent with respect to $\mathcal{R}$, outputs an instance $(x,k') \in \Sigma^* \times \mathbb{N}$ such that:
+	\begin{enumerate}
+		\item $k \leq p(\max\limits_{1 \leq i \leq t} |x_i| + log(t))$ for a polynomial $p$.
+		\item $(x,k') \in Q$ if and only if there exists an index $i$ such that $x_i \in L$.
+	\end{enumerate}
+\end{definition}
+
+\begin{corollary}\label{nokernel}
+	If an NP-hard language $L$ cross-composes into the parameterized language $Q$, then $Q$ does not admit a polynomial kernel unless \textup{NP$\subseteq$ coNP/poly}.
+\end{corollary}
+
+Let us give a simple example to illustrate how to use the tools. Recall that in {\sc Hamiltonian Path} problem, given a graph $G$, the question is whether there exists a path consisting of all the vertices from $G$. In {\sc Longest Path} problem, given a graph $G$ and an integer $k$, we ask to find a path of size $k$.. 
+
+\begin{theorem}
+	{\sc Longest Path} does not admit a polynomial kernel unless NP $\subseteq$ coNP/poly.
+\end{theorem}
+
+\begin{proof}	
+	 We show that {\sc Hamiltonian Path} cross-composes into {\sc Longest Path}. Firstly, we need to find a polynomial equivalence relation $\mathcal{R}$. So, let $\mathcal{R}$ be a relation such that two graphs are in the same class if and only if they have the same number of vertices. Also, we introduce a separate class for a malformed input. The conditions from Definition \ref{polynomial equivalence relation} are trivially satisfied. 
+	
+	Thus, we proceed to the second step. We show an algorithm $\mathcal{A}$ as an evidence that  {\sc Hamiltonian Path} cross-composes into {\sc Longest Path}. Let $G_1,...,G_t$ be an arbitrary instance such that $G_1,..,G_t$ is equivalent with respect to $\mathcal{R}$. The algorithm outputs a disjoint union of graphs, further called $G$, and $k=|V(G_1)|$. Now, let us show that the two conditions stated in the Definition \ref{cross-composition} hold. Obviously $k=|V(G_1)| \leq \max\limits_{1 \leq i \leq t} |G_i|$. Now, suppose that $(G,k)$ has a solution, that is, it consists of a path of length $k$. $G$ is a disjoint union of graphs $G_1,...,G_t$. Moreover, based on relation $\mathcal{R}$, $k$ is equal to the number of vertices of every graph $G_i$. Thus, there exists an index $i$ for which $G_i$ has a Hamiltonian Path. For the backward implication, we say that there exists an index $i$ for which $G_i$ has a Hamiltonian Path. $(G,k)$ is a YES-Instance too because it is a union of disjoint graphs that consists of $G_i$.
+	
+	Ultimately, having proven that an NP-hard problem {\sc Hamiltonian Path} cross-composes into {\sc Longest Path}, based on Corollary \ref{nokernel}, we conclude the proof.
+\end{proof}
+
+\subsection{Lower bound for a kernel}
+
+In this section, we prove that \ssfep{} parameterized by the number of forced edges does not admit a polynomial kernel unless NP $\subseteq$ coNP/poly. To achieve this, we show a cross-composition from \ssfep{} itself. The proof shown below is not as feasible as the one that we discussed in the previous subsection. We use an \emph{instance selector}, a pattern commonly applied to solve a composition. Intuitively, we need to come up with a gadget that satisfies all instances but one. Therefore, we require that at least one of the packed instances has a solution.
+
+Let $\mathcal{R}$ be a polynomial equivalence relation, such that two instances $(G_1,F_1) \equiv_R (G_2, F_2)$ if and only if $|F_1| = |F_2|$. It is a natural choice that simplifies further constructions. 
 
 \subsection{Lower bound}
 
