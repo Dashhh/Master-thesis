@@ -405,7 +405,7 @@ In this chapter, we significantly change the problem. Let $G$ be a graph and $F 
 
 \subsection{Notation}
 
-In further, we denote by $F$ a set of \emph{forced edges}. Vertices that have exactly one forced edge are called \emph{forced candidates}. Similarly, if a subset of $F$ forms a \emph{forced star} of size greater than $3$ we call its particles a \emph{forced center} and \emph{forced rays} consequently. We denote by $F_R$ a set of all forced rays and by $F_C$ a set of all forced centers. Vertices that does not belong to $V(F)$ are called \emph{free vertices}.
+In further, we denote by $F$ a set of \emph{forced edges}. Vertices that have exactly one forced edge are called \emph{forced candidates}. Similarly, if a subset of $F$ forms a \emph{forced star} of size greater than $3$ we call its particles a \emph{forced center} and \emph{forced rays} consequently. We denote by $F_R$ a set of all forced rays and by $F_C$ a set of all forced centers. Vertices that does not belong to $V(F)$ are called \emph{free vertices} and denoted by $U$.
 
 \subsection{Instance normalization} 
 
@@ -586,9 +586,24 @@ Let us give a simple example to illustrate how to use the tools. Recall that in 
 
 \subsection{Lower bound for a kernel}
 
-In this section, we prove that \ssfep{} parameterized by the number of forced edges does not admit a polynomial kernel unless NP $\subseteq$ coNP/poly. To achieve this, we show a cross-composition from \ssfep{} itself. The proof shown below is not as feasible as the one that we discussed in the previous subsection. We use an \emph{instance selector}, a pattern commonly applied to solve a composition. Intuitively, we need to come up with a gadget that satisfies all instances but one. Therefore, we require that at least one of the packed instances has a solution.
+In this section, we prove that \ssfep{} parameterized by the number of forced edges does not admit a polynomial kernel unless NP $\subseteq$ coNP/poly. To achieve this, we show a cross-composition from \ssfep{} into itself. The proof shown below is not as feasible as the one that we discussed in the previous subsection. We use an \emph{instance selector}, a pattern commonly applied to solve a composition. Intuitively, we need to come up with a gadget that satisfies all instances but one. Therefore, we require that at least one of the packed instances has a solution.
 
-Let $\mathcal{R}$ be a polynomial equivalence relation, such that two instances $(G_1,F_1) \equiv_R (G_2, F_2)$ if and only if $|F_1| = |F_2|$. It is a natural choice that simplifies further constructions. 
+\begin{theorem}
+	There exists a cross-composition from \ssfep{} into itself, parameterized by the number of forced edges. Therefore, \ssfep{} parameterized by $|F|$ does not admit a polynomial size kernel unless \textup{NP $\subseteq$ coNP/poly}.
+\end{theorem}
+
+\begin{proof}
+	Let $\mathcal{R}$ be a polynomial equivalence relation such that two instances, $(G_1,F_1),(G_2, F_2)$, are in the same class if and only if $|F_1| = |F_2|$. Additionally, $\mathcal{R}$ considers equivalently all the malformed graphs. Hence, we assume that all the input instances has the same number of forced edges. It is a natural choice that simplifies further investigations.
+	
+	Now, we proceed to the construction process. Let $(G_1,F_1),...,(G_t,F_t)$ be the family of $t$ input instances of \ssfep{}. For the sake of clarity, we duplicate some instances so that $t = 2^i$ for some integer $i$. Note that pessimistically we double the input only.
+	
+	We are now ready to formally define the output graph and a parameter. Firstly, we create a pair $(G,F)$ by merging forced edges of every input instance. Observe, that we reduced the size of the parameter and now it fits the limit stated in Definition \ref{cross-composition}. Finally, we create an instance selector that encodes the OR behavior. We introduce $log(t)$ forced edges $(l_1,r_1),...,(l_{log(t)},r_{log(t)})$. Then, we proceed recursively to add edges. We start with a set $S=\{\{G_1,...,G_t\}\}$. At step $k$, we iterate over every set of $S$ and do the following: split the chosen set in the middle, take the "left" subset and introduce edges from $l_k$ to every free vertex included in the subset, take the "right" subset and introduce edges from $r_k$ to every free vertex included in the subset, add splitted sets to $S$.
+	
+	Of course, we did not exceed the stated limit for the parameter. After the addition of the instance selector, the output instance consists of $|F_1|+log(t)$ forced edges. Before we proceed to the second condition, observe that the instance selector guarantees that free vertices from arbitrary $t-1$ graphs will be included in stars that have a center from instance selector. Therefore, all that remains is to check if at least one graph has a spanning star forest. So, the backward implication was proven in previous sentence. Suppose that graph $G_i$ has a spanning star forest. We select edges going from selectors in such a way that all graphs but $G_i$ are spanned by a star forest. Thus, we can use forced edges from $F$ to provide a spanning star forest for graph $G_i$. For the forward implication, suppose that the output instance has a spanning star forest. Indeed, instance selector covered at most $t-1$ graphs. Thus, there exists at least one index $i$ for which $(G_i,F_i)$ has a spanning star forest.
+	
+	 
+\end{proof}
+
 
 \subsection{Lower bound}
 
