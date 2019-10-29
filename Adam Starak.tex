@@ -49,7 +49,7 @@
 % Instytut
 % ew. Wydział ew. Uczelnia (jeżeli nie MIM UW))
 \opiekun{dr Michał Pilipczuk\\
-  Instytut Informatyki\\
+  Institute of Informatics\\
   }
 
 % miesiąc i~rok:
@@ -104,11 +104,14 @@
 \newcommand{\ssf}{spanning star forest}
 \newcommand{\ssfp}{{\sc Spanning Star Forest}}
 \newcommand{\dssfp}{{\sc Decision Spanning Star Forest}}
-\newcommand{\mssfp}{{\sc Maximal Spanning Star Forest}}
+\newcommand{\mssfp}{{\sc Minimal Spanning Star Forest}}
 \newcommand{\ssfep}{{\sc Spanning Star Forest Extension}}
 \newcommand{\domset}{dominating set}
-\newcommand{\domsetp}{{\sc Dominating Set} problem}
+\newcommand{\domsetp}{{\sc Dominating Set}}
+\newcommand{\indset}{{\sc Independent Set}}
 \newcommand{\cnfsat}{{\sc CNF-SAT}}
+
+\newcommand{\degree}[2]{\textrm{deg}_{#1}(#2)}
 
 \newcommand{\kssf}{\emph{Spanning Star Forest Problem} parameterized by the number of stars}
 \newcommand{\ssfe}{\emph{Spanning Star Forest Extension Problem}}
@@ -141,69 +144,135 @@
 %\listoffigures
 %\listoftables
 
-\chapter*{Introduction}
+\chapter{Introduction}
 \addcontentsline{toc}{chapter}{Introduction}
 
-Blabalizator różnicowy jest podstawowym narzędziem blabalii
-fetorycznej.  Dlatego naukowcy z~całego świata prześcigają się
-w~próbach efektywnej implementacji.  Opracowana przez prof. Fifaka
-teoria fetorów $\sigma$-$\rho$ otwiera w~tej dziedzinie nowe
-możliwości.  Wykorzystujemy je w~niniejszej pracy.
+\begin{theorem}\label{ssfp-thm}
+	\ssfp{} can be solved in linear time.
+\end{theorem}
 
-\chapter{Preliminaries}\label{r:pojecia}
+\begin{theorem}
+	\mssfp{} is \textup{NP}-complete.
+\end{theorem}
+
+\begin{theorem}
+	\mssfp{} is \textup{W[2]}-complete.
+\end{theorem}
+
+\begin{theorem}
+	Unless SETH fails, there is no algorithm for \mssfp{} that achieves running time $\mathcal{O}^*((2-\epsilon)^n)$ for any $\epsilon > 0$, where $n$ is the number of stars.
+\end{theorem}
+
+\begin{theorem}
+	\ssfep{} is \textup{NP}-complete.
+\end{theorem}
+
+\begin{theorem}
+	\ssfep{} parameterized by the number of forced edges does not admit a polynomial kernel.
+\end{theorem}
+
+\begin{theorem}
+	\ssfep{} parameterized by the number of forced edges can be solved in time $\mathcal{O}^*(2^{|F|})$ where $|F|$is the number of forced edges.
+\end{theorem}
+
+\begin{theorem}
+	Unless SETH fails, there is no algorithm for \ssfep{} parameterized by the number of forced edges that achieves running time $\mathcal{O}^*((2-\epsilon)^{|F|})$ for any $\epsilon > 0$, where $|F|$ is the number of forced edges.
+\end{theorem}
+
+\begin{theorem}
+	\ssfep{} parameterized by the number of free vertices admits a linear kernel.
+\end{theorem}
+
+\begin{theorem}
+	\ssfep{} parameterized by the number of free vertices can be solved in ??.%TODO add time%
+\end{theorem}
+
+\begin{theorem}
+	\ssfep{} parameterized by treewidth can be solved in time $2^{tw}$.
+\end{theorem}
+
+\begin{theorem}
+	Unless SETH fails, there is no algorithm for \ssfep{} parameterized by treewidth that achieves running time $\mathcal{O}^*((2-\epsilon)^{tw})$ for any $\epsilon > 0$, where \textup{\textrm{tw}} is treewidth of the input graph.
+\end{theorem}
+
+\chapter{Preliminaries}
 
 \section{Structures}
 
-A simple graph $G$ is a pair $(V,E)$ where $V$ denotes a set of vertices and $E$ denotes a set of undirected edges. Let $deg_G(v)$ denote a degree of vertex $v$ in graph $G$ which is the number of adjacent vertices. Let $G \setminus v$ be the abbreviation for $G'=(V(G) \setminus \{v\}, E(G) \setminus \{(u,v): u \in V(G)\})$. For a set $X \subseteq V(G)$ we define by $G[X]$ the graph induced by vertices from $X$. A graph $P_k$ is a path of length $k$. A graph $C_k$ is a cycle of length $k$. A \emph{tree} $T$ is a connected graph which has exactly $|V(T)|-1$ edges. A \emph{spanning tree} $T$ of a graph $G$ is a tree which includes all of the vertices of $G$, with the minimum possible number of edges. A \emph{star} $S$ is a tree of size at least $2$ for which at most one vertex has a degree greater than $1$. A vertex in a \emph{star} that has the greatest degree is called a \emph{center} while the others are called \emph{rays}. A \emph{star} of size 2 has two \emph{candidates} to become a \emph{center}.
+In a simple graph $G$ we denote by $V(G)$ and $E(G)$ a set of vertices and edges respectively. 
+Let $\degree{G}{v}$ denote a degree of vertex $v$ in graph $G$ which is the number of adjacent vertices. 
+Let $G \setminus v$ be the abbreviation for $G'=(V(G) \setminus \{v\}, E(G) \setminus \{(u,v): u \in V(G)\})$. 
+An induced graph $G'$ of $G$ is a subgraph formed from a subset of vertices and all the edges between them that are present in $G$. For a set $X \subseteq V(G)$ we define by $G[X]$ the graph induced by vertices from $X$. 
+A graph $P_k$ is a path of length $k$. A graph $C_k$ is a cycle of length $k$. 
+A \emph{tree} $T$ is a connected graph which has exactly $|V(T)|-1$ edges. 
+A \emph{spanning tree} $T$ of a graph $G$ is a connected subgraph which includes all of the vertices of $G$, with the minimum possible number of edges.
+A \emph{Spanning forest} $T$ of a graph $G$ is a union of trees that spans $G$.
+A \emph{star} $S$ is a tree of size at least $2$ for which at most one vertex has a degree greater than $1$. 
+A star of size at least $3$ consists of a \emph{center}, that is a vertex of the greatest degree, and \emph{rays} - vertices of degree $1$. 
+A \emph{star} of size 2 has two \emph{candidates}.
 
 \section{Parameterized complexity}
 
+In computer science, \emph{parameterized complexity} is a young branch of computational complexity theory. The first systematic paper was released in 1990 by Downey and Fellows. The further investigations of researchers led to numerous theorems and hypotheses. To begin with, let us formally define a parameterized problem. For the sake of clarity, all the definitions are taken from the book (parameterized complexity).
+
+%TODO add Downey, Rod G.; Fellows, Michael R. (1999). Parameterized Complexity%
+
 \begin{definition}\label{Parameterized problem}
-	A {\textup{parameterized problem}} is a language $L \subseteq \ \Sigma^* \times \mathbf{N}$, where $\Sigma$ is a fixed, finite alphabet. For an instance $(x,k) \in L$, $k$ is called the parameter.
+	A {\textup{parameterized problem}} is a language $L \subseteq \ \Sigma^* \times \mathbf{N}$, where $\Sigma$ is a fixed, finite alphabet. For an instance $(x,k) \in L$, $k$ is called the \textup{parameter}.
 \end{definition}
+
+See the example below to understand the concept:
+
+\begin{definition}
+	\domsetp{}: Given a graph $G$ and a positive integer $k$ find a set $D$ such that $|D| \leq k$ and every vertex from the graph is either in $D$ or is adjacent to one of the vertices from $D$.
+\end{definition}
+
+There might be multiple different parameters for a single problem. For example, in this paper, we will investigate thoroughly a problem with respect to three different parameters. More interestingly, each parametrization yields different results. 
+
+Also, parameterized complexity helped to distinguish hardness of NP-complete problems. The first class is called FPT (fixed parameter tractable). A problem is in FPT if and only if it has an FPT algorithm defined below:
 
 \begin{definition}\label{FPT algorithm}
 	For a parameterized problem $Q$, an \textup{FPT algorithm} is an algorithm $\mathcal{A}$ which, for any input $(x,k)$, decides whether $(x,k) \in Q$ in time $f(k)\cdot n^c$ where c is a constant, independent of $n,k$, and $f$ is a computable function.
 \end{definition}
+
+Another important class of parameterized problems is called an XP class. Similarly, a problem is in XP if and only if it has an XP algorithm defined below:
+
+\begin{definition}
+	For a parameterized problem $Q$, an \textup{XP algorithm} is an algorithm $\mathcal{A}$ which, for any input $(x,k)$, decides whether $(x,k) \in Q$ in time $n^{f(k)}\cdot n^c$ where c is a constant, independent of $n,k$, and $f$ is a computable function.
+\end{definition}
+
+\emph{W-hierarchy} is an alternative way of classifying hard problems. Since it is not the main topic of the paper, we just want to mention that W-hierarchy is an ascending chain of classes that follows: $W[1] \subseteq W[2]...$ . As an example, \indset{} is a W[1]-complete problem whereas \domsetp{} is a W[2]-complete problem. It is not known what is the correlation between FPT and W[1] classes. In this paper, we assume that W[1] $\neq$ FPT. 
+
+Having discussed various complexity classes, let us introduce a tool for reducing one parameterized problem to another. The mechanism described below is widely used in the paper.
+
+\begin{definition}
+	Let $P,Q \subseteq \Sigma^* \times \mathbb{N}$ be two parameterized languages. A  \textup{parameterized reduction} from $P$ to $Q$ is an algorithm $\mathcal{A}$ that given $(x,k) \in P$ outputs $(x',k') \in Q$ such that the following three conditions hold:
+	\begin{enumerate}
+		\item $(x,k)$ is a YES-instance of $P$ if and only if $(x',k')$ is a YES-instance of $Q$.
+		\item $k' \leq g(k)$ for some computable function $g$.
+		\item The running time of $\mathcal{A}$ is $f(k) \times |x^{\mathcal{O}(1)}|$ for some computable function $f$.
+	\end{enumerate}
+\end{definition}
+
+Last but not least, we introduce a \emph{kernelization algorithm} - a way of reducing input instances:
 
 \begin{definition}\label{Kernel}
 	A \textup{kernel} for a parameterized problem $Q$ is an algorithm $\mathcal{A}$ that, given an instance $(x,k) \in Q$, works in polynomial time and returns an equivalent instance $(x',k') \in Q$
 	such that $|x'| + k' \leq g(k)$ for a computable function $g$, called the \textup{size} of the kernel.
 \end{definition}
 
-\begin{definition}
-	{\normalfont Parameterized reduction.}
-\end{definition}
-
-\section{The W-hierarchy}
-
-As opposed to NP-complete problems, which are equivalent with respect to polynomial-time reductions, it is not clear whether or not the rule applies for hard parameterized problem. As an example, it is proven that there exists a parameterized reduction from Independent Set to Dominating Set. However, nobody has proven that the problems are interreducible. The W-hierarchy, proposed by Downey and Fellows, is an attempt to classify hard parameterized problems. 
-
-\begin{definition}
-	A {\textup Boolean circuit} is a directed acyclic graph where the nodes are labeled in the following way:
-	\begin{itemize}
-		\item every node of indegree $0$ is an input node.
-		\item every node of indegree $1$ is an negation node.
-		\item every node of indegree $\geq 2$ is either an and-node or or-node.
-	\end{itemize}
-	
-	Additionally, exactly one of the nodes with outdegree 0 is labeled as the {\textup output node}. The {\textup depth} of the circuit is the maximum length of a path from an input node to the output node.
-\end{definition}
-
-Assigning 0-1 values to the input nodes determines the value of every node in the obvious way. In particular, if the value of the output gate is 1 in an assignment to the input nodes, then we say that the assignment satisfies the circuit.
-\\\\
-In {\sc{\wcs}} problem, we are given a circuit $C$ and an integer $k$, the task is to decide if $C$ has a satisfying assignment of weight exactly $k$.
+Kernelization was not a highly explored area. Not until the year 2008, when researchers developed a technique to prove lower bounds on kernels. We discuss the framework as well as show an example further in this paper.
 
 \section{Tree decomposition}
 
-Formally, a tree decomposition of a graph $G$ is a pair $\mathcal{T} = (T, \{X_t\}_{t\in V(T)})$ where $\mathcal{T}$ is a tree whose every node $t$ is assigned a vertex subset $X_t \subseteq V(G)$, called a bag, such that the following three conditions hold:
+Formally, a tree decomposition of a graph $G$ is a pair $\mathcal{T} = (T, \{X_t\}_{t\in V(T)})$ where $\mathcal{T}$ is a tree whose every node $t$ is assigned a vertex subset $X_t \subseteq V(G)$, called a \emph{bag}, such that the following three conditions hold:
 \begin{itemize}
 	\item[(T1)] $\bigcup_{t\in V(T)}X_t = V(G)$.
 	\item[(T2)] For every $(v,u) \in E(G)$ there exists a bag $t$ of $\mathcal{T}$ such that $v,u \in X_t$.
 	\item[(T3)] For every $v \in V(G)$ the set $T_v = \{t \in V(T): v \in X_t\}$ induces a connected subtree of T.
 \end{itemize}
 
-The width of a tree decomposition $\mathcal{T} = (T,\{X_t\}_{t\in V(T)})$, denoted as $w(\mathcal{T})$, is equal to $\max_{t \in V(T)} |X_t| - 1$. The treewidth of a graph $G$, denoted as $tw(G)$, is the minimal width over all tree decompositions of $G$.
+The width of a tree decomposition $\mathcal{T} = (T,\{X_t\}_{t\in V(T)})$, denoted as $\textrm{tw}(\mathcal{T})$, is equal to $\max_{t \in V(T)} |X_t| - 1$. The treewidth of a graph $G$, denoted as $\textrm{tw}(G)$, is the minimal width over all tree decompositions of $G$.
 \\\\
 A nice tree decomposition of a graph $G$ is a tree decomposition $(T, \{X_t\}_{t \in V(T)})$ such that
 \begin{itemize}
@@ -216,17 +285,13 @@ A nice tree decomposition of a graph $G$ is a tree decomposition $(T, \{X_t\}_{t
 	\end{itemize}
 \end{itemize}
 
-\subsection{Path decomposition}
+We distinguish one special case. If a tree $\mathcal{T}$ forms a path, we call it a \emph{path decomposition}. Respectively, by $\textrm{pw}(G)$ we denote a width of a path decomposition and by $\textrm{pw}(G)$ we denote the minimal width over all path decompositions of $G$.
 
-A path decomposition $\mathcal{P}=(P,\{X_p\}_{p \in V(P)})$ of a graph $G$ is a specific case of a tree decomposition. Namely, $P$ forms a path. In addition, the pathwidth of a graph $G$, denoted as $pw(G)$, is the minimal width over all path decompositions of $G$. A nice path decomposition of a graph $G$ is a path decomposition $(P,\{X_p\}_{p \in V(P)})$ such that there exists a root, one leaf and all the inner nodes are either an introduce node or forget node.
+\chapter{Spanning Star Forest Problem}\label{r:losers}
 
-\chapter{Spanning Star Forest}\label{r:losers}
-
-In this chapter we show three different variants of the \ssfp{}. We start with its decision version. Then, we propose an algorithm working in linear time that finds an arbitrary \ssf{}. In the last section, we constrain the number of stars that a solution can have. The problem formulated in such a way turns out to be NP-complete.
+In this chapter we examine both decision and constructive variant of \ssfp{}. For a given graph $G$, we say that $S$ is a \ssf{} if $S$ spans $G$ and every connected component of $S$ is a star. We propose an algorithm working in linear time that outputs a \ssf{} or concludes with a NO-instance.
 
 \section{Decision Spanning Star Forest problem}
-
-For a given graph $G$, we say that $S$ is a \ssf{} if $S$ is a subgraph of $G$ that contains all vertices of $G$ and every connected component of $S$ is a star. In decision version \ssfp{} given a graph $G$, the objective is to determine whether there exists a \ssf{}.
 
 It turns out that the problem formulated in such a way is relatively simple. Although, various variants described in this paper make it more complex. The following lemma easily clarifies all the concerns about its hardness.
 
@@ -237,62 +302,67 @@ It turns out that the problem formulated in such a way is relatively simple. Alt
 \begin{proof}
 	If $G$ has a \ssf{} $S$, then trivially for all $v \in V(G)\ 1 \leq deg_S(v) \leq deg_G(v)$. Thus, none of the vertices is isolated.
 	
-	For the opposite direction, we prove the lemma by induction on $|V(G)|$. Assume $|V(G)|=2$. The statement trivially holds because a graph consisting of one edge and two vertices is a correct \ssf{}. Let $|V(G)| >2$. Suppose that for every vertex $v$, graph $G \setminus v$ has an isolated vertex. Then, it holds that for all $v \in V(G)\ deg_G(v)=1$. Thus, $G$ consists of a set of disjoint edges which is a correct \ssf{}. Now, suppose contrary, that there exists a vertex $v$ such that $G \setminus v$ has no isolated vertices. From the inductive assumption, let $S$ be a \ssf{} of a graph $G \setminus v$, $u$ be a vertex such that $(u,v) \in E(G)$ and $w \in N_S[u]$. Consider the two following cases:
+	For the opposite direction, we prove the lemma by induction on $|V(G)|$. Assume $|V(G)|=2$. The statement trivially holds because a graph consisting of one edge and two vertices is a correct \ssf{}. Let $|V(G)| >2$. For the inductive step, we split the proof into two parts. Firstly, suppose that for all vertices $v \in V(G)$, it holds that $\degree{G}{v}=1$.  Clearly, $G$ is a matching. Hence, it is a correct \ssf{}. Now, suppose that there exists a vertex $u$ such that $\degree{G}{u}>1$. Let $C \subseteq G$ be a maximal, connected component satisfying $u \in V(C)$. Based on the degree of $u$, we infer that $|V(C)|>2$. Thus, we conclude that in a connected graph of $3$ vertices there exists a vertex $v$ such that $C \setminus v$ has no isolated vertices and neither has $G \setminus v$. From the induction, let $S$ be a \ssf{} of the graph $G \setminus v$, $u$ be a vertex such that $uv \in E(G)$ and take any $w \in N_S[u]$. Consider the two following cases:
 	\begin{enumerate}
-		\item Suppose $u$ is a ray. It implies that $w$ is a center and $deg_S(w) \geq 2$. Then, $S'=\big(V(S) \cup \{v\},(E(S) \cup \{(u,v)\}) \setminus \{(u,w)\}\big)$ is a correct solution for graph $G$.
-		\item Otherwise, $u$ is either a candidate or a center. Then, $S'=\big(V(S) \cup \{v\}, E(S) \cup \{(u,v)\}\big)$ is a correct solution for graph $G$.
+		\item Suppose $u$ is a ray in $S$. This implies that $w$ is a center and $deg_S(w) \geq 2$. Then, $S'=\big(V(S) \cup \{v\},(E(S) \cup \{uv\}) \setminus \{uw\}\big)$ is a spanning star forest for the graph $G$.
+		\item Otherwise, $u$ is either a candidate or a center. Then, $S'=\big(V(S) \cup \{v\}, E(S) \cup \{uv\}\big)$ is a spanning star forest for the graph $G$.
 	\end{enumerate}
 	
 \end{proof}
-	Application of Lemma \ref{SSF lemma} yields the following result for \dssfp{}.
 
-\begin{theorem}
+Application of Lemma \ref{SSF lemma} yields the following result for \dssfp{}.
+
+\begin{corollary}
 	\dssfp{} can be solved in linear time.
-\end{theorem}
+\end{corollary}
 
 \begin{proof}
-	Given a graph $G = (V,E)$ the answer is YES if for all $v \in V(G)\ deg_G(v) \neq 0$ and NO otherwise.
+	Given a graph $G = (V,E)$ the answer is YES if for all $v \in V(G)\ \degree{G}{v} \neq 0$ and NO otherwise.
 \end{proof}
 
 \section{Spanning Star Forest Problem}
 
-In this section we focus on obtaining an arbitrary solution for a given instance of \ssfp{}. Firstly, let us introduce two claims which help to normalize an instance and make the algorithm more clear to the reader.
+In this section we focus on obtaining an arbitrary solution for a given instance of \ssfp{}. Firstly, let us introduce two claims which help to normalize an instance and make the algorithm more clear.
 
 \begin{claim} \label{SSF sum}
-	Family of disjoint \ssf{} is a \ssf{}.
+	If $C_1,C_2,...C_n$ are the connected components of a graph $G$ and $S_1,S_2,...,S_n$ its \ssf{}s respectively, then $\bigcup\limits_{i=1}^n S_i$ is a \ssf{} of $G$.
 \end{claim}
 
 \begin{claim} \label{Spanning tree SSF}
-	$G$ has a \ssf{} if and only if its spanning tree $T$ has.
+	A connected graph $G$ has a \ssf{} if and only if its spanning tree $T$ has.
 \end{claim}
 
 The first claim can be trivially proven by the definition of a \ssf{} while the second one follows directly from Lemma \ref{SSF lemma}. Equipped with this information, all that is left to do, is to design an algorithm which solves the problem for trees.
 
 \begin{algorithm}\label{alg1}
-	\KwData{Connected graph $G$}
-	\KwResult{\ssf{} of $G$}
+	\KwIn{connected graph $G$}
+	\KwOut{\ssf{} of $G$}
+	$spanned \leftarrow Array[|V(G)|]$\; 
 	$T \leftarrow$ $SpanningTree(G)$\;
 	$S \leftarrow$ $\emptyset$\;
 	\For{$v$: $postorder(T)$ and $v$ is not a root}{
-		\If{$v \notin V(S)$}{
-			$S \leftarrow S \cup \{(u,v)\}$ where $u = parent(v)$\;
+		\If{$spanned[v] \neq 1$}{
+			$u \leftarrow parent(v)$\;
+			$S \leftarrow S \cup \{(u,v)\}$\;
+			$spanned[v] = 1$\;
+			$spanned[u] = 1$\;
 		}
 	}
 	$v \leftarrow root(T)$\;
-	\If{$v \notin V(S)$}{
+	\If{$spanned[v] \neq 1$}{
 		$S \leftarrow S \cup \{(u,v)\}$ where $u$ is a child of $v$\;
 	}
 	\Return $S$\;
 	\caption{Obtaining a spanning star forest from a connected graph.}
 \end{algorithm}
 
-Firstly, the algorithm creates a spanning tree $T$. Then, it does a simple bottom-up traversal. If the current node $v$ has not been added to the solution yet, the algorithm adds it together with its parent. If the root has not been added to the solution during the for loop, we add an arbitrary edge to the solution which finishes the algorithm. If the input graph is not connected, we run the algorithm separately on each component and then merge results based on claim \ref{SSF sum}.
+Firstly, the algorithm creates a spanning tree $T$. Then, it does a simple bottom-up traversal. If the current node $v$ has not been added to the solution yet, the algorithm adds the edge connected to its parent. If the root has not been added to the solution during the for loop, we add an arbitrary edge, incident to the solution, which finishes the algorithm. If the input graph is not connected, we run the algorithm separately on each component and then merge results based on Claim \ref{SSF sum}.
 
 There is one non-trivial operation that the algorithm does. Specifically, if the root has not  been added during the for loop, we connect the root to any existing star without checking whether it remains a correct star.
 
-\begin{proposition}\label{ssf root}
+\begin{claim}\label{ssf root}
 	If $(u_1,u_2),(u_2,u_3) \in E(S)$, $u_2 = parent(u_1)$ and $u_3=parent(u_2)$, then $u_3$ is the root.
-\end{proposition}
+\end{claim}
 
 \begin{proof}
 	Suppose contrary, that $u_3$ is not the root. Then, both $(u_1,u_2)$ and $(u_2,u_3)$ have been added during the for loop. Contradiction because $u_2$ has been added to the solution during $u_1$'s iteration and the algorithm should not have added the edge $(u_2,u_3)$. Thus, $u_3$ is the root.
@@ -523,7 +593,7 @@ There is one more observation that we want to point out in this paper. Since a C
 
 Immediately, we obtain a symmetric corollary:
 
-\begin{corollary}
+\begin{corollary}\label{reduction size}
 	An instance $(G,F)$ of \ssfep{} can be reduced in polynomial time to a $\cnfsat{}$ instance of $|V(G) \setminus V(F)|$ clauses, $|F|$ variables. The length of the formula is equal to $|E(G) \setminus F|$.
 \end{corollary}
 
@@ -595,17 +665,50 @@ In this section, we prove that \ssfep{} parameterized by the number of forced ed
 \begin{proof}
 	Let $\mathcal{R}$ be a polynomial equivalence relation such that two instances, $(G_1,F_1),(G_2, F_2)$, are in the same class if and only if $|F_1| = |F_2|$. Additionally, $\mathcal{R}$ considers equivalently all the malformed graphs. Hence, we assume that all the input instances has the same number of forced edges. It is a natural choice that simplifies further investigations.
 	
-	Now, we proceed to the construction process. Let $(G_1,F_1),...,(G_t,F_t)$ be the family of $t$ input instances of \ssfep{}. For the sake of clarity, we duplicate some instances so that $t = 2^i$ for some integer $i$. Note that pessimistically we double the input only.
+	Now, we proceed to the construction process. Let $(G_1,F_1),...,(G_t,F_t)$ be the family of $t$ input instances of \ssfep{}. For the sake of clarity, we duplicate some instances so that $t = 2^i$ for some integer $i$. Note that pessimistically, we double the input only.
 	
-	We are now ready to formally define the output graph and a parameter. Firstly, we create a pair $(G,F)$ by merging forced edges of every input instance. Observe, that we reduced the size of the parameter and now it fits the limit stated in Definition \ref{cross-composition}. Finally, we create an instance selector that encodes the OR behavior. We introduce $log(t)$ forced edges $(l_1,r_1),...,(l_{log(t)},r_{log(t)})$. Then, we proceed recursively to add edges. We start with a set $S=\{\{G_1,...,G_t\}\}$. At step $k$, we iterate over every set of $S$ and do the following: split the chosen set in the middle, take the "left" subset and introduce edges from $l_k$ to every free vertex included in the subset, take the "right" subset and introduce edges from $r_k$ to every free vertex included in the subset, add splitted sets to $S$.
+	We are now ready to formally define the output graph and a parameter. Firstly, we create a pair $(G,F)$ by merging forced edges of every input instance. Observe, that we reduced the size of the parameter and now it fits the limit stated in Definition \ref{cross-composition}. Furthermore, we create an instance selector that encodes the OR behavior. We introduce $log(t)$ forced edges $(l_1,r_1),...,(l_{log(t)},r_{log(t)})$. Then, we proceed recursively to add edges. We start with a set $S=\{\{G_1,...,G_t\}\}$. At step $k$, we iterate over every set of $S$ and do the following: split the chosen set in the "middle", take the "left" subset and introduce edges from $l_k$ to every free vertex included in the subset, take the "right" subset and introduce edges from $r_k$ to every free vertex included in the subset, add splitted sets to $S$.
 	
-	Of course, we did not exceed the stated limit for the parameter. After the addition of the instance selector, the output instance consists of $|F_1|+log(t)$ forced edges. Before we proceed to the second condition, observe that the instance selector guarantees that free vertices from arbitrary $t-1$ graphs will be included in stars that have a center from instance selector. Therefore, all that remains is to check if at least one graph has a spanning star forest. So, the backward implication was proven in previous sentence. Suppose that graph $G_i$ has a spanning star forest. We select edges going from selectors in such a way that all graphs but $G_i$ are spanned by a star forest. Thus, we can use forced edges from $F$ to provide a spanning star forest for graph $G_i$. For the forward implication, suppose that the output instance has a spanning star forest. Indeed, instance selector covered at most $t-1$ graphs. Thus, there exists at least one index $i$ for which $(G_i,F_i)$ has a spanning star forest.
-	
-	 
+	Of course, we did not exceed the stated limit for the parameter. After the addition of the instance selector, the output instance consists of $|F_1|+log(t)$ forced edges. Before we proceed to the second condition, observe that the instance selector guarantees that free vertices from any $t-1$ graphs will be spanned by stars that have a center in instance selector . Therefore, all that remains is to check if at least one graph has a spanning star forest. Hence, the backward implication is simple. Suppose that graph $G_i$ has a spanning star forest. We select edges going from instance selectors in such a way that all graphs but $G_i$ are spanned by a star forest. Thus, we can use forced edges from $F$ to provide a spanning star forest for graph $G_i$. For the forward implication, suppose that the output instance has a spanning star forest. Indeed, instance selector covered at most $t-1$ graphs. Thus, there exists at least one index $i$ for which $(G_i,F_i)$ has a spanning star forest.
 \end{proof}
 
 
-\subsection{Lower bound}
+\subsection{Lower bound based on SETH}
+
+Previously in this chapter, we were proving various properties of \ssfep{} problem. We showed the problem is NP-complete, it does not admit a polynomial kernel and we stated 9 reduction rules to simplify instances. In this subsection, we show a simple routine that solves \ssfep{}. Furthermore, we prove that there does not exist a faster algorithm unless SETH fails.
+
+\begin{algorithm}\label{alg2}
+	\KwData{Pair $(G,F)$ after exhaustive application of reduction rules}
+	\KwResult{\ssf{} of $G$ extending $F$}
+	$Centers \leftarrow \{C: |C|=|F| \text{ and } \forall u,v \in C,\ (u,v) \notin F\}$\;
+	\For{$C \in Centers$ }{
+		\If{$G[C]$ spans $G$}{
+			\Return YES-instance\;
+		}
+	}
+	\Return NO-instance\;
+	\caption{Extending a spanning star forest from a reduced graph.}
+\end{algorithm}
+
+Consider the following Algorithm \ref{alg2}. It simply iterates over all maximal sets of forced candidates that do not form any edge. If a set spans all the vertices, then it means that the set of forced edges can be extended to a spanning star forest. Otherwise, if none of the sets is capable of it, then the input is a NO-instance. Thus, we may conclude this part with the following theorem:
+
+\begin{theorem}
+	\ssfep{} parameterized by the number of forced edges can be solved in time $\mathcal{O}^*(2^{|F|})$.
+\end{theorem}
+
+\begin{proof}
+	There are $2^{|F|}$ possible sets. Every iteration takes linear time to process the set.
+\end{proof}
+
+Note that the described algorithm is a simple brute force. We do not optimize the search. Moreover, there is no need to fight for a better complexity unless SETH fails. The following theorem proves the point.
+
+\begin{theorem}
+	Unless SETH fails, there is no algorithm for \ssfep{} parameterized by the number of forced edges that achieves running time $\mathcal{O}^*((2-\epsilon)^n)$ for any $\epsilon > 0$, where $n$ is the size of the set of forced edges.
+\end{theorem}
+
+\begin{proof}
+	We have already presented a sufficient reduction in Lemma \ref{ssfep reduction}. Hence, we want to verify that the existence of an algorithm, running in time stated in the theorem, would contradict SETH. Therefore, suppose that \ssfep{} can be solved in time $\mathcal{O}^*(2^{\delta n})$, for some $\delta < 1$. Assuming SETH, there exists a constant $q \geq 3$ such that $q${\sc -SAT} cannot be solved in time $\mathcal{O}^*(2^{\delta n})$, where $n$ is the number of variables. Consider now the following algorithm for $q${\sc -SAT}: apply the polynomial reduction from Lemma \ref{ssfep reduction} and then solve the resulting instance of \ssfep{} using the assumed faster algorithm. Based on Corollary \ref{reduction size} we can transform an arbitrary instance of \cnfsat{} of $n$ variables into a \ssfep{} instance with $n$ forced edges. Thus, we could solve $q${\sc -SAT} in time that contradicts SETH.
+\end{proof}
 
 \section{Parametrization by the number of non-isolated edges}
 
@@ -614,45 +717,7 @@ In this section, we prove that \ssfep{} parameterized by the number of forced ed
 \begin{thebibliography}{99}
 \addcontentsline{toc}{chapter}{Bibliografia}
 
-\bibitem[Bea65]{beaman} Juliusz Beaman, \textit{Morbidity of the Jolly
-    function}, Mathematica Absurdica, 117 (1965) 338--9.
-
-\bibitem[Blar16]{eb1} Elizjusz Blarbarucki, \textit{O pewnych
-    aspektach pewnych aspektów}, Astrolog Polski, Zeszyt 16, Warszawa
-  1916.
-
-\bibitem[Fif00]{ffgg} Filigran Fifak, Gizbert Gryzogrzechotalski,
-  \textit{O blabalii fetorycznej}, Materiały Konferencji Euroblabal
-  2000.
-
-\bibitem[Fif01]{ff-sr} Filigran Fifak, \textit{O fetorach
-    $\sigma$-$\rho$}, Acta Fetorica, 2001.
-
-\bibitem[Głomb04]{grglo} Gryzybór Głombaski, \textit{Parazytonikacja
-    blabiczna fetorów --- nowa teoria wszystkiego}, Warszawa 1904.
-
-\bibitem[Hopp96]{hopp} Claude Hopper, \textit{On some $\Pi$-hedral
-    surfaces in quasi-quasi space}, Omnius University Press, 1996.
-
-\bibitem[Leuk00]{leuk} Lechoslav Leukocyt, \textit{Oval mappings ab ovo},
-  Materiały Białostockiej Konferencji Hodowców Drobiu, 2000.
-
-\bibitem[Rozk93]{JR} Josip A.~Rozkosza, \textit{O pewnych własnościach
-    pewnych funkcji}, Północnopomorski Dziennik Matematyczny 63491
-  (1993).
-
-\bibitem[Spy59]{spyrpt} Mrowclaw Spyrpt, \textit{A matrix is a matrix
-    is a matrix}, Mat. Zburp., 91 (1959) 28--35.
-
-\bibitem[Sri64]{srinis} Rajagopalachari Sriniswamiramanathan,
-  \textit{Some expansions on the Flausgloten Theorem on locally
-    congested lutches}, J. Math.  Soc., North Bombay, 13 (1964) 72--6.
-
-\bibitem[Whi25]{russell} Alfred N. Whitehead, Bertrand Russell,
-  \textit{Principia Mathematica}, Cambridge University Press, 1925.
-
-\bibitem[Zen69]{heu} Zenon Zenon, \textit{Użyteczne heurystyki
-    w~blabalizie}, Młody Technik, nr~11, 1969.
+\bibitem{example}
 
 \end{thebibliography}
 
