@@ -112,6 +112,7 @@
 \newcommand{\cnfsat}{{\sc CNF-SAT}}
 
 \newcommand{\degree}[2]{\textrm{deg}_{#1}(#2)}
+\DeclareMathOperator{\Ima}{Im}
 
 \newcommand{\kssf}{\emph{Spanning Star Forest Problem} parameterized by the number of stars}
 \newcommand{\ssfe}{\emph{Spanning Star Forest Extension Problem}}
@@ -210,6 +211,7 @@ A \emph{Spanning forest} $T$ of a graph $G$ is a union of trees that spans $G$.
 A \emph{star} $S$ is a tree of size at least $2$ for which at most one vertex has a degree greater than $1$. 
 A star of size at least $3$ consists of a \emph{center}, that is a vertex of the greatest degree, and \emph{rays} - vertices of degree $1$. 
 A \emph{star} of size 2 has two \emph{candidates}.
+For a given graph $G$, we say that $S$ is a \ssf{} if $S$ spans $G$ and every connected component of $S$ is a star. 
 
 \section{Parameterized complexity}
 
@@ -287,9 +289,9 @@ A nice tree decomposition of a graph $G$ is a tree decomposition $(T, \{X_t\}_{t
 
 We distinguish one special case. If a tree $\mathcal{T}$ forms a path, we call it a \emph{path decomposition}. Respectively, by $\textrm{pw}(G)$ we denote a width of a path decomposition and by $\textrm{pw}(G)$ we denote the minimal width over all path decompositions of $G$.
 
-\chapter{Spanning Star Forest Problem}\label{r:losers}
+\chapter{Spanning Star Forest Problem}
 
-In this chapter we examine both decision and constructive variant of \ssfp{}. For a given graph $G$, we say that $S$ is a \ssf{} if $S$ spans $G$ and every connected component of $S$ is a star. We propose an algorithm working in linear time that outputs a \ssf{} or concludes with a NO-instance.
+In this chapter we examine both decision and constructive variant of \ssfp{}. We propose an algorithm working in linear time that outputs a \ssf{} or concludes with a NO-instance.
 
 \section{Decision Spanning Star Forest problem}
 
@@ -358,10 +360,10 @@ The first claim can be trivially proven by the definition of a \ssf{} while the 
 
 Firstly, the algorithm creates a spanning tree $T$. Then, it does a simple bottom-up traversal. If the current node $v$ has not been added to the solution yet, the algorithm adds the edge connected to its parent. If the root has not been added to the solution during the for loop, we add an arbitrary edge, incident to the solution, which finishes the algorithm. If the input graph is not connected, we run the algorithm separately on each component and then merge results based on Claim \ref{SSF sum}.
 
-There is one non-trivial operation that the algorithm does. Specifically, if the root has not  been added during the for loop, we connect the root to any existing star without checking whether it remains a correct star.
+Now we need to check if the obtained graph is a spanning star forest. There is one non-trivial operation that the algorithm does. Specifically, if the root has not  been added during the for loop, we connect the root to any existing star without checking whether it remains a correct star.
 
 \begin{claim}\label{ssf root}
-	If $(u_1,u_2),(u_2,u_3) \in E(S)$, $u_2 = parent(u_1)$ and $u_3=parent(u_2)$, then $u_3$ is the root.
+	If $(u_1,u_2),(u_2,u_3) \in E(S)$, $u_2 = parent(u_1)$ and $u_3=parent(u_2)$, then $u_3$ is the root and $u_3$ is incident to one edge of the solution only.
 \end{claim}
 
 \begin{proof}
@@ -375,73 +377,63 @@ From the Proposition \ref{ssf root} we infer that no two consecutive parents are
 \end{lemma}
 
 \begin{proof}
-	Clearly, $S$ is a forest. So, it suffices to check that there are no isolated vertices and the solution does not induce a path of length $3$. The first claim is true because we enumerate over all vertices and pair them up with its parent if a vertex has not been added to the solution in previous iteration. So is the second claim based on the information inferred from Proposition \ref{ssf root}.
+	Clearly, $S$ is a forest. So, it suffices to check that there are no isolated vertices and the solution does not contain a path of length $3$. The first claim is true because we enumerate over all vertices and pair them up with its parent if a vertex has not been added to the solution in previous iteration. So is the second claim based on the information inferred from Proposition \ref{ssf root}.
 \end{proof}
 
-Having proven the correctness of Algorithm \ref{alg1} we proceed to the complexity analysis.
+Having proven the correctness of Algorithm \ref{alg1} we proceed to the complexity analysis i.e. we prove the Theorem \ref{ssfp-thm}.
 
-\begin{theorem}
-	A solution for \ssfp{} can be found in linear time.
-\end{theorem}
-
-\begin{proof}
+\begin{proof}[Proof (of Theorem \ref{ssfp-thm})]
 	An arbitrary spanning tree of any graph can be found in linear time. The main loop has $n-1$ iterations (every vertex is processed once), each of which takes constant time.
 	Thus, the total runtime is linear.
 \end{proof}
 
-The problem stated without any constraints is simple. Both decision and normal version of the problem can be solved in linear time. The next variations investigated in this paper yield more complex results.
+The problem stated without any constraints is simple. Both decision and constructive variant of the problem can be solved in linear time. The next variations investigated in this paper yield more complex results.
 
-\section{Maximal Spanning Star Forest problem}
+\chapter{Minimal Spanning Star Forest problem}
 
 In \mssfp{}, given a graph $G$ and a natural number $k$, the objective is to determine whether there exists a \ssf{} $S$ such that the number of connected components is at most $k$.
 
-It is natural to ask whether one can find a solution that minimizes the number of connected components. The problem formulated in that way looks slightly different than the previous one. From the other hand, the problem resembles \domsetp{}, which is defined as follows:
+It is natural to ask whether one can find a solution that minimizes the number of connected components. The problem formulated in that way looks slightly different than the previous one. From the other hand, the problem resembles \domsetp{}.
+
+At first glance, one can say that a center corresponds to a dominating vertex whereas a ray is corresponds to a dominated vertex. Candidates might be represented by either a dominating or dominated vertex. However, in \domsetp{} isolated dominating vertices are allowed and some vertices are dominated by multiple neighbors. 
+
+To give a systematic parameterized reduction between these two problems, we need to get a better understanding of the \domsetp{} problem.
 
 \begin{definition}
-	\domsetp: Given a graph $G$ and a positive integer $k$ find a set $D$ such that $|D| \leq k$ and every vertex from the graph is adjacent to one of the vertices from $D$.
-\end{definition}
-
-At first glance, one can say that a center is related to a dominating vertex whereas a ray is related to a dominated vertex. Candidates might be represented by either a dominating or dominated vertex. However, we cannot finish our research at this point because in \domsetp{} isolated dominating vertices are allowed and some vertices are dominated by multiple neighbors. 
-
-To give a systematic parameterized reduction between these two problems, we need to get a better understanding of \domsetp{}.
-
-\begin{definition}
-	Given an instance $(G,k)$ of Dominating Set Problem that does not contain any isolated vertices and a solution $D$, a {\normalfont domination mapping} is a function $m:V(G) \setminus D \rightarrow D$ such that satisfies $(x,m(x)) \in E(G)$ for all $x \in Dom(m)$.
+	Given a graph $G$ and a dominating set $D$, a \textup{dominating mapping} is a function vertices and a solution $D$, a {\normalfont domination mapping} is a function $\mu:V(G) \setminus D \rightarrow D$ such that satisfies $(x,\mu(x)) \in E(G)$ for all $x \in Dom(\mu)$.
 \end{definition}
 
 \begin{lemma}\label{dom mapping}
-	Let $G$ be a graph without isolated vertices and let $D$ be a dominating set of minimal size. Then, there exists a domination mapping $m$ such that $m$ is surjective.
+	Let $G$ be a graph without isolated vertices and let $D$ be a dominating set in $G$ of minimum size. Then, there exists a domination mapping $\mu$ such that $\mu$ is surjective.
 \end{lemma}
 
 \begin{proof}
-	Let $m$ be a dominating mapping that maximizes $|im(m)|$. If $m$ is surjective, then the proof is finished. Otherwise, there exists a vertex $v$ such that $v \notin im(m)$. Consider the following cases::
+	Let $\mu$ be a dominating mapping that maximizes $|\Ima \mu|$. If $\mu$ is surjective, then the proof is finished. Otherwise, there exists a vertex $v \in D$ such that $v \notin \Ima \mu$. Consider the following cases:
 	\begin{enumerate}
-		\item Suppose $N_G(v) = \emptyset$. Contradiction, $G$ has no isolated vertices.
-		\item Suppose $u \in N_G(v) \cap D$. Contradiction, $D$ was said to be a solution of minimal size whereas $D \setminus \{u\}$ is a valid, smaller solution.
-		\item Suppose $u \in N_{G}(v) \setminus D$ and $w = m(u)$. If $|m^{-1}(w)|=1$, then $((D \setminus \{v,w\}) \cup u)$ is a valid, smaller solution for a graph $G$. Contradiction.
-		\item Suppose $u \in N_{G}(v) \setminus D$ and $w = m(u)$. If $|m^{-1}(w)| > 1$ then a mapping:
+		\item Suppose $N_G(v) = \emptyset$. Contradiction, $G$ has no isolated vertices; Let $u$ be any neighbor of $v$.
+		\item Suppose $u \in D$. Contradiction, $D$ was assumed to be a solution of minimal size whereas $D \setminus \{v\}$ is a smaller dominating set.
+		\item Suppose $u \notin D$ and let $w = \mu(u)$. If $|\mu^{-1}(w)|=1$, then $((D \setminus \{v,w\}) \cup u)$ is a smaller dominating set for the graph $G$. Contradiction.
+		\item Finally, suppose $|\mu^{-1}(w)| > 1$ then the mapping:
 		\begin{equation*}
-			m'(x) = \begin{cases}
+			\mu'(x) = \begin{cases}
 			v, & \text{if }x = u \\
-			m(x), &\text{otherwise} \\
+			\mu(x), &\text{otherwise} \\
 			\end{cases}
 		\end{equation*}
-		is a valid mapping that satisfies $im(m) \subsetneq im(m')$. Thus, one can create a new mapping $m''$ inductively such that $m''$ is surjective. Contradiction, we assumed that no such mapping exists. 
+		is a valid domination mapping that satisfies $\Ima \mu \subsetneq \Ima \mu'$. Contradiction, we assumed that $\mu$ is a dominating mapping that maximizes $|\imath \mu|$.
 	\end{enumerate}
 	
-	Since all the first three cases led to a contradiction and the last one shows how to inductively expand the image of a domination mapping, we may conclude that there exists a domination mapping $m$ such that $m$ is surjective.  
+	Since all the cases led to a contradiction we conclude that there exists a domination mapping $\mu$ such that $\mu$ is surjective.  
 \end{proof}
 
 Armed with the lemma, we are ready to prove the main theorem of the section.
 
-\begin{theorem}\label{dom ssf}
-	\mssfp{} is NP-Complete.
+\begin{theorem}\label{dom-ssf reduction}
+	There is a parameterized reduction that takes an instance $(G,k)$ of \domstep{} and returns instance $(G',k)$ of \mssfp{} such that it doubles the number of vertices pessimistically.
 \end{theorem}
 
 \begin{proof}
-	Membership in NP: The witness is a spanning star forest $S$. The verifier checks if all the vertices from input graph are included in $S$, there are no isolated vertices and $S$ does not induce a $P_3$ nor $C_{> 2}$.
-	\\\\
-	Hardness: We show hardness by a reduction from \domsetp{} that completes the proof. Given graph $G$ and integer $k$, in PTIME, for every isolated vertex $v \in V(G)$ introduce a vertex $v'$ and an edge $(v,v')$. Now, we claim that $(G,k)$ is a YES-instance of \domsetp{} if and only if $(G',k)$ is a YES-instance of \mssfp{}. 
+	Firstly, we show the reduction. Given a graph $G$ and integer $k$, for every isolated vertex $v \in V(G)$ we introduce a vertex $v'$ and an edge $(v,v')$. Now, we claim that $(G,k)$ is a YES-instance of \domsetp{} if and only if $(G',k)$ is a YES-instance of \mssfp{}. 
 	
 	The backward implication is simple. Suppose $S$ is a solution for $(G',k)$. We create the \domset{} $D$ as follows: for every star of size $2$ pick an arbitrary candidate that is present in graph $G$ and for every star of size greater than $2$ pick a center. Obviously $|D| \leq k$ because there are at most $k$ connected components in $S$. Every vertex from $G'$ is adjacent to one of the centers or candidates that we chose during construction of a set $D$.
 	
