@@ -148,20 +148,20 @@
 \chapter{Introduction}
 \addcontentsline{toc}{chapter}{Introduction}
 
-\begin{theorem}\label{ssfp-thm}
-	\ssfp{} can be solved in linear time.
+\begin{theorem}\label{thm-ssfp}
+	\ssfp{} can be solved in linear time. Moreover, given a graph $G$, one can find a solution in linear time if it exists.
 \end{theorem}
 
-\begin{theorem}
+\begin{theorem}\label{thm-mssfp-npc}
 	\mssfp{} is \textup{NP}-complete.
 \end{theorem}
 
-\begin{theorem}
+\begin{theorem}\label{thm-mssfp-w2c}
 	\mssfp{} is \textup{W[2]}-complete.
 \end{theorem}
 
-\begin{theorem}
-	Unless SETH fails, there is no algorithm for \mssfp{} that achieves running time $\mathcal{O}^*((2-\epsilon)^n)$ for any $\epsilon > 0$, where $n$ is the number of stars.
+\begin{theorem}\label{thm-mssfp-time}
+	Suppose that $k \geq 3$ and $\epsilon' > 0$. Unless \domsetp{} with parameter equal to $k$ cannot be solved in time $\mathcal{O}^*(N^{k-\epsilon'})$, where $N$ is the number of vertices, there does not exist a constant $\epsilon >0$ and an algorithm for \mssfp{} with parameter equal to $k$ that achieves running time  $\mathcal{O}^*(N^{k-\epsilon})$, where $N$ is the number of vertices.
 \end{theorem}
 
 \begin{theorem}
@@ -207,11 +207,10 @@ An induced graph $G'$ of $G$ is a subgraph formed from a subset of vertices and 
 A graph $P_k$ is a path of length $k$. A graph $C_k$ is a cycle of length $k$. 
 A \emph{tree} $T$ is a connected graph which has exactly $|V(T)|-1$ edges. 
 A \emph{spanning tree} $T$ of a graph $G$ is a connected subgraph which includes all of the vertices of $G$, with the minimum possible number of edges.
-A \emph{Spanning forest} $T$ of a graph $G$ is a union of trees that spans $G$.
 A \emph{star} $S$ is a tree of size at least $2$ for which at most one vertex has a degree greater than $1$. 
 A star of size at least $3$ consists of a \emph{center}, that is a vertex of the greatest degree, and \emph{rays} - vertices of degree $1$. 
 A \emph{star} of size 2 has two \emph{candidates}.
-For a given graph $G$, we say that $S$ is a \ssf{} if $S$ spans $G$ and every connected component of $S$ is a star. 
+For a given graph $G$, we say that $S$ is a \ssf{} if $V(S)=V(G)$ and every connected component of $S$ is a star. 
 
 \section{Parameterized complexity}
 
@@ -234,7 +233,7 @@ There might be multiple different parameters for a single problem. For example, 
 Also, parameterized complexity helped to distinguish hardness of NP-complete problems. The first class is called FPT (fixed parameter tractable). A problem is in FPT if and only if it has an FPT algorithm defined below:
 
 \begin{definition}\label{FPT algorithm}
-	For a parameterized problem $Q$, an \textup{FPT algorithm} is an algorithm $\mathcal{A}$ which, for any input $(x,k)$, decides whether $(x,k) \in Q$ in time $f(k)\cdot n^c$ where c is a constant, independent of $n,k$, and $f$ is a computable function.
+	For a parameterized problem $Q$, an \textup{FPT algorithm} is an algorithm $\mathcal{A}$ which, for any input $(x,k)$, decides whether $(x,k) \in Q$ in time $f(k)\cdot $ where c is a constant, independent of $n,k$, and $f$ is a computable function.
 \end{definition}
 
 Another important class of parameterized problems is called an XP class. Similarly, a problem is in XP if and only if it has an XP algorithm defined below:
@@ -243,18 +242,22 @@ Another important class of parameterized problems is called an XP class. Similar
 	For a parameterized problem $Q$, an \textup{XP algorithm} is an algorithm $\mathcal{A}$ which, for any input $(x,k)$, decides whether $(x,k) \in Q$ in time $n^{f(k)}\cdot n^c$ where c is a constant, independent of $n,k$, and $f$ is a computable function.
 \end{definition}
 
-\emph{W-hierarchy} is an alternative way of classifying hard problems. Since it is not the main topic of the paper, we just want to mention that W-hierarchy is an ascending chain of classes that follows: $W[1] \subseteq W[2]...$ . As an example, \indset{} is a W[1]-complete problem whereas \domsetp{} is a W[2]-complete problem. It is not known what is the correlation between FPT and W[1] classes. In this paper, we assume that W[1] $\neq$ FPT. 
+\emph{W-hierarchy} is an alternative way of classifying hard problems. Since it is not the main topic of the paper, we just want to mention that W-hierarchy is an ascending chain of classes that follows: $W[1] \subseteq W[2]...$ . 
 
-Having discussed various complexity classes, let us introduce a tool for reducing one parameterized problem to another. The mechanism described below is widely used in the paper.
+Having discussed various complexity classes, let us introduce a framework for reducing one parameterized problem to another. The mechanism described below is widely used in the paper.
 
 \begin{definition}
 	Let $P,Q \subseteq \Sigma^* \times \mathbb{N}$ be two parameterized languages. A  \textup{parameterized reduction} from $P$ to $Q$ is an algorithm $\mathcal{A}$ that given $(x,k) \in P$ outputs $(x',k') \in Q$ such that the following three conditions hold:
 	\begin{enumerate}
 		\item $(x,k)$ is a YES-instance of $P$ if and only if $(x',k')$ is a YES-instance of $Q$.
 		\item $k' \leq g(k)$ for some computable function $g$.
-		\item The running time of $\mathcal{A}$ is $f(k) \times |x^{\mathcal{O}(1)}|$ for some computable function $f$.
+		\item The running time of $\mathcal{A}$ is $f(k) \cdot |x^{\mathcal{O}(1)}|$ for some computable function $f$.
 	\end{enumerate}
 \end{definition}
+
+As an example, \indset{} is a W[1]-complete problem whereas \domsetp{} is a W[2]-complete problem. It is not known what is the correlation between FPT and W[1] classes. In this paper, we assume that W[1] $\neq$ FPT. 
+
+
 
 Last but not least, we introduce a \emph{kernelization algorithm} - a way of reducing input instances:
 
@@ -293,7 +296,7 @@ We distinguish one special case. If a tree $\mathcal{T}$ forms a path, we call i
 
 In this chapter we examine both decision and constructive variant of \ssfp{}. We propose an algorithm working in linear time that outputs a \ssf{} or concludes with a NO-instance.
 
-\section{Decision Spanning Star Forest problem}
+\section{Decision variant (??)}
 
 It turns out that the problem formulated in such a way is relatively simple. Although, various variants described in this paper make it more complex. The following lemma easily clarifies all the concerns about its hardness.
 
@@ -304,7 +307,7 @@ It turns out that the problem formulated in such a way is relatively simple. Alt
 \begin{proof}
 	If $G$ has a \ssf{} $S$, then trivially for all $v \in V(G)\ 1 \leq deg_S(v) \leq deg_G(v)$. Thus, none of the vertices is isolated.
 	
-	For the opposite direction, we prove the lemma by induction on $|V(G)|$. Assume $|V(G)|=2$. The statement trivially holds because a graph consisting of one edge and two vertices is a correct \ssf{}. Let $|V(G)| >2$. For the inductive step, we split the proof into two parts. Firstly, suppose that for all vertices $v \in V(G)$, it holds that $\degree{G}{v}=1$.  Clearly, $G$ is a matching. Hence, it is a correct \ssf{}. Now, suppose that there exists a vertex $u$ such that $\degree{G}{u}>1$. Let $C \subseteq G$ be a maximal, connected component satisfying $u \in V(C)$. Based on the degree of $u$, we infer that $|V(C)|>2$. Thus, we conclude that in a connected graph of $3$ vertices there exists a vertex $v$ such that $C \setminus v$ has no isolated vertices and neither has $G \setminus v$. From the induction, let $S$ be a \ssf{} of the graph $G \setminus v$, $u$ be a vertex such that $uv \in E(G)$ and take any $w \in N_S[u]$. Consider the two following cases:
+	For the opposite direction, we prove the lemma by induction on $|V(G)|$. Assume $|V(G)|=2$. The statement trivially holds because a graph consisting of one edge and two vertices is a correct \ssf{}. Let $|V(G)| >2$. For the inductive step, we split the proof into two parts. Firstly, suppose that for all vertices $v \in V(G)$, it holds that $\degree{G}{v}=1$.  Clearly, $G$ is a matching. Hence, it is a correct \ssf{}. Now, suppose that there exists a vertex $u$ such that $\degree{G}{u}>1$. Let $C \subseteq G$ be a connected component satisfying $u \in V(C)$. Based on the degree of $u$, we infer that $|V(C)|>2$. Let $T$ be an arbitrary spanning tree of $C$ and $v$ be one of its leaf. Thus, $T \setminus v$ is a spanning tree of $C \setminus v$. So, $C \setminus v$ does not have an isolated vertex and neither has the graph $G \setminus v$. From the induction, let $S$ be a \ssf{} of the graph $G \setminus v$, $u$ vertex such that $uv \in E(G)$ and take any $w \in N_S[u]$. Consider the two following cases:
 	\begin{enumerate}
 		\item Suppose $u$ is a ray in $S$. This implies that $w$ is a center and $deg_S(w) \geq 2$. Then, $S'=\big(V(S) \cup \{v\},(E(S) \cup \{uv\}) \setminus \{uw\}\big)$ is a spanning star forest for the graph $G$.
 		\item Otherwise, $u$ is either a candidate or a center. Then, $S'=\big(V(S) \cup \{v\}, E(S) \cup \{uv\}\big)$ is a spanning star forest for the graph $G$.
@@ -312,17 +315,17 @@ It turns out that the problem formulated in such a way is relatively simple. Alt
 	
 \end{proof}
 
-Application of Lemma \ref{SSF lemma} yields the following result for \dssfp{}.
+Application of Lemma \ref{SSF lemma} yields the following result for \ssfp{}.
 
 \begin{corollary}
-	\dssfp{} can be solved in linear time.
+	\ssfp{} can be solved in linear time.
 \end{corollary}
 
 \begin{proof}
 	Given a graph $G = (V,E)$ the answer is YES if for all $v \in V(G)\ \degree{G}{v} \neq 0$ and NO otherwise.
 \end{proof}
 
-\section{Spanning Star Forest Problem}
+\section{Constructing a solution}
 
 In this section we focus on obtaining an arbitrary solution for a given instance of \ssfp{}. Firstly, let us introduce two claims which help to normalize an instance and make the algorithm more clear.
 
@@ -337,22 +340,22 @@ In this section we focus on obtaining an arbitrary solution for a given instance
 The first claim can be trivially proven by the definition of a \ssf{} while the second one follows directly from Lemma \ref{SSF lemma}. Equipped with this information, all that is left to do, is to design an algorithm which solves the problem for trees.
 
 \begin{algorithm}\label{alg1}
-	\KwIn{connected graph $G$}
+	\KwIn{connected graph $G$ such that $V(G) \geq 2$}
 	\KwOut{\ssf{} of $G$}
-	$spanned \leftarrow Array[|V(G)|]$\; 
-	$T \leftarrow$ $SpanningTree(G)$\;
+	$\textrm{spanned} \leftarrow \textrm{Array}[|V(G)|]$\; 
+	$T \leftarrow$ $\textrm{SpanningTree}(G)$\;
 	$S \leftarrow$ $\emptyset$\;
-	\For{$v$: $postorder(T)$ and $v$ is not a root}{
-		\If{$spanned[v] \neq 1$}{
-			$u \leftarrow parent(v)$\;
+	\For{$v$: $\textrm{postorder}(T)$ and $v$ is not a root}{
+		\If{$!\textrm{spanned}[v]$}{
+			$u \leftarrow \textrm{parent}(T,v)$\;
 			$S \leftarrow S \cup \{(u,v)\}$\;
-			$spanned[v] = 1$\;
-			$spanned[u] = 1$\;
+			$\textrm{spanned}[v] = True$\;
+			$\textrm{spanned}[u] = True$\;
 		}
 	}
 	$v \leftarrow root(T)$\;
-	\If{$spanned[v] \neq 1$}{
-		$S \leftarrow S \cup \{(u,v)\}$ where $u$ is a child of $v$\;
+	\If{$!\textrm{spanned}[v]$}{
+		$S \leftarrow S \cup \{(u,v)\}$ where $v = \textrm{parent}(T,u)$ is a child of $v$\;
 	}
 	\Return $S$\;
 	\caption{Obtaining a spanning star forest from a connected graph.}
@@ -360,34 +363,39 @@ The first claim can be trivially proven by the definition of a \ssf{} while the 
 
 Firstly, the algorithm creates a spanning tree $T$. Then, it does a simple bottom-up traversal. If the current node $v$ has not been added to the solution yet, the algorithm adds the edge connected to its parent. If the root has not been added to the solution during the for loop, we add an arbitrary edge, incident to the solution, which finishes the algorithm. If the input graph is not connected, we run the algorithm separately on each component and then merge results based on Claim \ref{SSF sum}.
 
-Now we need to check if the obtained graph is a spanning star forest. There is one non-trivial operation that the algorithm does. Specifically, if the root has not  been added during the for loop, we connect the root to any existing star without checking whether it remains a correct star.
+Now we need to check if the obtained graph is a spanning star forest. There is one non-trivial operation that the algorithm does. Specifically, if the root has not  been added during the for loop, we connect the root to any existing star without checking whether it remains a correct star. Before we proceed to the main lemma about the correctness of Algorithm \ref{alg1}, let us prove the following claim:
 
 \begin{claim}\label{ssf root}
-	If $(u_1,u_2),(u_2,u_3) \in E(S)$, $u_2 = parent(u_1)$ and $u_3=parent(u_2)$, then $u_3$ is the root and $u_3$ is incident to one edge of the solution only.
+	Suppose that a connected graph $G$ is the input for Algorithm \ref{alg1}. Let $T$ be a spanning tree obtained during $SpanningTree(G)$ procedure and $S$ be the output graph. If $u_1 u_2,u_2 u_3 \in E(S)$, $u_2 = \textrm{parent}(T,u_1)$ and $u_3=\textrm{parent}(T,u_2)$, then $u_3$ is the root and $|N_S[u_3]|=1$.
 \end{claim}
 
 \begin{proof}
-	Suppose contrary, that $u_3$ is not the root. Then, both $(u_1,u_2)$ and $(u_2,u_3)$ have been added during the for loop. Contradiction because $u_2$ has been added to the solution during $u_1$'s iteration and the algorithm should not have added the edge $(u_2,u_3)$. Thus, $u_3$ is the root.
+	Observe that no two consecutive parents can be added during for loop. Thus, edge $u_2 u_3$ must have been added in if statement. Since $u_3 = \textrm{parent}(T,u_2)$, $u_3$ must be the root. Moreover, having known that the root appears in $S$ for the first time during if statement, we conclude that $|N_S[u_3]|=1$. 
 \end{proof}
 
-From the Proposition \ref{ssf root} we infer that no two consecutive parents are added to the solution unless the last node is the root. It means that every root's child is either a center or a candidate. Thus, adding an arbitrary root's edge is a correct step in the algorithm. Moreover, there are no paths of length greater than $2$. If there was one, it would mean that the root is connected to two different vertices which is false.
-
 \begin{lemma}\label{alg1 correctness}
-	Algorithm \ref{alg1} is correct.
+	Algorithm \ref{alg1} ran on a connected graph $G$, satisfying $|V(G)| \geq 2$, outputs a spanning star forest $S$.
 \end{lemma}
 
 \begin{proof}
-	Clearly, $S$ is a forest. So, it suffices to check that there are no isolated vertices and the solution does not contain a path of length $3$. The first claim is true because we enumerate over all vertices and pair them up with its parent if a vertex has not been added to the solution in previous iteration. So is the second claim based on the information inferred from Proposition \ref{ssf root}.
+	To prove the following lemma we need to show that all of the four following conditions hold after a successful execution of the algorithm:
+	\begin{enumerate}
+		\item $S$ does not consist of any cycle.
+		\item $S$ spans $G$ i.e. $V(S) = V(G)$.
+		\item $S$ does not have any isolated vertices.
+		\item $S$ does not consist of a path of size $3$.
+	\end{enumerate}
+	Trivially, $S$ does not contain a cycle because $S$ is a subgraph of $T$ which is a tree. Now, observe that the algorithm iterates over all vertices and, except for the root, pairs every vertex with its parent. The last pair, root and its child, is added either in a for loop or in if statement. Thus, we conclude that $S$ does not have any isolated vertices. Ultimately, we prove that $S$ does not consist of a path of size $3$. From the Claim \ref{ssf root} we infer that no two consecutive parents are added to the solution unless the last node is the root. In addition, root has exactly one neighbor. Therefore, $S$ does not contain a path of size $3$.
 \end{proof}
 
-Having proven the correctness of Algorithm \ref{alg1} we proceed to the complexity analysis i.e. we prove the Theorem \ref{ssfp-thm}.
+Having proven the correctness of Algorithm \ref{alg1} we proceed to the complexity analysis i.e. we prove the Theorem \ref{thm-ssfp}.
 
-\begin{proof}[Proof (of Theorem \ref{ssfp-thm})]
+\begin{proof}[Proof (of Theorem \ref{thm-ssfp})]
 	An arbitrary spanning tree of any graph can be found in linear time. The main loop has $n-1$ iterations (every vertex is processed once), each of which takes constant time.
 	Thus, the total runtime is linear.
 \end{proof}
 
-The problem stated without any constraints is simple. Both decision and constructive variant of the problem can be solved in linear time. The next variations investigated in this paper yield more complex results.
+The problem stated without any constraints is simple. Both decision and constructive variants of the problem can be solved in linear time. The next ones, studied in this paper, yield more complex results.
 
 \chapter{Minimal Spanning Star Forest problem}
 
@@ -400,7 +408,7 @@ At first glance, one can say that a center corresponds to a dominating vertex wh
 To give a systematic parameterized reduction between these two problems, we need to get a better understanding of the \domsetp{} problem.
 
 \begin{definition}
-	Given a graph $G$ and a dominating set $D$, a \textup{dominating mapping} is a function vertices and a solution $D$, a {\normalfont domination mapping} is a function $\mu:V(G) \setminus D \rightarrow D$ such that satisfies $(x,\mu(x)) \in E(G)$ for all $x \in Dom(\mu)$.
+	Given a graph $G$ and a dominating set $D$, a {\normalfont domination mapping} is a function $\mu:V(G) \setminus D \rightarrow D$ such that satisfies $(x,\mu(x)) \in E(G)$ for all $x \in Dom(\mu)$.
 \end{definition}
 
 \begin{lemma}\label{dom mapping}
@@ -410,7 +418,7 @@ To give a systematic parameterized reduction between these two problems, we need
 \begin{proof}
 	Let $\mu$ be a dominating mapping that maximizes $|\Ima \mu|$. If $\mu$ is surjective, then the proof is finished. Otherwise, there exists a vertex $v \in D$ such that $v \notin \Ima \mu$. Consider the following cases:
 	\begin{enumerate}
-		\item Suppose $N_G(v) = \emptyset$. Contradiction, $G$ has no isolated vertices; Let $u$ be any neighbor of $v$.
+		\item Suppose $N_G(v) = \emptyset$. Contradiction, $G$ has no isolated vertices. Let $u$ be any neighbor of $v$.
 		\item Suppose $u \in D$. Contradiction, $D$ was assumed to be a solution of minimal size whereas $D \setminus \{v\}$ is a smaller dominating set.
 		\item Suppose $u \notin D$ and let $w = \mu(u)$. If $|\mu^{-1}(w)|=1$, then $((D \setminus \{v,w\}) \cup u)$ is a smaller dominating set for the graph $G$. Contradiction.
 		\item Finally, suppose $|\mu^{-1}(w)| > 1$ then the mapping:
@@ -420,44 +428,42 @@ To give a systematic parameterized reduction between these two problems, we need
 			\mu(x), &\text{otherwise} \\
 			\end{cases}
 		\end{equation*}
-		is a valid domination mapping that satisfies $\Ima \mu \subsetneq \Ima \mu'$. Contradiction, we assumed that $\mu$ is a dominating mapping that maximizes $|\imath \mu|$.
+		is a valid domination mapping that satisfies $\Ima \mu \subsetneq \Ima \mu'$. Contradiction, we assumed that $\mu$ is a dominating mapping that maximizes $|\Ima \mu|$.
 	\end{enumerate}
 	
 	Since all the cases led to a contradiction we conclude that there exists a domination mapping $\mu$ such that $\mu$ is surjective.  
 \end{proof}
 
-Armed with the lemma, we are ready to prove the main theorem of the section.
+Armed with the lemma, we are ready to show the reduction:
 
 \begin{theorem}\label{dom-ssf reduction}
-	There is a parameterized reduction that takes an instance $(G,k)$ of \domstep{} and returns instance $(G',k)$ of \mssfp{} such that it doubles the number of vertices pessimistically.
+	There exists a parameterized reduction that takes an instance $(G,k)$ of \domsetp{} and returns an instance $(G',k)$ of \mssfp{} such that $|V(G')| \leq 2 \cdot |V(G)|$. 
 \end{theorem}
 
 \begin{proof}
 	Firstly, we show the reduction. Given a graph $G$ and integer $k$, for every isolated vertex $v \in V(G)$ we introduce a vertex $v'$ and an edge $(v,v')$. Now, we claim that $(G,k)$ is a YES-instance of \domsetp{} if and only if $(G',k)$ is a YES-instance of \mssfp{}. 
 	
-	The backward implication is simple. Suppose $S$ is a solution for $(G',k)$. We create the \domset{} $D$ as follows: for every star of size $2$ pick an arbitrary candidate that is present in graph $G$ and for every star of size greater than $2$ pick a center. Obviously $|D| \leq k$ because there are at most $k$ connected components in $S$. Every vertex from $G'$ is adjacent to one of the centers or candidates that we chose during construction of a set $D$.
+	Consider the backward implication. Suppose $S$ is a solution for $(G',k)$. We create the \domset{} $D$ as follows: for every isolated edge $vu$ such that $vu \notin E(S)$ pick a vertex $v \in V(G)$, for every other star in $S$ of size $2$ pick an arbitrary candidate and for every star of size greater than $2$ pick a center. Note that $D \subseteq V(G)$ because we explicitly excluded all the vertices introduced in $G'$. Obviously, $|D| \leq k$ because there are at most $k$ stars in $S$. Observe that every isolated vertex $v \in V(G)$ is in $D$. Finally, observe that every vertex $v \in V(G) \setminus D$ satisfies $v \in V(G')$. So, $v$ is either a ray or a candidate. It means that there exists an edge to one of the centers or candidates that were added to $D$.
 	
-	To prove the forward implication, let $D$ be a solution of minimal size for $(G,k)$. Obviously, $D$ is also a minimal dominating set for the graph $G'$ as $D$ contains every isolated vertex. Thus, by Lemma \ref{dom mapping}. there exists a mapping $m$ that is surjective. Now, we claim that the graph $S=(V(G'),\{(x,m(x)): x \in Dom(m)\})$ is a correct solution for the instance $(G',k)$ of \mssfp{}. By surjectivity, there are no isolated vertices in $S$. Moreover, there is no path nor cycle of length $3$ because $m$ maps vertices from $V(G') \setminus D$ to $D$ and for all $v \in V(G') \setminus D$, $deg_S(v)=1$.
+	To prove the forward implication, let $D$ be a minimum size dominating set for $(G,k)$. Obviously, $D$ is also a minimum dominating set for the graph $G'$ as $D$ contains isolated vertices that dominate vertices introduced in $G'$. Thus, by Lemma \ref{dom mapping}, there exists a domination mapping $\mu$ that is surjective. Now, we claim that the graph $S=(V(G'),\{x\mu(x): x \in V(G) \setminus D\})$ is a correct solution for the instance $(G',k)$ of \mssfp{}. By surjectivity, there are no isolated vertices in $S$ because dominated vertices are paired with dominating ones. Moreover, $S$ is a spanning star forest because $\mu$ maps vertices from $V(G') \setminus D$ to $D$ and for all $v \in V(G') \setminus D$, $\degree{S}{v}=1$.
 	
 \end{proof}
 
-The problems look so similar that one could ask whether the reverse reduction is true. Indeed, with a small twist in the previous idea, one can prove the reverse reduction instantly. In the proof we only point out the construction because the concept of proving the instance equivalence remains the same.
+(??) The above reduction immediately proves Theorem \ref{thm-mssfp-npc} and Theorem \ref{thm-mssfp-w2c}.
 
-\begin{theorem}\label{ssf dom}
-	There exists a parameterized reduction from \mssfp{} to \domsetp{} parameterized by the size of dominating set.
-\end{theorem}
+The problems look so similar that one could ask whether the reverse reduction is true. Indeed, with a small twist in the previous idea, one can prove the reverse reduction instantly.
 
-\begin{sproof}
-	Let $(G,k)$ be an instance of \mssfp{}. We create the instance $(G',k')$ for \domset{} as follows: let $G'=G$. If $G$ contains an isolated vertex, then $k'=0$. Otherwise, the value remains the same. Now, we claim that $(G,k)$ is a YES-instance for \mssfp{} if and only if $(G',k')$ is a YES-instance for \domset.
+\begin{lemma}\label{ssf-dom reduction}
+	There exists a parameterized reduction that takes an instance $(G,k)$ of \mssfp{} and returns an instance $(G',k)$ of \domset{} such that $|V(G')| \leq |V(G)|$. 
+\end{lemma}
+
+\begin{proof}
+	Let $(G,k)$ be an instance of \mssfp{}. If $G$ contains an isolated vertex, then return $(G,0)$. Otherwise, return $(G,k)$. Now, we claim that $(G,k)$ is a YES-instance for \mssfp{} if and only if $(G,k')$ is a YES-instance for \domset.
 	
-	To prove the following reduction one can use the method which was described in Theorem \ref{ssf dom} with a little remark: if an instance $(G,k)$ contains an isolated vertex, then obviously it is a NO-instance for \mssfp{} and so is $(G',k')$ for \domset{} because $G'$ is not an empty graph.
-\end{sproof}
-
-The theorem implies that \mssfp{} is as hard as \domsetp{} and the problems are \emph{interreducible}. Thus, we can immediately obtain the following corollary.
-
-\begin{corollary}
-	\mssfp{} is {\normalfont W[2]-complete}.
-\end{corollary}
+	Consider the forward implication. Let $S$ be a spanning star forest of $k$ components for the graph $G$. Observe, that $G$ does not change during the reduction. We create a dominating set $D$ as follows: for every star of size $2$ pick an arbitrary candidate, and for every star of size at least $3$ pick a center. Obviously, $|D| \leq k$ because $S$ contains at most $k$ stars. So, suppose that there exists $v \in V(G) \setminus D$ that is not dominated. However, $S$ spans $G$ which means that $v$ is in one of the stars. Therefore, there exists an edge $vu$ such that $u$ is either a center or a candidate. By the definition of $D$, $u \in D$. Contradiction because $u$ dominates $v$.
+	
+	For the backward implication, let $D$ be a minimum size dominating set for $(G,k)$. By Lemma \ref{dom mapping}, there exists a domination mapping $\mu$ such that $\mu$ is surjective. Now, we claim that the graph $S$ = $(V(G), \{x\mu(x): x \in V(G) \setminus D\})$ is a spanning star forest. Obviously, $S$ spans $G$ as it contains all the vertices from $G$. Moreover, there are no isolated vertices because for every vertex $v \in V(G) \setminus D$ there exists exactly one vertex $u \in D$ such that $vu \in E(S)$ and for every vertex $u \in D$ there exists at least one vertex $v \in V(G) \setminus D$ such that $vu \in E(S)$. From the previous sentence we can also infer that every connected component is a star that concludes the proof.
+\end{proof}
 
 \chapter{Spanning Star Forest Extension}
 
