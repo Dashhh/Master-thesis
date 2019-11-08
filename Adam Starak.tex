@@ -164,35 +164,35 @@
 	Suppose that $k \geq 3$ and $\epsilon' > 0$. Unless \domsetp{} with parameter equal to $k$ cannot be solved in time $\mathcal{O}(N^{k-\epsilon'})$, where $N$ is the number of vertices, there does not exist a constant $\epsilon >0$ and an algorithm for \mssfp{} with parameter equal to $k$ that achieves running time  $\mathcal{O}(N^{k-\epsilon})$, where $N$ is the number of vertices.
 \end{theorem}
 
-\begin{theorem}
+\begin{theorem}\label{thm-ssfep-npc}
 	\ssfep{} is \textup{NP}-complete.
 \end{theorem}
 
-\begin{theorem}
+\begin{theorem}\label{thm-ssfep-nokernel}
 	\ssfep{} parameterized by the number of forced edges does not admit a polynomial kernel.
 \end{theorem}
 
-\begin{theorem}
+\begin{theorem}\label{thm-ssfep-fe-time}
 	\ssfep{} parameterized by the number of forced edges can be solved in time $\mathcal{O}^*(2^{|F|})$ where $|F|$is the number of forced edges.
 \end{theorem}
 
-\begin{theorem}
+\begin{theorem}\label{thm-ssfep-seth}
 	Unless SETH fails, there is no algorithm for \ssfep{} parameterized by the number of forced edges that achieves running time $\mathcal{O}^*((2-\epsilon)^{|F|})$ for any $\epsilon > 0$, where $|F|$ is the number of forced edges.
 \end{theorem}
 
-\begin{theorem}
+\begin{theorem}\label{thm-ssfep-kernel}
 	\ssfep{} parameterized by the number of free vertices admits a linear kernel.
 \end{theorem}
 
-\begin{theorem}
+\begin{theorem}\label{thm-ssfep-free-alg}
 	\ssfep{} parameterized by the number of free vertices can be solved in ??.%TODO add time%
 \end{theorem}
 
-\begin{theorem}
+\begin{theorem}\label{thm-ssfep-tw-time}
 	\ssfep{} parameterized by treewidth can be solved in time $2^{tw}$.
 \end{theorem}
 
-\begin{theorem}
+\begin{theorem}\label{thm-ssfep-tw-seth}
 	Unless SETH fails, there is no algorithm for \ssfep{} parameterized by treewidth that achieves running time $\mathcal{O}^*((2-\epsilon)^{tw})$ for any $\epsilon > 0$, where \textup{\textrm{tw}} is treewidth of the input graph.
 \end{theorem}
 
@@ -652,18 +652,28 @@ Note that the instance obtained after the application of Reduction 6 satisfies t
 	Exhaustive application of Reductions 1-6 outputs a normalized instance. Clearly, it takes polynomial time to finish because graph traversal as well as vertex/edge removal can be done in polynomial time.
 \end{proof}
 
+Ultimately, we want to point out one advantage of having a normalized instance of \ssfep{}. Namely, consider the following claim:
+
+\begin{claim}
+	Let $(G,F)$ be a normalized instance of \ssfep{} and let $C \subseteq V(F)$ be an independent set. If $U \subseteq N[C]$, then there exists a spanning star forest for $(G,F)$.
+\end{claim}
+
+\begin{proof}
+	Firstly, observe that $F$ is an induced matching. Thus, every forced edge is a single star. If $U \subseteq N[C]$ it means that for every $v \in U$ there exists a vertex $u \in C$ such that $vu \in E(G)$. Thus, we can add every free vertex to one of the existing stars. Now, suppose $S \subseteq G$ is a subgraph that takes all the forced edges and, for every free vertex, adds exactly one edge to a forced vertex from $C$. Observe that in $S$, for every $uv \in F$, the degree of at most one vertex is greater than $1$. Thus, $S$ is spanning star forest for $(G,F)$.
+\end{proof}
+
 \section{NP-completeness}
 
 Let $(G,F)$ be an instance of \ssfep{} after normalization. Then, $G$ consists of vertices of two types: ones that have edges to vertices from $V(F)$ only and ones that have exactly one forced edge (and potentially many free ones). Such a representation substantially simplifies further investigations. Indeed, we can show a reduction from \cnfsat{}.
 
 \begin{lemma}\label{ssfep reduction}
-	There exists a polynomial time reduction that takes an instance $\phi$ of \cnfsat{}, such that $\phi$ has $n$ variables and $m$ clauses, and returns a normalized instance $(G,F)$ of \ssfep{} such that $V(G)=2n+m$ and $|F|=n$.
+	There exists a polynomial time reduction that takes an instance $\phi$ of \cnfsat{}, such that $\phi$ has $n$ variables and $m$ clauses, and returns a normalized instance $(G,F)$ of \ssfep{} such that $|V(G)|=2n+m$ and $|F|=n$.
 \end{lemma}
 
 \begin{proof}
 	Firstly, we show a reduction. Suppose $\phi$ is an arbitrary instance of \cnfsat{}. $\phi$ is a CNF formula, so let $\textrm{Clauses}=\{C_1,...,C_m\}$ be the set of clauses and let $\textrm{Variables}=\{x_1,...,x_n\}$ be the set of variables from $\phi$. For every clause $C_i$ we introduce a vertex $v[C_i]$ and for every variable $x_i$ we introduce two vertices $v[x_i],v[\neg x_i]$ and a forced edge $v[x_i]v[\neg x_i]$. Observe that the graph consists of $2n+m$ vertices and $n$ forced edges. Now, for every occurrence of a literal $l_i$ in a clause $C_j$ we introduce a free edge $v[C_j]v[l_i]$. Finally, we say that $(G,F)$, the graph that we described, has a spanning star forest if and only if there exists a satisfiable evaluation of the formula $\phi$.
 	
-	Before we begin the proof, observe that $(G,F)$ is a normalized instance. Firstly, there are no isolated vertices because every clause has at least one literal. Secondly, $F$ is an induced matching because vertices introduced for literals (forced vertices) are connected to vertices introduced for clauses (free vertices). And finally, no edges were introduced between vertices introduced for clauses (free vertices).
+	Before we begin the proof, observe that $(G,F)$ is a normalized instance. Firstly, there are no isolated vertices because every clause has at least one literal. Secondly, $F$ is an induced matching because vertices introduced for literals (forced vertices) are connected to vertices introduced for clauses (free vertices) only. And finally, no edges were introduced between vertices introduced for clauses (free vertices).
 	
 	For the forward implication, let $S$ be a solution for $(G,F)$. We create an evaluation $\sigma$ as follows:
 	
@@ -676,53 +686,36 @@ Let $(G,F)$ be an instance of \ssfep{} after normalization. Then, $G$ consists o
 	\end{equation*}
 	We claim that the evaluation satisfies $\phi$. However, suppose contrary, that $\sigma(\phi)=\textrm{False}$. It means that there exists a clause $C_i \in \textrm{Clauses}$ such that $\sigma(C_i)=\textrm{False}$. Notice that $S$ is a spanning star forest for the graph $G$. Thus, there exists a vertex $v[l_j]$ such that $N_S[v[C_i]] = \{v[l_j]\}$. Moreover, the literal $l_j$ occurs in the clause $C_i$ by the definition of the graph $G$. Now, observe that $\degree{S}{v[l_j]} > 1$. Hence, $\sigma(l_j)=\textrm{True}$. Based on that, we infer that $\sigma(C_i)=\textrm{True}$. Contradiction. Evaluation $\sigma$ satisfies $\phi$.
 	
-	To prove the backward implication, assume there exists an evaluation $\sigma$ of variables that satisfies the formula. If $\sigma(\phi)=\textrm{True}$, then for every $C_i \in \textrm{Clauses}$, $\sigma(C_i)=\textrm{True}$. Moreover, for every $C_i \in \textrm{Clauses}$ there exists a literal $l_i \in C_i$ such that $\sigma(l_i)=1$. Now, let $S' = (V(G), F \cup \{v[C_i]v[l_i]: v[C_i]v[l_i] \in E(G) \text{ and } \sigma(l_i)=1\})$. Note that $\degree{S'}{v[C_i]}>1$ for every $C_i \in \textrm{Clauses}$ because $\sigma$ satisfies $\phi$. Finally, let $S \subseteq S'$ be an arbitrary subgraph such that $\degree{S}{v[C_i]}=1$. Now, we claim that $S$ is a spanning star forest for $G$. Indeed, by the definition of $S$, $\degree{S}{C_i}=1$ and for every variable $x_i$ $\degree{S}{x_i}=1$ or $\degree{S}{\neg x_i}=1$. Recall, that $(G,F)$ is a normalized instance. Hence, $|F|$ is an induced matching. Thus, we conclude that $S$ is a spanning star forest for $G$.
+	To prove the backward implication, assume there exists an evaluation $\sigma$ of variables that satisfies the formula. If $\sigma(\phi)=\textrm{True}$, then for every $C_i \in \textrm{Clauses}$, $\sigma(C_i)=\textrm{True}$. Moreover, for every $C_i \in \textrm{Clauses}$ there exists a literal $l_i \in C_i$ such that $\sigma(l_i)=1$. Now, let $S' = (V(G), F \cup \{v[C_i]v[l_i]: v[C_i]v[l_i] \in E(G) \text{ and } \sigma(l_i)=1\})$. Note that $\degree{S'}{v[C_i]}>1$ for every $C_i \in \textrm{Clauses}$ because in every clause there exists at least one literal $l_k$ that evaluates to $\textrm{True}$. Finally, let $S \subseteq S'$ be an arbitrary subgraph such that $V(S)=V(S')$, $F \subseteq E(S)$ and $\degree{S}{v[C_i]}=1$ for every $C_i \in \textrm{Clauses}$. Now, we claim that $S$ is a spanning star forest for $G$. Indeed, by the definition of $S$, $\degree{S}{C_i}=1$ and for every variable $x_i$ $\degree{S}{x_i}=1$ or $\degree{S}{\neg x_i}=1$. Recall, that $(G,F)$ is a normalized instance. Hence, $|F|$ is an induced matching. Thus, we conclude that $S$ is a spanning star forest for $G$.
 \end{proof}
 
-As we can see, clauses and variables in \cnfsat{} are encoded as free vertices and forced edges in \ssfep{} respectively. Thus, we get the immediate corollary:
-
-\begin{corollary}\label{ssfep size}
-	A CNF-formula $\phi$ of $n$ variables and $m$ clauses can be reduced in polynomial time to a \ssfep{} instance of $n$ forced edges, $m$ free vertices and $\mathcal{O}(n\cdot m)$ free edges.
-\end{corollary}
-
-There is one more observation that we want to point out in this paper. Since a CNF-formula is trivially encoded as a spanning star forest extension instance, one can ask if the problems are interreducible. Indeed, it is true and we are going to present the construction only.
+There is one more observation that we want to point out in this section. Since a CNF-formula is trivially encoded as a spanning star forest extension instance, one can ask if the problems are interreducible. Indeed, it is true and we present the backward reduction. Note that we consider normalized instances only.
 
 \begin{lemma}\label{cnfsat reduction}
-	There exists a polynomial time reduction from \ssfep{} to \cnfsat{}.
+	There exists a polynomial time reduction that takes an instance $(G,F)$, such that $(G,F)$ has $n$ forced edges and $m$ free vertices, and returns a formula $\phi$ of \cnfsat{} such that $\phi$ has at most $n$ variables and $m$ clauses.
 \end{lemma}
 
-\begin{sproof}
-	Suppose $(G,F)$ is an arbitrary instance of \ssfep{}. Every free vertex represents a separate clause. Every two forced candidates of a forced edge are represent literals $x_i$ and $\neg x_i$. An edge between a forced candidate and a free vertex indicates an occurrence of a literal in a clause.
-\end{sproof}
-
-Immediately, we obtain a symmetric corollary:
-
-\begin{corollary}\label{reduction size}
-	An instance $(G,F)$ of \ssfep{} can be reduced in polynomial time to a $\cnfsat{}$ instance of $|V(G) \setminus V(F)|$ clauses, $|F|$ variables. The length of the formula is equal to $|E(G) \setminus F|$.
-\end{corollary}
-
-Lemmas and corollaries described in this section are the key observations that we use in the next sections to prove lower bounds or reducibility.
+\begin{proof}
+	Firstly, we apply Lemma \ref{norm-ssfe} to normalize the instance. If it yields a no instance, we return a formula $(x \land \neg x)$. Otherwise, let $(G',F')$ be the output of the reduction rules. Observe that $G' \subseteq G$ and $F' \subseteq F$. Now, we proceed to a formula construction. For every forced edge $vu$ we introduce a variable $x_{vu}$ and we arbitrarily label its ends as $x_{vu}$ and $\neg x_{vu}$. Now, for every free vertex $w$ we introduce a clause $C_w$. Moreover, every clause $C_w$ consists of a disjunction of literals $\textrm{labels}(N_G(w))$. Finally, we claim that $(G,F)$ has a spanning star forest if and only if the formula $\phi$, described above, is satisfiable.
+	
+	Observe that the instances are equivalent to the instances described in Lemma \ref{ssfep reduction}. One can follow the schema from the previous reduction.
+\end{proof}
 
 Ultimately, we can prove the main theorem of the section:
-\begin{theorem}
-	\ssfep{} is NP-complete.
-\end{theorem}
 
-\begin{proof}
-	Membership in NP: The witness is a spanning star forest $S$. The verifier checks if every connected component is a star and if every forced edge is included in the solution.
-	\\\\
-	Hardness: It has been already proven in Lemma \ref{ssfep reduction} by a reduction from \ssfep{}.
+\begin{proof}[Proof (of Theorem \ref{thm-ssfep-npc})]
+	We apply a reduction described in Lemma \ref{ssfep reduction} from an NP-complete problem, that is, \cnfsat{}.
 \end{proof}
 
 \section{Parametrization by the number of forced edges}
 
-In this section, in addition to an instance $(G,F)$ we receive a parameter $k$ which is equal to a number of forced edges. We show two major results: \ssfep{} parameterized by the number of forced edges does not invoke a kernel of polynomial size and a lower bound under strong exponential hypothesis.
+In this section, in addition to an instance $(G,F)$ we receive a parameter $k$ which is equal to a number of forced edges. We show two major results: \ssfep{} parameterized by the number of forced edges does not admit a kernel of polynomial size and a lower bound under Strong Exponential Hypothesis.
 
 \subsection{Cross-composition}
 
 A \emph{cross-composition} is a framework for proving kernelization lower bounds. A technique, firstly introduced in 2008 by Bodleander et al. (ICALP 2008), has significantly increased the interest in kernelization. As a result, Bodleander, Jansen and Kratsch have published a straightforward schema to show a nonexistence of a kernel.
 
-The following definitions and corollary are taken from. %TODO paper name%.
+The following definitions and corollary are taken from \textit{Parameterized Complexity} book. %TODO paper name%.
 
 \begin{definition}\label{polynomial equivalence relation}
 	An equivalence relation $\mathcal{R}$ on $\Sigma^*$ is called a \textup{polynomial equivalence relation} if the following conditions hold:
@@ -744,23 +737,21 @@ The following definitions and corollary are taken from. %TODO paper name%.
 	If an NP-hard language $L$ cross-composes into the parameterized language $Q$, then $Q$ does not admit a polynomial kernel unless \textup{NP$\subseteq$ coNP/poly}.
 \end{corollary}
 
-Let us give a simple example to illustrate how to use the tools. Recall that in {\sc Hamiltonian Path} problem, given a graph $G$, the question is whether there exists a path consisting of all the vertices from $G$. In {\sc Longest Path} problem, given a graph $G$ and an integer $k$, we ask to find a path of size $k$.. 
-
-\begin{theorem}
-	{\sc Longest Path} does not admit a polynomial kernel unless NP $\subseteq$ coNP/poly.
-\end{theorem}
-
-\begin{proof}	
-	 We show that {\sc Hamiltonian Path} cross-composes into {\sc Longest Path}. Firstly, we need to find a polynomial equivalence relation $\mathcal{R}$. So, let $\mathcal{R}$ be a relation such that two graphs are in the same class if and only if they have the same number of vertices. Also, we introduce a separate class for a malformed input. The conditions from Definition \ref{polynomial equivalence relation} are trivially satisfied. 
-	
-	Thus, we proceed to the second step. We show an algorithm $\mathcal{A}$ as an evidence that  {\sc Hamiltonian Path} cross-composes into {\sc Longest Path}. Let $G_1,...,G_t$ be an arbitrary instance such that $G_1,..,G_t$ is equivalent with respect to $\mathcal{R}$. The algorithm outputs a disjoint union of graphs, further called $G$, and $k=|V(G_1)|$. Now, let us show that the two conditions stated in the Definition \ref{cross-composition} hold. Obviously $k=|V(G_1)| \leq \max\limits_{1 \leq i \leq t} |G_i|$. Now, suppose that $(G,k)$ has a solution, that is, it consists of a path of length $k$. $G$ is a disjoint union of graphs $G_1,...,G_t$. Moreover, based on relation $\mathcal{R}$, $k$ is equal to the number of vertices of every graph $G_i$. Thus, there exists an index $i$ for which $G_i$ has a Hamiltonian Path. For the backward implication, we say that there exists an index $i$ for which $G_i$ has a Hamiltonian Path. $(G,k)$ is a YES-Instance too because it is a union of disjoint graphs that consists of $G_i$.
-	
-	Ultimately, having proven that an NP-hard problem {\sc Hamiltonian Path} cross-composes into {\sc Longest Path}, based on Corollary \ref{nokernel}, we conclude the proof.
-\end{proof}
-
 \subsection{Lower bound for a kernel}
 
-In this section, we prove that \ssfep{} parameterized by the number of forced edges does not admit a polynomial kernel unless NP $\subseteq$ coNP/poly. To achieve this, we show a cross-composition from \ssfep{} into itself. The proof shown below is not as feasible as the one that we discussed in the previous subsection. We use an \emph{instance selector}, a pattern commonly applied to solve a composition. Intuitively, we need to come up with a gadget that satisfies all instances but one. Therefore, we require that at least one of the packed instances has a solution.
+In this section, we prove that \ssfep{} parameterized by the number of forced edges does not admit a polynomial kernel unless NP $\subseteq$ coNP/poly. To achieve this, we show two different approaches. Firstly, we show a proof based on nonexistence of a polynomial kernel for \cnfsat{} parameterized by the number of variables. Then,  we prove it by a cross-composition from \ssfep{} into itself. The second proof is not feasible. We use an \emph{instance selector}, a pattern commonly applied to solve a composition. Intuitively, we need to come up with a gadget that satisfies all instances but one. Therefore, we require that at least one of the packed instances has a solution.
+
+We begin with showing interreducability of the following problems:
+
+\begin{lemma}
+	\ssfep{} parameterized by the number of forced edges and \cnfsat{} parameterized by the number of variables are interreducible.
+\end{lemma}
+
+\begin{proof}
+	The reductions shown in Lemma \ref{ssfep reduction} and Lemma \ref{cnfsat reduction} are the proof for interreducibility. In both cases, the number of variables or forced edges does not grow.
+\end{proof}
+
+Additionally, 
 
 \begin{theorem}
 	There exists a cross-composition from \ssfep{} into itself, parameterized by the number of forced edges. Therefore, \ssfep{} parameterized by $|F|$ does not admit a polynomial size kernel unless \textup{NP $\subseteq$ coNP/poly}.
@@ -779,14 +770,14 @@ In this section, we prove that \ssfep{} parameterized by the number of forced ed
 
 \subsection{Lower bound based on SETH}
 
-Previously in this chapter, we were proving various properties of \ssfep{} problem. We showed the problem is NP-complete, it does not admit a polynomial kernel and we stated 9 reduction rules to simplify instances. In this subsection, we show a simple routine that solves \ssfep{}. Furthermore, we prove that there does not exist a faster algorithm unless SETH fails.
+Previously in this chapter, we were proving various properties of \ssfep{} problem. We showed that the problem is NP-complete, it does not admit a polynomial kernel and we stated reduction rules to simplify instances. In this subsection, we show a simple routine that solves \ssfep{} parameterized by the number of forced edges. Furthermore, we prove that there does not exist a faster algorithm unless SETH fails.
 
 \begin{algorithm}\label{alg2}
-	\KwData{Pair $(G,F)$ after exhaustive application of reduction rules}
+	\KwData{normalized instance $(G,F)$}
 	\KwResult{\ssf{} of $G$ extending $F$}
 	$Centers \leftarrow \{C: |C|=|F| \text{ and } \forall u,v \in C,\ (u,v) \notin F\}$\;
 	\For{$C \in Centers$ }{
-		\If{$G[C]$ spans $G$}{
+		\If{$U \subseteq G[C]$}{
 			\Return YES-instance\;
 		}
 	}
@@ -794,24 +785,26 @@ Previously in this chapter, we were proving various properties of \ssfep{} probl
 	\caption{Extending a spanning star forest from a reduced graph.}
 \end{algorithm}
 
-Consider the following Algorithm \ref{alg2}. It simply iterates over all maximal sets of forced candidates that do not form any edge. If a set spans all the vertices, then it means that the set of forced edges can be extended to a spanning star forest. Otherwise, if none of the sets is capable of it, then the input is a NO-instance. Thus, we may conclude this part with the following theorem:
+Consider the following Algorithm \ref{alg2}. It simply iterates over all maximal independent sets of forced candidates. If a set spans all the vertices, then it means that the set of forced edges can be extended to a spanning star forest. Otherwise, if none of the sets is capable of it, then the input is a NO-instance. Now, see the following lemma:
 
-\begin{theorem}
-	\ssfep{} parameterized by the number of forced edges can be solved in time $\mathcal{O}^*(2^{|F|})$.
-\end{theorem}
+\begin{lemma}\label{alg2-correctness}
+	Given a normalized instance $(G,F)$ parameterized by $|F|$, the Algorithm \ref{alg2} outputs the answer whether $(G,F)$ has a spanning star forest.
+\end{lemma}
 
 \begin{proof}
-	There are $2^{|F|}$ possible sets. Every iteration takes linear time to process the set.
+	??
+\end{proof}
+
+With the Lemma \ref{alg2-correctness}, we can now prove the first main result of the subsection.
+
+\begin{proof}[Proof (of Theorem \ref{thm-ssfep-fe-time})]
+	Firstly we normalize the instance by Lemma \ref{norm-ssfe} which takes a polynomial time. Then, Algorithm \ref{alg2} does at most $2^{|F|}$ iterations because this is the number of maximal independent sets in an induced matching. Every iteration takes linear time to process the set. Hence, we conclude that the algorithm works in time $\mathcal{O}^*(2^{|F|})$.
 \end{proof}
 
 Note that the described algorithm is a simple brute force. We do not optimize the search. Moreover, there is no need to fight for a better complexity unless SETH fails. The following theorem proves the point.
 
-\begin{theorem}
-	Unless SETH fails, there is no algorithm for \ssfep{} parameterized by the number of forced edges that achieves running time $\mathcal{O}^*((2-\epsilon)^n)$ for any $\epsilon > 0$, where $n$ is the size of the set of forced edges.
-\end{theorem}
-
-\begin{proof}
-	We have already presented a sufficient reduction in Lemma \ref{ssfep reduction}. Hence, we want to verify that the existence of an algorithm, running in time stated in the theorem, would contradict SETH. Therefore, suppose that \ssfep{} can be solved in time $\mathcal{O}^*(2^{\delta n})$, for some $\delta < 1$. Assuming SETH, there exists a constant $q \geq 3$ such that $q${\sc -SAT} cannot be solved in time $\mathcal{O}^*(2^{\delta n})$, where $n$ is the number of variables. Consider now the following algorithm for $q${\sc -SAT}: apply the polynomial reduction from Lemma \ref{ssfep reduction} and then solve the resulting instance of \ssfep{} using the assumed faster algorithm. Based on Corollary \ref{reduction size} we can transform an arbitrary instance of \cnfsat{} of $n$ variables into a \ssfep{} instance with $n$ forced edges. Thus, we could solve $q${\sc -SAT} in time that contradicts SETH.
+\begin{proof}[Proof (of Theorem \ref{thm-ssfep-seth})]
+	Recall, that we have already presented a sufficient reduction in Lemma \ref{ssfep reduction}. Hence, we want to verify that the existence of an algorithm, running in time stated in the theorem, would contradict SETH. Therefore, suppose that \ssfep{} can be solved in time $\mathcal{O}^*(2^{\delta n})$, for some $\delta < 1$. Assuming SETH, there exists a constant $q \geq 3$ such that $q${\sc -SAT} cannot be solved in time $\mathcal{O}^*(2^{\delta n})$, where $n$ is the number of variables. Consider now the following algorithm for $q${\sc -SAT}: apply the polynomial reduction from Lemma \ref{ssfep reduction} and then solve the resulting instance of \ssfep{} using the assumed faster algorithm. Based on Lemma \ref{cnfsat reduction} we can transform an arbitrary instance of \cnfsat{} of $n$ variables into a \ssfep{} instance with $n$ forced edges. Thus, we could solve $q${\sc -SAT} in time that contradicts SETH.
 \end{proof}
 
 \section{Parametrization by the number of non-isolated edges}
