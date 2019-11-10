@@ -115,6 +115,7 @@
 \newcommand{\dpt}[1]{\textrm{dp}[#1]}
 \newcommand{\true}{\textrm{True}}
 \newcommand{\false}{\textrm{False}}
+\newcommand{\tw}{\textrm{tw}}
 \DeclareMathOperator{\Ima}{Im}
 
 \newcommand{\kssf}{\emph{Spanning Star Forest Problem} parameterized by the number of stars}
@@ -752,7 +753,7 @@ We begin with showing interreducability of the following problems:
 \end{lemma}
 
 \begin{proof}
-	The reductions shown in Lemma \ref{ssfep reduction} and Lemma \ref{cnfsat reduction} are the proof for interreducibility. In both cases, the number of variables or forced edges does not grow.
+	The reductions shown in Lemma \ref{ssfep reduction} and Lemma \ref{ssfep reduction} are the proof for interreducibility. In both cases, the number of variables or forced edges does not grow.
 \end{proof}
 
 Additionally, 
@@ -807,9 +808,9 @@ Note that the described algorithm is a simple brute force. We do not optimize th
 
 \subsection{Preliminaries}
 
-For \ssfep{}, we extend the notation of tree decomposition. Namely, for introduce vertex node, we distinguish \textit{introduce free vertex node} and \textit{introduce forced vertex node}. We also extend the definition for introduce edge and forget vertex node consequently. Every cell of a dynamic table $\text{dp}$ has two parameters: a tree decomposition node $t$ and an assignment function $f$. An \textit{assignment function} $f: X_t \rightarrow \{\true, \false\}$ is a mapping that distinguishes different states of vertices. For example, let $vu$ be a forced edge. If $f(v)=\true$, then $v$ can potentially become a center. In other words, we make sure that no free edge $uw$ will be added to a partial solution because $f(u)=\false$. Similarly, we distinguish two different states for free vertices. If $f(v)=\true$ for a free vertex $v$, then $v$ was added to one of the stars. If not, then $f(v)=\false$.
+For \ssfep{}, we extend the notation of tree decomposition. Namely, for introduce vertex node, we distinguish \textit1{introduce free vertex node} and \textit{introduce forced vertex node}. We also extend the definition for introduce edge and forget vertex node consequently. Every cell of a dynamic table $\text{dp}$ has three parameters: a tree decomposition node $t$ and two assignment functions $f,g$. An \textit{assignment function for forced vertices} $f: (X_t \cap V(F)) \rightarrow \{\true, \false\}$ is a mapping that distinguishes two states. If $f(v)=1$, then we say that $v$ is a center whereas, if $f(v)=0$, then $v$ is either a candidate or a ray. An \textit{assignment function for free vertices} $g: (X_t \cap U) \rightarrow \{\true, \false\}$ is a mapping that indicates whether a free vertex is added to a star or not. Hence, for a free vertex $v$ we say that $v$ is in a star if $f(v)=1$ and, if it is not, then $f(v)=0$.
 
-For the sake of clarity, we introduce the following notations. For an assignment function $f$ of $X$ and $v \in X$, we use $f_{|v}$ to denote the restriction of $f$ to $X \setminus \{v\}$. For a subset $X \subseteq V(G)$ consider an assignment function $f:X \rightarrow \{\true,\false\}$. For a vertex $v \in V(G)$ and a logic value $p \in \{\true, \false\}$ we define a new assignment $f_{v \rightarrow p}: X \cup \{v\} \rightarrow \{\true, \false\}$ defined as follows:
+For the sake of clarity, we introduce the following notations. For an assignment function $f$ of $X$ and $v \in X$, we use $f_{|v}$ to denote the restriction of $f$ to $X \setminus \{v\}$. For a subset $X \subseteq V(G)$ consider an assignment function $f:X \rightarrow \{\true,\false\}$. For a vertex $v \in V(G)$ and a logic value $p \in \{\true, \false\}$ we define a new assignment $f_{v \rightarrow p}: X \cup \{v\} \rightarrow \{\true, \false\}$ as follows:
 
 \begin{equation*}
 	f_{v \rightarrow p} =
@@ -823,86 +824,131 @@ For the sake of clarity, we introduce the following notations. For an assignment
 
 \subsection{Algorithm}
 
+We provide formulas for every type of a node. To call a cell from a dynamic table we provide three arguments. The first one is a node $t$ from a tree decomposition. The second one is a forced vertices assignment $f:(X_t \cap V(F)) \rightarrow \{\true, \false\}$. The last one is  a free vertices assignment $g:(X_t \cap U) \rightarrow \{\true, \false\}$.
+
 \paragraph{Leaf node} For a leaf node $t$ we have that $X_t=\emptyset$. An empty graph is a correct spanning star forest. Hence:
 
 \begin{equation*}
-	\dpt{t,\emptyset}=\true
+	\dpt{t,\emptyset,\emptyset}=\true
 \end{equation*}
 
 \paragraph{Introduce forced vertex node} Let $t$ be an introduce node with a child $t'$ such that $X_t = X_{t'} \cup \{v\}$ and $v \in V(F)$. We simply assign an arbitrary value to the new vertex. Observe that we allow the case where for $vu \in F$, $f(v)=f(u)=\true$. However, we set the value for such a function to $\false$ during the introduce forced edge node. Thus, we get:
 
 \begin{equation*}
-	\dpt{t,f_{v \rightarrow p}}= \dpt{t',f}\text{, for $p \in \{\false,\true\}$}
+	\dpt{t,f_{v \rightarrow p},g}= \dpt{t',f,g}\text{, for $p \in \{\false,\true\}$}
 \end{equation*}
 
 \paragraph{Introduce free vertex node} Let $t$ be an introduce free vertex node with a child $t'$ such that $X_t = X_{t'} \cup \{v\}$. Notice that the vertex $v$ is isolated in $G_t$. Therefore, we have the following formulas:
 
 \begin{equation*}
-	\dpt{t,f_{v \rightarrow p}} =
+	\dpt{t,f,g_{v \rightarrow p}} =
 	\begin{cases}
-		\dpt{t',f}, & \text{if $p=\false$} \\
+		\dpt{t',f,g}, & \text{if $p=\false$} \\
 		\false, &\text{otherwise}
 	\end{cases}
 \end{equation*}
 
-\paragraph{Introduce free edge node} Let $t$ be an introduce free edge node labeled with an edge $vu \in E(G) \setminus F$ and let $t'$ be the child of $t$. Without loss of generality, assume that $v \in U$ and $u \in V(F)$ as every free edge has one end in a free vertex and the other one in a forced vertex. Let $f$ be an assignment function. Suppose that $f(v)=\false$. Then, we simply pass the value value from the child's node. Otherwise, if $f(v)=\true$, we distinguish two cases. Firstly, let $f(u)=\false$. It means that $v$ was added to a star by another free edge. If $f(u)=\true$, then $v$ could be also added to a star by the edge $vu$. Thus, we obtain the following equation: 
+\paragraph{Introduce free edge node} Let $t$ be an introduce free edge node labeled with an edge $vu \in E(G) \setminus F$ and let $t'$ be the child of $t$. Without loss of generality, assume that $v \in U$ and $u \in V(F)$ as every free edge has one end in a free vertex and the other one in a forced vertex. Let $f$ be a forced vertices assignment function and $g$ be a free vertices assignment function. Suppose that $g(v)=\false$. Then, we simply pass the value from the child's node. Otherwise, if $g(v)=\true$, we distinguish two cases. Firstly, let $f(u)=\false$. It means that $v$ was added to a star by another free edge. If $f(u)=\true$, then $v$ could be also added to a star by the edge $vu$. Thus, we obtain the following equation: 
 
 \begin{equation*}
 \begin{split}
-	\dpt{t,f_{v \rightarrow \true}} & = 
+	\dpt{t,f,g_{v \rightarrow \true}} & = 
 		\begin{cases}
-			\dpt{t',f_{v \rightarrow \true}} \lor \dpt{t',f_{v \rightarrow \false}}, & \text{if $f(u)$} \\
-			\dpt{t',f_{v \rightarrow \true}}, & \text{otherwise}
+			\dpt{t',f,g_{v \rightarrow \true}} \lor \dpt{t',f,g_{v \rightarrow \false}}, & \text{if $f(u)$} \\
+			\dpt{t',f,g_{v \rightarrow \true}}, & \text{otherwise}
 		\end{cases}	
 	\\
-	\dpt{t,f_{v \rightarrow \false}} & = \dpt{t',f_{v \rightarrow \false}}\end{split}
+	\dpt{t,f,g_{v \rightarrow \false}} & = \dpt{t',f,g_{v \rightarrow \false}}\end{split}
 \end{equation*}
 
-\paragraph{Introduce forced edge node} Let $t$ be an introduce free edge node labeled with an edge $vu \in F$ and let $t'$ be the child of $t$. Calculations for $t$ are simple. We set to $\false$ all the elements of dynamic table for which $f(v)=f(u)=\true$:
+\paragraph{Introduce forced edge node} Let $t$ be an introduce free edge node labeled with an edge $vu \in F$ and let $t'$ be the child of $t$ and let $f$ be a forced vertices assignment. Calculations for $t$ are simple. We set to $\false$ all the elements of dynamic table for which $f(v)=f(u)=\true$:
 
 \begin{equation*}
-	\dpt{t,f} =
+	\dpt{t,f,g} =
 	\begin{cases}
-		\dpt{t',f}, & \text{if $\neg(f(v) \land f(u))$} \\
+		\dpt{t',f,g}, & \text{if $\neg(f(v) \land f(u))$} \\
 		\false, & \text{otherwise}
 	\end{cases}
 \end{equation*}
 
-\paragraph{Forget forced vertex node} Let $t$ be an forget forced vertex node with a child $t'$, such that $X_t = X_{t'} \setminus \{v\}$, $f$ be an assignment function for $t'$ and let $u \in V(F)$ such that $vu \in F$. Observe that for any $f$ that satisfies $f(v)=f(u)=\true$, $\dpt{t',f} = \false$ because we have already changed their values during introduce forced edge node. Thus, the formula looks as follows:
+\paragraph{Forget forced vertex node} Let $t$ be an forget forced vertex node with a child $t'$, such that $X_t = X_{t'} \setminus \{v\}$ and let $u \in V(F)$ such that $vu \in F$. Observe that for any forced assignment function $f$, that satisfies $f(v)=f(u)=\true$, $\dpt{t',f} = \false$ because we have already changed their values during introduce forced edge node. Thus, the formula looks as follows:
 
 \begin{equation*}
-	\dpt{t,f_{|v}} = \dpt{t',f}
+	\dpt{t,f_{|v},g} = \dpt{t',f,g}
 \end{equation*}
 
-\paragraph{Forget free vertex node} Let $t$ be an forget free vertex node with a child $t'$ such that $X_t = X_{t'} \setminus \{v\}$ where $v \in U$. We can pass the value from a child node if and only if $v$ was added to a star, that is, it satisfies $f(v)=\true$. Consequently, we obtain:
+\paragraph{Forget free vertex node} Let $t$ be an forget free vertex node with a child $t'$ such that $X_t = X_{t'} \setminus \{v\}$ where $v \in U$. We can pass the value from a child node if and only if $v$ was added to a star, that is, for a free vertices assignment function $g$, $g(v)=\true$. Consequently, we obtain:
 
 \begin{equation*}
-	\dpt{t,f_{|v}} =
+	\dpt{t,f,g_{|v}} =
 	\begin{cases}
-		\dpt{t',f}, & \text{if $f(v)$} \\
+		\dpt{t',f,g}, & \text{if $g(v)$} \\
 		\false, & \text{otherwise}
 	\end{cases}
 \end{equation*}
 
-\paragraph{Join node} Let $t$ be a join node with children $t_1$ and $t_2$. Recall that $X_t=X_{t_1}=X_{t_2}$. We say that assignment functions $f_1$ of $X_{t_1}$ and $f_2$ of $X_{t_2}$ \textit{match} with an assignment $f$ of $X_t$ if, for every forced vertex $v \in X_t$ and for every free vertex $u \in X_t$, the following conditions hold:
+\paragraph{Join node} Let $t$ be a join node with children $t_1$ and $t_2$. Recall that $X_t=X_{t_1}=X_{t_2}$. We say that assignment functions $f_1,g_1$ of $X_{t_1}$ and $f_2,g_2$ of $X_{t_2}$ \textit{match} with assignments $f,g$ of $X_t$ if the following conditions hold:
 
 \begin{enumerate}
-	\item $f(v)=f_1(v)=f_2(v)$
-	\item $f(u)=f_1(u) \lor f_2(u)$ 
+	\item $f=f_1=f_2$, for forced vertices assignment functions $f,f_1,f_2$.
+	\item $g(v)=g_1(v) \lor g_2(u)$, for every free vertex $v \in X_t \cap U$.
 \end{enumerate}
 Intuitively, we make sure that the centers remains at the same position and at least one of the children's assignments added every free vertex to a star. Therefore, we get the following equations:
 
 \begin{equation*}
-	\dpt{t,f} =
-	\begin{cases}
-		\bigvee\limits_{f_1,f_2} dp[t_1,f_1] \land dp[t_2,f_2], & \text{if $f_1,f_2$ matches with $f$}\\
-		\false, & \text{otherwise}
-	\end{cases}
+	\dpt{t,f,g} =
+		\bigvee\limits_{g_1,g_2 \text{ match $g$}} dp[t_1,f_1,g_1] \land dp[t_2,f_2,g_2]
 \end{equation*}
 
 \subsection{Complexity analysis}
 
+Observe that, except for a join node, every operation can be done in constant time. A naive approach to solve the disjunction would result in time $\mathcal{O}^*(2^{\tw(G)})$. Thus, we could conclude with an algorithm solving \ssfep{} parameterized by treewidth in time $\mathcal{O}^*(4^{\tw(G)})$ as there are $O(|G| \cdot 2^{\tw(G)})$ array entries. However, we can improve the run time. Thus, we want to introduce a smarter way of solving equations like this. Consider the following definition:
 
+\begin{definition}
+	The \textup{cover product} of two functions $f,g:2^V \rightarrow \mathbb{Z}$ is a function $(f *_c g):2^V \rightarrow \mathbb{Z}$ such that for every $Y \subseteq V$:
+	
+	\begin{equation*}
+		(f *_c g)(Y) = \sum\limits_{ A \cup B = Y} f(A)g(B)
+	\end{equation*}
+\end{definition}
+
+Now, there is a theorem, stated in the \textit{Parameterized Algorithms}, that says:
+
+\begin{theorem}\label{cproduct}
+	For two functions $f,g:2^V \rightarrow \mathbb{Z}$, given all $2^n$ values of $f$ and $g$ in the input, all the $2^n$ values of the cover product $f*_cg$ can be computed in $\mathcal{O}(2^n\cdot n)$ arithmetic operations.
+\end{theorem}
+
+Notice that the disjunction in every join node is nothing different than a cover product for a fixed forced vertices assignment. Thus, we formulate the lemma:
+
+\begin{lemma}\label{join lemma}
+	Given a join node $t$, one can calculate all its values in time $O(2^{\tw(G)})$.
+\end{lemma}
+
+\begin{proof}
+	Fix a forced vertices assignment $f$. We define a function $c_{t,f}:2^{X_t \cap U} \rightarrow \mathbb{Z}$ as follows:
+	
+	\begin{equation*}
+		c_{t,f}(X) = dp[t,f,g] \text{, such that $g^{-1}(1) = X$}
+	\end{equation*}	
+	Now, for $X \subseteq X_t \cap U$, observe that: 
+	\begin{align*}
+		(c_{t_1,f} *_c c_{t_2,f})(X) &= \sum\limits_{A \cup B = X} c_{t_1,f}(A)c_{t_2,f}(B) \\
+		&= \sum\limits_{ g_1^{-1}(1)\ \cup\ g_2^{-1}(1) = X} dp[t_1,f,g_1]dp[t_2,f,g_2]	
+	\end{align*}
+	which exactly reflects the calculation that we do during a join node. Thus, $\dpt{t,f,g} = (c_{t_1,f} *_c c_{t_2,f})(g^{-1}(1)) > 0$. 
+	
+	There are $2^{|X_t \cap V(F)|}$ different forced vertices assignments. For a given forced vertices assignment $f$, by Theorem \ref{cproduct}, we can calculate values for $f$ and every possible free vertices assignment $g$ in time $2^{|X_t \cap U|}$. Thus, for a join node $t$ we can fill its dynamic table cells in time $2^{|X_t \cap V(F)|} \cdot 2^{|X_t \cap U|} = 2^{|X_t|} \leq 2^{\tw(G)}$.
+\end{proof}
+
+\begin{proof}[Proof (of Theorem \ref{thm-ssfep-tw-time})]
+	Consider the algorithm described in the previous subsection. To calculate a single entry for introduce and forget nodes, we need constant time. By Lemma \ref{join lemma}, we showed that that the values for a join node can be calculated in $\mathcal{O}(2^{\tw(G)})$. There are polynomially many nodes in a tree decomposition. Thus, we can fill the values of a dynamic table in time $\mathcal{O}^*(2^{\tw(G)})$ and provide the answer whether the input graph has a \ssf{}.
+\end{proof}
+
+\begin{proof}[Proof (of Theorem \ref{thm-ssfep-tw-seth})]
+	Let $\phi$ be an arbitrary instance of \cnfsat{} problem with $n$ variables. We apply a reduction from Lemma \ref{ssfep reduction} and obtain an equivalent instance $(G,F)$. Now, we need to prove that $tw(G) \leq n$. Thus we propose the following path decomposition. Let $B_1=\{v[x_i]: 1 \leq i \leq n\}$. Then, we iteratively introduce and forget every vertex $v \in N[B_1] \cap U$. Next, for every vertex $v[x_i]$ we introduce vertex $v[\neg x_i]$ and forget $v[x_i]$. Finally, we repeat the second step, that is, we iteratively introduce and forget every vertex $v \in N[\{v[\neg x_i]: 1 \leq i \leq n\}] \cap U$. Observe that every bag of the decomposition consists of at most $n+1$ vertices. Thus, $pw(G)=n$. Since $tw(G) \leq pw(G)$ we conclude that $tw(G) \leq n$.
+	
+	To conclude, observe that if there was an algorithm solving \ssfep{} parameterized by treewidth in $2^{o(\tw(G))}$, then it would contradict SETH.
+\end{proof}
 
 \begin{thebibliography}{99}
 \addcontentsline{toc}{chapter}{Bibliografia}
