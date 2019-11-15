@@ -153,11 +153,18 @@
 %\listoftables
 
 \chapter{Introduction}
-\addcontentsline{toc}{chapter}{Introduction}
+
+In \ssfp{} problem, given a graph, we ask whether there exists a spanning star forest. In other words, we look for a subgraph such that it contains all the vertices and its every connected component is a tree of depth $2$. 
+
+In Chapter \ref{sec2}, we describe the terminology used further in the study. We define structures, relations and explain abbreviations. Then, we introduce definitions related to parameterized complexity. In the end, we explain the concept of treewidth and tree decomposition. 
+
+In Chapter \ref{sec3}, we study decision and constructive variants. In these variants, we do not have any limitations. We show a simple condition that is sufficient to prove the existence of a spanning star forest in a graph. Later, we show an algorithm that returns a spanning star forest. Finally, we conclude the chapter with a proof of the following theorem:
 
 \begin{theorem}\label{thm-ssfp}
 	\ssfp{} can be solved in linear time. Moreover, given a graph $G$, one can find a solution in linear time if it exists.
 \end{theorem}
+
+In Chapter \ref{sec4}, we introduce the third variant. In \mssfp{}, we look a spanning star forest that minimizes the number of stars. We show that \mssfp{} and \domsetp{} are equivalent. That is, there exist two parameterized reductions. As it turns out later, the parameterized reductions can be also considered as polynomial reductions. Thus, we get the following:
 
 \begin{theorem}\label{thm-mssfp-w2c}
 	\mssfp{} is \textup{W[2]}-complete.
@@ -167,6 +174,9 @@
 	\mssfp{} is \textup{NP-complete}.
 \end{theorem}
 
+\noindent
+Furthermore, we talk about the complexity of \mssfp{}. Based on reductions, we show a brute force algorithm. In the end, we point out that the lower bound is tight, based on the theorem proven by Pătraşcu and Williams \cite{DomSet}. 
+
 \begin{theorem}\label{thm-mssfp-time}
 	\mssfp{} can be solved in $\mathcal{O}^*(N^{k + o_k(1)})$, where $N$ is the number of vertices.
 \end{theorem}
@@ -175,9 +185,14 @@
 	Unless \cnfsat{} cannot be solved in time $\mathcal{O}^*((2-\epsilon')^n)$ for some $\epsilon' > 0$, there does not exist constants $\epsilon > 0,k\geq 3$ and an algorithm solving \mssfp{} on instance with parameter equal to $k$ in time $\mathcal{O}(N^{k-\epsilon})$, where $N$ is the number of vertices of the graph.
 \end{theorem}
 
+In Chapter \ref{sec5} we introduce the last variant. In \ssfep{} we are given a graph and a subset of forced edges. We ask whether there exists a spanning star forest in the graph provided that it contains all the forced edges. We begin the first section with normalization lemma. It appears that most of the instances can be normalized. Graphs in systematic form are well structured. It significantly lessen the effort to show reductions from and to \cnfsat{}. Thus, we obtain:
+
 \begin{theorem}\label{thm-ssfep-npc}
 	\ssfep{} is \textup{NP}-complete.
 \end{theorem}
+
+\noindent
+In the next section, we consider the above problem with a parameter equal to the number of forced edges. We prove the lower bound stated in the next theorem by showing a simple brute force algorithm. Moreover, we show that the lower bound is tight and plausibly, there does not exist a better one.
 
 \begin{theorem}\label{thm-ssfep-fe-time}
 	\ssfep{} parameterized by the number of forced edges can be solved in time $\mathcal{O}^*(2^{|F|})$ where $|F|$is the number of forced edges.
@@ -187,17 +202,27 @@
 	There exists an algorithm solving \cnfsat{} in time $2^{o(n)}$, where $n$ is the number of variables, if and only if there exists an algorithm solving \ssfep{} parameterized by the number of forced edges in time $2^{o(n)}$, where $n$ is the number of forced edges.
 \end{theorem}
 
+\noindent
+In the end, we argue that there does not exist a polynomial kernel for \ssfep{} when parameterized by the number of forced edges. We show two different approaches. The first one uses \cnfsat{} as a proxy. In the second approach, we use a framework proposed by Bodlaender, Downey, Fellows and Hermelin \cite{Bodlaender}. Namely, we prove that there exists a cross-composition of \ssfep{} into itself. All in all, unless complexity some classes collapse, we obtain the following result:
+
 \begin{theorem}\label{thm-ssfep-nokernel}
 	\ssfep{} parameterized by the number of forced edges does not admit a polynomial kernel unless NP $\subseteq$ coNP/poly.
 \end{theorem}
+
+In the next section, we parameterize the problem with the number of free vertices. Unlike the previous parametrization, we provide an algorithm that outputs a linear kernel.
 
 \begin{theorem}\label{thm-ssfep-kernel}
 	\ssfep{} parameterized by the number of free vertices admits a linear kernel.
 \end{theorem}
 
+\noindent
+Moreover, we show that this parameterized problem is equivalent to \cnfsat{} when parameterized by the number of clauses. Therefore, we can use the previous reductions to prove the following:
+
 \begin{theorem}\label{thm-ssfep-free-alg}
 	\ssfep{} parameterized by the number of free vertices can be solved in ??.%TODO add time%
 \end{theorem}
+
+In the last section of this study, we parameterize the extension variant by the treewidth. We propose a dynamic programming algorithm over a decomposition of a graph. Thanks to Björklund Husfeldt Kaski and Koivisto \cite{Cover product}, we prove that the algorithm works in the time stated below. Then, as previously, we show that beating the run time would contradict the SETH.
 
 \begin{theorem}\label{thm-ssfep-tw-time}
 	\ssfep{} parameterized by treewidth can be solved in time $2^t\cdot poly(t)\cdot n$.
@@ -207,7 +232,7 @@
 	Unless SETH fails, there is no algorithm for \ssfep{} parameterized by treewidth that achieves running time $\mathcal{O}^*((2-\epsilon)^{tw})$ for any $\epsilon > 0$, where \textup{\textrm{tw}} is treewidth of the input graph.
 \end{theorem}
 
-\chapter{Preliminaries}
+\chapter{Preliminaries}\label{sec2}
 
 \section{Structures}
 
@@ -222,7 +247,6 @@ A \emph{star} $S$ is a tree of size at least $2$ for which at most one vertex ha
 A star of size at least $3$ consists of a \emph{center}, that is a vertex of the greatest degree, and \emph{rays} - vertices of degree $1$. 
 Vertices of a star of size 2 are called \emph{candidates}.
 For a given graph $G$, we say that $S$ is a \ssf{} if $V(S)=V(G)$ and every connected component of $S$ is a star.
-We say that $I \subseteq V(G)$ is an independent set in $G$ if and only if it holds that for all $u,v \in I$ $uv \notin E(G)$.
 
 \section{Parameterized complexity}
 
@@ -303,7 +327,7 @@ A nice tree decomposition of a graph $G$ is a tree decomposition $(T, \{X_t\}_{t
 
 We distinguish one special case. If a tree $\mathcal{T}$ forms a path, we call it a \emph{path decomposition}. Respectively, by $\textrm{pw}(G)$ we denote a width of a path decomposition and by $\textrm{pw}(G)$ we denote the minimal width over all path decompositions of $G$.
 
-\chapter{Spanning Star Forest Problem}
+\chapter{Spanning Star Forest Problem}\label{sec3}
 
 In this chapter we examine both decision and constructive variant of \ssfp{}. We propose an algorithm working in linear time that outputs a \ssf{} or concludes that an instance is a NO-instance.
 
@@ -407,7 +431,7 @@ Having proven the correctness of Algorithm \ref{alg1}, we proceed to the complex
 
 Obtaining a \ssf{} without any limitations is simple. Both decision and constructive variants of the problem can be solved in linear time.
 
-\chapter{Minimal Spanning Star Forest problem}
+\chapter{Minimal Spanning Star Forest problem}\label{sec4}
 
 In \mssfp{}, given a graph $G$ and a natural number $k$, the objective is to determine whether there exists a \ssf{} $S$ such that the number of connected components is at most $k$.
 
@@ -507,7 +531,7 @@ Armed with the theorem and reductions, we are ready to prove the last result for
 	Firstly, we show that the lower bound is optimal. Assume \cnfsat{} cannot be solved in the stated time. However, suppose there exist a constant $\epsilon > 0$ and an algorithm $\mathcal{A}$, that solves \mssfp{} instance in time $\mathcal{O}(N^{k-\epsilon})$, where $k \geq 3$ is the parameter. Let $(G,k)$ be an instance of \domsetp{}. We show an algorithm that contradicts Theorem \ref{domset-seth}. At first, we apply the reduction stated in Lemma \ref{dom-ssf reduction}. We obtain an instance $(G',k')$ of \mssfp{} such that $G' \subseteq G$ and $k' \leq k$. Then, we can apply algorithm $\mathcal{A}$ to obtain the answer in time $\mathcal{O}(N^{k'-\epsilon})$, where $N=|V(G')| \leq |V(G)|$ and $k'\leq k$. Contradiction.
 \end{proof}
 
-\chapter{Spanning Star Forest Extension}
+\chapter{Spanning Star Forest Extension}\label{sec5}
 
 In this chapter, we study a significantly different variant. Let $G$ be a graph and $F \subseteq E(G)$ be a set of \emph{forced edges}. In the \ssfep{} we ask whether there exists a \ssf{} $S$ such that $F \subseteq E(S)$. In this chapter, we use three different parameters: the number of forced edges, the number of free vertices and the treewidth. 
 
@@ -515,7 +539,7 @@ In further, we denote by $F$ a set of \emph{forced edges}. Vertices that have ex
 
 \section{Instance normalization} 
 
-Notice that this time we do not have any limit on the number of connected components. The hardness of the problem lies in choosing which of the forced candidates should become a forced center and which one should become a forced ray. Also, observe that a star is a primitive structure. The star's maximal radius is equal to $2$. It means that we can look at the problem rather locally than globally. Thus, it is possible to normalize instances i.e. remove a part of free vertices and free edges.
+Notice that this time we do not have any limit on the number of connected components. The hardness of the problem lies in choosing which of the forced candidates should become a forced center and which one should become a forced ray. Also, observe that a star is a primitive structure. The star's maximal radius is equal to $2$. It means that we can look at the problem rather locally than globally. Thus, it is possible to normalize instances i.e. remove a part of an input graph.
 
 We propose a set of three conditions that every normalized instance should satisfy. Note that an \emph{induced matching} $M$ in a graph $G$ is a set of disjoint edges such that there are no additional edges between the vertices of $M$ in $G$.
 
@@ -540,7 +564,7 @@ Surprisingly, almost all of the instances of \ssfep{} can be normalized. Otherwi
 		\item If graph $G$ contains an isolated vertex, then it is a NO-instance.
 	\end{enumerate}
 	
-	Obviously, an isolated vertex cannot be a star. Now, observe, that in the extension variant, there exists a set of edges that must be added to the solution. Therefore, we can instantly conclude with NO-instance if $F$ forms a forbidden subgraph.
+	Obviously, an isolated vertex cannot be a star. Now, observe, that in the extension variant, there exists a set of edges that must be added to the solution. Therefore, we can instantly conclude that an instance is a NO-instance if $F$ forms a forbidden subgraph.
 	
 	\begin{enumerate}[leftmargin=*,label=\textbf{Reduction \arabic{enumi}},labelindent=0pt,resume]
 		\item If $F$ contains a path or a cycle of length at least $3$, then it is a NO-instance.
@@ -553,7 +577,7 @@ Surprisingly, almost all of the instances of \ssfep{} can be normalized. Otherwi
 	\end{enumerate}
 	Clearly, if such an edge was included in a solution $S$, then the solution would contain a path or a cycle of length $3$. Thus, the operation is safe. 
 	
-	Now, suppose that a subset of forced edges forms a star of size at least $3$. Then, the forced center is already determined. Hence, we can remove from the instance all the free edges that that have at least one end in a forced ray. 
+	Now, suppose that a subset of forced edges forms a star of size at least $3$. Then, the forced center is already determined. Hence, we can remove from the instance all the free edges that have at least one end in a forced ray. 
 	
 	\begin{enumerate}[leftmargin=*,label=\textbf{Reduction \arabic{enumi}},resume,wide, labelwidth=!, labelindent=0pt]
 		\item Remove the set of edges $\{uv: v \in F_R,\ uv \in E(G) \setminus F\}$
@@ -567,7 +591,7 @@ Surprisingly, almost all of the instances of \ssfep{} can be normalized. Otherwi
 		\item Suppose that $(G,F)$ is the output graph after exhaustive application of the previous reductions. For every forced star of size greater than $2$, remove all the forced rays except for one.
 	\end{enumerate}
 
-	We prove the safeness now. Let $(G',F')$ be the output instance after application of Reduction 5. We claim that $(G',F')$ has a \ssf{} if and only if $(G,F)$ has a \ssf{}. For the forward implication, let $S$ be a solution for $(G',F')$. Observe that $F = F' \cup \textrm{Rays}$. By the definition, $N_G(\textrm{V(Rays)}) = F_C$. Thus, $S \cup \textrm{Rays}$ is a \ssf{} for $(G,F)$. Conversely, let $S$ be a solution for $(G,F)$. Obviously, $S$ restricted to the vertices of $G'$ is a spanning star forest since every forced star of size greater than $2$ was reduced to a forced star of size $2$.
+	We prove the safeness now. Let $(G',F')$ be the output instance after application of Reduction 5. We claim that $(G',F')$ has a \ssf{} if and only if $(G,F)$ has a \ssf{}. For the forward implication, let $S$ be a solution for $(G',F')$. Observe that $F = F' \oplus \textrm{Rays}$. By the definition, $N_G(\textrm{V(Rays)}) = F_C$. Thus, $S \cup \textrm{Rays}$ is a \ssf{} for $(G,F)$. Conversely, let $S$ be a solution for $(G,F)$. Obviously, $S$ restricted to the vertices of $G'$ is a spanning star forest since every forced star of size greater than $2$ was reduced to a forced star of size $2$.
 
 	Let us summarize the work and describe how an input looks like after exhaustive application of Reductions 1-5:
 
@@ -586,7 +610,7 @@ Surprisingly, almost all of the instances of \ssfep{} can be normalized. Otherwi
 	\end{claim}
 	
 	\begin{proof}
-		Every vertex has at least one neighbor that is also a free vertex. Hence, by Lemma \ref{SSF lemma} $G_P$ has a spanning star forest.
+		Every vertex has at least one neighbor. Hence, by Lemma \ref{SSF lemma} $G_P$ has a spanning star forest.
 	\end{proof}
 
 	Observe that during partitioning we lose the information about some edges. Specifically, let $L= \{vu: vu \in E(G), v \in V(G_{NP}),\ u \in V(G_P)\}$ be the set. Note that vertices from $G_{NP}$, that forms an edge in $L$, are the forced vertices. Additionally, both forced vertices and vertices from $G_P$ are already satisfied i.e. we can always span them by a star forest. Therefore, we can formally state the following claim:
@@ -672,7 +696,7 @@ In this section, in addition to an instance $(G,F)$ we receive a parameter $k$ w
 
 \subsection{Lower bound for a run time}
 
-Previously in this chapter, we were proving various properties of \ssfep{} problem. We showed that the problem is NP-complete, it does not admit a polynomial kernel and we stated reduction rules to simplify instances. In this subsection, we show a simple routine that solves \ssfep{} parameterized by the number of forced edges. Furthermore, we prove that there does not exist a faster algorithm unless \cnfsat{} cannot be solved in time $\mathcal{O}^*((2-\epsilon)^n)$, for $\epsilon>0$.
+Previously in this chapter, we proved that \ssfep{} is NP-complete. We showed that the problem is NP-complete, it does not admit a polynomial kernel and we stated reduction rules to simplify instances. In this subsection, we show a simple routine that solves \ssfep{} parameterized by the number of forced edges. Furthermore, we prove that there does not exist a faster algorithm unless \cnfsat{} cannot be solved in time $\mathcal{O}^*((2-\epsilon)^n)$, for $\epsilon>0$.
 
 \begin{algorithm}\label{alg2}
 	\KwData{normalized instance $(G,F)$}
@@ -980,9 +1004,9 @@ Notice that the disjunction in every join node is nothing different than a cover
 
 \bibitem{Hopcroft-Karp} Hopcroft, J.E., Karp, R.M.: \textit{An $n^{5/2}$ algorithm for maximum matchings in bipartite graphs}. SIAM J. Computing 2, pp. 225-231, (1973).
 
-\bibitem{Bodlaender} Bodlaender H., Downey R., Fellows M., Hermelin D.: \textit{On problems without polynomial kernels}. Proceedings of 35th International Colloquium on Automata, Languages and Programming, pp. 563–574, (2008).
+\bibitem{Bodlaender} Bodlaender, H., Downey, R., Fellows, M., Hermelin, D.: \textit{On problems without polynomial kernels}. Proceedings of 35th International Colloquium on Automata, Languages and Programming, pp. 563–574, (2008).
 
-\bibitem{CNFSAT} Fortnow L., Santhanam R.: \textit{Infeasibility of instance compression and succinct pcps for NP}. Journal of Computer and System Sciences, 77(1), pp. 91–106, (2011).
+\bibitem{CNFSAT} Fortnow, L., Santhanam, R.: \textit{Infeasibility of instance compression and succinct pcps for NP}. Journal of Computer and System Sciences, 77(1), pp. 91–106, (2011).
 
 \bibitem{Cover product} Björklund, A., Husfeldt, T., Kaski, P., Koivisto, M.: \textit{Fourier meets Möbius: fast subset convolution}. Proceedings of the 39th Annual ACM Symposium on Theory of Computing (STOC), pp. 67-74. ACM, New York (2007).
 
