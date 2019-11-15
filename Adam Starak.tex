@@ -188,7 +188,7 @@
 \end{theorem}
 
 \begin{theorem}\label{thm-ssfep-nokernel}
-	\ssfep{} parameterized by the number of forced edges does not admit a polynomial kernel.
+	\ssfep{} parameterized by the number of forced edges does not admit a polynomial kernel unless NP $\subseteq$ coNP/poly.
 \end{theorem}
 
 \begin{theorem}\label{thm-ssfep-kernel}
@@ -513,9 +513,7 @@ In this chapter, we study a significantly different variant. Let $G$ be a graph 
 
 In further, we denote by $F$ a set of \emph{forced edges}. Vertices that have exactly one forced edge are called \emph{forced candidates}. Similarly, if a subset of $F$ forms a \emph{forced star} of size greater than $2$, then we call its particles a \emph{forced center} and \emph{forced rays} consequently. We denote by $F_R$ a set of all forced rays and by $F_C$ a set of all forced centers. Vertices that does not belong to $V(F)$ are called \emph{free vertices} and they are denoted by $U$.
 
-\section{Preliminaries}
-
-\subsection{Instance normalization} 
+\section{Instance normalization} 
 
 Notice that this time we do not have any limit on the number of connected components. The hardness of the problem lies in choosing which of the forced candidates should become a forced center and which one should become a forced ray. Also, observe that a star is a primitive structure. The star's maximal radius is equal to $2$. It means that we can look at the problem rather locally than globally. Thus, it is possible to normalize instances i.e. remove a part of free vertices and free edges.
 
@@ -672,7 +670,7 @@ Finally, we can prove the main theorem of the section:
 
 In this section, in addition to an instance $(G,F)$ we receive a parameter $k$ which is equal to the number of forced edges. We show two major results: \ssfep{} parameterized by the number of forced edges does not admit a kernel of polynomial size and a lower bound under Strong Exponential Hypothesis.
 
-\subsection{Lower bound based on SETH}
+\subsection{Lower bound for a run time}
 
 Previously in this chapter, we were proving various properties of \ssfep{} problem. We showed that the problem is NP-complete, it does not admit a polynomial kernel and we stated reduction rules to simplify instances. In this subsection, we show a simple routine that solves \ssfep{} parameterized by the number of forced edges. Furthermore, we prove that there does not exist a faster algorithm unless \cnfsat{} cannot be solved in time $\mathcal{O}^*((2-\epsilon)^n)$, for $\epsilon>0$.
 
@@ -713,11 +711,33 @@ Note that the described algorithm is a simple brute force. We do not optimize th
 	For the converse implication, assume $\mathcal{A}$ is an algorithm that solves \ssfep{} parameterized by the number of forced edges in time $2^{o(n)}$, where $n$ is the number of forced edges. We show an algorithm for \cnfsat{} problem now. Let $\phi$ be an arbitrary CNF-formula with $n$ variables. We apply the reduction from Lemma \ref{cnfsat reduction} and obtain a normalized instance $(G,F)$ of \ssfep{}, such that $|F|=n$. Now, we run the algorithm $\mathcal{A}$ on $(G,F)$, and hence we get the answer. The described algorithm works in time $2^{o(n)}$.
 \end{proof}
 
-\subsection{Cross-composition}
+\subsection{Lower bound for a kernel}
 
-A \emph{cross-composition} is a framework for proving kernelization lower bounds. A technique, firstly introduced in 2008 by Bodleander et al. (ICALP 2008), has significantly increased the interest in kernelization. As a result, Bodleander, Jansen and Kratsch have published a straightforward schema to show a nonexistence of a kernel.
+In this section, we prove that \ssfep{} parameterized by the number of forced edges does not admit a polynomial kernel unless some classes collapse. To achieve this, we show two different approaches. Firstly, we show a proof based on parameterized reductions stated in previous subsection. Consider the following lemma:
 
-The following definitions and corollary are taken from \textit{Parameterized Complexity} book. %TODO paper name%.
+\begin{lemma}\label{kernel}
+	\cnfsat{} parameterized by the number of variables has a polynomial kernel if and only if \ssfep{} parameterized by the number of vertices has one.
+\end{lemma}
+
+\begin{proof}
+	For the forward implication, let $\mathcal{A}$ be such kernelization algorithm. Now, we show a kernelization algorithm for \ssfep{} problem. Let $(G,F)$ be an arbitrary instance. We apply the reduction from Lemma \ref{cnfsat reduction} and obtain a formula $\phi$ of $|U|$ clauses and $|F|$ variables. Now, we apply the algorithm $\mathcal{A}$ and obtain a formula $\phi'$ such that $|\phi'| \leq \textrm{poly}(|F|)$. Finally, we create an instance $(G',F')$ by the reduction from \ref{ssfep reduction}. Note that now, $|G'|+|F'| \leq \textrm{poly}(|F|)$ as the second reduction does not change the size.
+	
+	Observe that for the converse implication, one can use the same reasoning.
+\end{proof}
+
+Now, we state the following result of Fortnow and Santhanam \cite{CNFSAT}:
+
+\begin{theorem}\label{Fortnow}
+	\cnfsat{} is not polynomially kernelizable unless NP $\subseteq$ coNP/poly.
+\end{theorem}
+
+Immediately, we get:
+
+\begin{proof}[Proof (of Theorem \ref{thm-ssfep-nokernel})]
+	The theorem follows directly from Lemma \ref{kernel} and Theorem \ref{Fortnow}.
+\end{proof}
+
+The second approach that we show is completely different. We show a notion of \textit{cross-composition}. It is a framework for proving kernelization lower bounds. A technique, firstly introduced in 2008 by Bodleander et al. \cite{Bodlaender} has significantly increased the interest in kernelization. We know introduce the schema. The following definitions and corollary are taken from Parameterized Complexity \cite{ParAlg} book.
 
 \begin{definition}\label{polynomial equivalence relation}
 	An equivalence relation $\mathcal{R}$ on $\Sigma^*$ is called a \textit{polynomial equivalence relation} if the following conditions hold:
@@ -739,25 +759,29 @@ The following definitions and corollary are taken from \textit{Parameterized Com
 	If an NP-hard language $L$ cross-composes into the parameterized language $Q$, then $Q$ does not admit a polynomial kernel unless \textit{NP$\subseteq$ coNP/poly}.
 \end{corollary}
 
-\subsection{Lower bound for a kernel}
+We prove nonexistence of a polynomial kernel by a cross-composition from \ssfep{} into itself. Observe that \ssfep{} is NP-complete by Theorem \ref{thm-ssfep-npc}. In the proof, we use an \emph{instance selector}, a pattern commonly applied to solve a composition. Intuitively, we need to come up with a gadget that satisfies all instances but one. Therefore, we require that at least one of the packed instances has a solution.
 
-In this section, we prove that \ssfep{} parameterized by the number of forced edges does not admit a polynomial kernel unless NP $\subseteq$ coNP/poly. To achieve this, we show two different approaches. Firstly, we show a proof based on nonexistence of a polynomial kernel for \cnfsat{} parameterized by the number of variables. Then,  we prove it by a cross-composition from \ssfep{} into itself. The second proof is not feasible. We use an \emph{instance selector}, a pattern commonly applied to solve a composition. Intuitively, we need to come up with a gadget that satisfies all instances but one. Therefore, we require that at least one of the packed instances has a solution.
-
-We begin with showing interreducability of the following problems:
-
-\begin{lemma}
-	\ssfep{} parameterized by the number of forced edges and \cnfsat{} parameterized by the number of variables are interreducible.
+\begin{lemma}\label{cross-ssfe}
+	There exists a cross-composition from \ssfep{} into itself, parameterized by the number of forced edges.
 \end{lemma}
 
 \begin{proof}
-	The reductions shown in Lemma \ref{ssfep reduction} and Lemma \ref{ssfep reduction} are the proof for interreducibility. In both cases, the number of variables or forced edges does not grow.
+	Firstly, we define a relation $\mathcal{R}$. Assume that all malformed graphs are considered as equivalent. Moreover, we say that $(G_1,F_1) \equiv_\mathcal{R} (G_2,F_2)$ if and only if graphs induces by forced vertices are isomorphic. Observe that the relation implies that the graphs have the same amount of forced edges.
+	
+	Now, let $(G_1,F_1),\cdots,(G_t,F_t)$ be the input instances. We normalize them by applying Lemma \ref{norm-ssfe}. If all of the instances are NO-instances, we return an isolated vertex. Otherwise, let $(H_0,F'_0,\cdot,H_{p-1},F'_{p-1})$ be the normalized instances. Because we operate on binary representation of indices, we duplicated some instances so that $p=2^s$ for some integer $s>0$. Observe that the step at most doubles the number of instances.
+	
+	We now proceed to the construction of the output instance. Firstly, for every input instance we label forced edges with $f_1,...,f_n$. Then, let $(G,F)$ be a sum of graphs $H_0,...,H_{p-1}$ such that the forced edges with the same labels are unified. Thus, we have that $|F|=n$. Now, we introduce $2s$ forced vertices $v_\alpha^\beta$ where $\beta \in \{0,1\}$ and $0 \leq \alpha \leq s-1$, and $s$ forced edges $v_\alpha^0v_\alpha^1$. In addition, for every forced edge $v_\alpha^0v_\alpha^1$ we introduce a free vertex $v_\alpha$ and edges $v_\alpha^0v_\alpha,v_\alpha^1v_\alpha$. Observe that now $|F|\leq n + \log(t)$. Recall that by $U_i$ we denote a set of free vertices of the graph $G_i$. For every index $i$, where $0 \leq i \leq p-1$, we do the following: let $i=b_0b_1...b_{s-1}$ be a bit representation. If necessary, we add leading zeros so that every value is represented by $s$ bits. For every vertex $v \in U_i$ we introduce a set of edges $\{vv^{1-b_\alpha}_\alpha: 0 \leq \alpha \leq s-1\}$.
+	
+	We output the modified instance $(G,F)$. Observe that $(G,F)$ is also a normalized instance. The first condition of the cross-composition is satisfied as $|F| \leq n + \log(p)$. So, to finish the proof, we need to show that one of the instances $(G_i,F_i)$ is a YES-instance if and only if $(G,F)$ is a YES-instance.
+	
+	For the forward implication, let $S$ be a spanning star forest for $(G_i,F_i)$. Let $C_S = N_S(U_i)$ be a set of centers in $S$. We construct a solution for $(G,F)$ as follows. Let $i=b_0...b_{s-1}$ be a bit representation with leading zeros if necessary. Let $C_G = \{v_{\alpha}^{b_\alpha}: 0 \leq \alpha \leq s-1\}$. By the definition of $G$, we get that $N(C_S \cup C_G) = U$. Thus, by Lemma \ref{span-lemma}, $(G,F)$ has a spanning star forest.
+	
+	Conversely, let $S$ be a solution for $(G,F)$. We define $C_G = N(\{v_\alpha: 0 \leq \alpha \leq s-1\})$. Superscripts of vertices $v^{\alpha_0}_0,...,v^{\alpha_{s-1}}_{s-1}$ create a value $i$. Now, observe that $N(U_i) \subseteq V(F)$ because the superscripts of vertices $v^{\alpha_j}_j$, for $0 \leq j \leq s-1$, match bit representation of $i$. Thus, $(G_i,F_i)$ is a yes instance.
 \end{proof}
 
-Additionally, 
-
-\begin{lemma}
-	There exists a cross-composition from \ssfep{} into itself, parameterized by the number of forced edges. Therefore, \ssfep{} parameterized by $|F|$ does not admit a polynomial size kernel unless \textup{NP $\subseteq$ coNP/poly}.
-\end{lemma}
+\begin{proof}[Proof (of Theorem \ref{thm-ssfep-nokernel})]
+	By Corollary \ref{nokernel} and Lemma \ref{cross-ssfe} we obtain that \ssfep{} parameterized by $|F|$ does not admit a polynomial size kernel unless \textup{NP $\subseteq$ coNP/poly}.
+\end{proof}
 
 \section{Parametrization by the number of free vertices}
 
@@ -889,7 +913,7 @@ Intuitively, we make sure that the centers remains at the same position and at l
 
 \subsection{Complexity analysis}
 
-Observe that, except for a join node, every operation can be done in constant time. A naive approach to solve the disjunction would result in time $\mathcal{O}^*(2^{\tw(G)})$. Thus, we could conclude with an algorithm solving \ssfep{} parameterized by treewidth in time $\mathcal{O}^*(4^{\tw(G)})$ as there are $O(|G| \cdot 2^{\tw(G)})$ array entries. However, we can improve the run time. Thus, we want to introduce a smarter way of solving equations like this. Consider the following definition:
+Observe that, except for a join node, every operation can be done in constant time. A naive approach to solve the disjunction would result in time $\mathcal{O}^*(2^{\tw(G)})$. Thus, we could conclude with an algorithm solving \ssfep{} parameterized by treewidth in time $\mathcal{O}^*(4^{\tw(G)})$ as there are $O(|G| \cdot 2^{\tw(G)})$ array entries. However, we can improve the run time. Thus, we want to introduce another approach. Consider the following definition:
 
 \begin{definition}
 	The \textit{cover product} of two functions $f,g:2^V \rightarrow \mathbb{Z}$ is a function $(f *_c g):2^V \rightarrow \mathbb{Z}$ such that for every $Y \subseteq V$:
@@ -899,7 +923,7 @@ Observe that, except for a join node, every operation can be done in constant ti
 	\end{equation*}
 \end{definition}
 
-Now, there is a theorem, stated in the \textit{Parameterized Algorithms}, that says:
+Now, we state the theorem proved by Björklund, Husfeldt, Kaski and Koivisto \cite{Cover product}:
 
 \begin{theorem}\label{cproduct}
 	For two functions $f,g:2^V \rightarrow \mathbb{Z}$, given all $2^n$ values of $f$ and $g$ in the input, all the $2^n$ values of the cover product $f*_cg$ can be computed in $\mathcal{O}(2^n\cdot n)$ arithmetic operations.
@@ -941,20 +965,26 @@ Notice that the disjunction in every join node is nothing different than a cover
 \begin{thebibliography}{99}
 \addcontentsline{toc}{chapter}{Bibliografia}
 
-\bibitem{ParComp}  Downey, R., Fellows, M.: \textit{Parameterized Complexity}. Springer-Verlag, New York (1999)
+\bibitem{ParComp}  Downey, R., Fellows, M.: \textit{Parameterized Complexity}. Springer-Verlag, New York (1999).
 
-\bibitem{ParCompThm} Flum, J., Grohe, M.: \textit{Parameterized Complexity Theory}. Texts in Theoretical Computer Science. An EATCS Series. Springer-Verlag, Berlin (2006)
+\bibitem{ParCompThm} Flum, J., Grohe, M.: \textit{Parameterized Complexity Theory}. Texts in Theoretical Computer Science. An EATCS Series. Springer-Verlag, Berlin (2006).
 
 \bibitem{ParAlg} Cygan, M., Fomin, F., Kowalik L., Lokshtanov, D., Marx, D., Pilipczuk, M., Pilipczuk, M., Saurabh, S.: \textit{Parameterized Algorithms}. Springer, (2015).
 
-\bibitem{DomSet} Pătraşcu, M., Williams, R.: \textit{On the Possibility of Faster SAT Algorithms}. Proceedings of the 20th Annual ACM-SIAM Symposium on Discrete Algorithms (SODA), pp. 1065-1075. SIAM (2010)
+\bibitem{DomSet} Pătraşcu, M., Williams, R.: \textit{On the Possibility of Faster SAT Algorithms}. Proceedings of the 20th Annual ACM-SIAM Symposium on Discrete Algorithms (SODA), pp. 1065-1075. SIAM (2010).
 
-\bibitem{Crown} Chor, B., Fellows, M, Juedes, D.: \textit{Linear kernels in linear time, or how to save k colors in $O(n^2)$ steps}. WG'04 Proceedings of the 30th international conference on Graph-Theoretic Concepts in Computer Science, pp. 257-269, (2004)
+\bibitem{Crown} Chor, B., Fellows, M, Juedes, D.: \textit{Linear kernels in linear time, or how to save k colors in $O(n^2)$ steps}. WG'04 Proceedings of the 30th international conference on Graph-Theoretic Concepts in Computer Science, pp. 257-269, (2004).
 
 \bibitem{Konig} König, D.: \textit{Über Graphen und ihre Anwendung auf Determinantentheorie und Mengenlehre}. Math. Ann. 77(4), pp. 453-465, (1916)
-\bibitem{Hall} Hall, P.: \textit{On representatives of subsets}, J. London Math. Soc. 10, pp. 26-30, (1935)
+\bibitem{Hall} Hall, P.: \textit{On representatives of subsets}, J. London Math. Soc. 10, pp. 26-30, (1935).
 
-\bibitem{Hopcroft-Karp} Hopcroft, J.E., Karp, R.M.: \textit{An $n^{5/2}$ algorithm for maximum matchings in bipartite graphs}. SIAM J. Computing 2, 225-231 (1973)
+\bibitem{Hopcroft-Karp} Hopcroft, J.E., Karp, R.M.: \textit{An $n^{5/2}$ algorithm for maximum matchings in bipartite graphs}. SIAM J. Computing 2, pp. 225-231, (1973).
+
+\bibitem{Bodlaender} Bodlaender H., Downey R., Fellows M., Hermelin D.: \textit{On problems without polynomial kernels}. Proceedings of 35th International Colloquium on Automata, Languages and Programming, pp. 563–574, (2008).
+
+\bibitem{CNFSAT} Fortnow L., Santhanam R.: \textit{Infeasibility of instance compression and succinct pcps for NP}. Journal of Computer and System Sciences, 77(1), pp. 91–106, (2011).
+
+\bibitem{Cover product} Björklund, A., Husfeldt, T., Kaski, P., Koivisto, M.: \textit{Fourier meets Möbius: fast subset convolution}. Proceedings of the 39th Annual ACM Symposium on Theory of Computing (STOC), pp. 67-74. ACM, New York (2007).
 
 
 
