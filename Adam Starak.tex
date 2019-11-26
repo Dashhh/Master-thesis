@@ -97,6 +97,7 @@
 \newtheorem{claim}{Claim}
 \newtheorem{corollary}{Corollary}
 \newtheorem{proposition}{Proposition}
+\newtheorem{conjecture}{Conjecture}
 
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}
@@ -134,6 +135,7 @@
 \counterwithin{corollary}{chapter}
 \counterwithin{claim}{chapter}
 \counterwithin{proposition}{chapter}
+\counterwithin{conjecture}{chapter}
 
 % koniec definicji
 
@@ -223,7 +225,7 @@ Furthermore, unlike in the case of the previous parametrization, we provide an a
 	\ssfep{} parameterized by the number of free vertices admits a kernel with at most $k$ clauses and $2k$ variables.
 \end{restatable}
 
-Finally, we study the parameterization of the extension variant by the treewidth of the input graph. We propose a dynamic programming algorithm over a decomposition of a graph. Thanks to Björklund Husfeldt Kaski and Koivisto \cite{Cover product}, we prove that the algorithm works in the time stated below. Then, as previously, we show that improving the running time would give a faster algorithm for a \cnfsat{}.
+Finally, we study the parameterization of the extension variant by the treewidth of the input graph. We propose a dynamic programming algorithm over a decomposition of a graph which uses fast cover product proposed by Björklund, et al. \cite{Cover product}. Our algorithm works in time $2^t \cdot poly(t) \cdot n$. In addition, we show that improving the running time would give a faster algorithm for a \cnfsat{}.
 
 \begin{restatable}{theorem}{thmssfeptwtime}\label{thm-ssfep-tw-time}
 	\ssfep{} parameterized by treewidth can be solved in time $2^t\cdot poly(t)\cdot n$.
@@ -232,6 +234,8 @@ Finally, we study the parameterization of the extension variant by the treewidth
 \begin{restatable}{theorem}{thmssfeptwseth}\label{thm-ssfep-tw-seth}
 	Unless \cnfsat cannot be solved in time $\mathcal{O}^*((2-\epsilon')^n)$ for some $\epsilon' > 0$, there is no algorithm for \ssfep{} parameterized by treewidth that achieves running time $\mathcal{O}^*((2-\epsilon)^{t})$ for any $\epsilon > 0$, where \textup{\textrm{t}} is the treewidth of the input graph.
 \end{restatable}
+
+\paragraph{Outline.} In Section 2 we settle notation. Section 3 contains results for \ssfp{}. In Section 4 we prove all the theorems dedicated for \mssfp{}. Section 5 give the algorithms and lower bounds for \ssfep{} parameterized by three different values.
 
 \chapter{Preliminaries}\label{sec2}
 
@@ -329,6 +333,40 @@ A \emph{nice tree decomposition} of a graph $G$ is a tree decomposition $(T, \{X
 Note that every tree decomposition can be turned into a nice one without increasing the width in time $\textrm{poly}(t) \cdot n$.
 
 We distinguish one special case. If a tree $\mathcal{T}$ forms a path, we call it a \emph{path decomposition}. Respectively, by $\textrm{pw}(\mathcal{T})$ we denote a width of a path decomposition and by $\textrm{pw}(G)$ we denote the minimum width over all path decompositions of $G$.
+
+\section{Satisfiability problem}
+
+In this section we present the \cnfsat{} problem. We also show two hypotheses. They are fundamental to prove lower bounds for algorithms. 
+
+A \textit{conjunctive normal form} (CNF) of a propositional formula $\phi$ on $n$ Boolean variables $x_1,x_2,...,x_n$ is a formula of form $\phi=C_1 \land C_2 \land ... \land C_m$, where $C_i$ is a \textit{clause}. Each clause $C_i$ consists of disjunction of \textit{literals}, that is, $C_i=l_1 \lor l_2 \lor ... \lor l_j$. A literal $l_j$ corresponds to either a variable $x_k$ or its negation $\neg x_k$. We also introduce an abbreviation $l_i \in C_j$ which means that a literal $l_i$ occurs in $C_j$.
+
+After this introduction, we are ready to finally formulate the \cnfsat{} problem:
+
+\begin{definition}
+	\cnfsat{}: given a propositional formula $\phi$ on $n$ Boolean variables $x_1,x_2,...,x_n$ that is in \textit{conjunctive normal form} decide whether there exists an evaluation of variables $\sigma$, such that $\sigma(\phi)=\true$.
+\end{definition}
+
+It is worth mentioning one more variant of a satisfiability problem. By restricting the number of literals in clauses to some constant $q$ we arrive at the $q$-{\sc SAT} problem. Observe that for $q \geq 3$, $q$-{\sc SAT} is NP-Complete due to Cook-Levin Theorem. Let $\delta_q$ be a infinimum of the set of constants $c$ for which there exists an algorithm solving $q$-{\sc SAT} in time $\mathcal{O}^*(2^{cn})$. The \textit{Exponential-Time Hypothesis} and \textit{Strong Exponential-Time Hypothesis} are defined as follows:
+
+\begin{conjecture}[\textbf{Exponential-Time Hypothesis, ETH}]
+
+\begin{equation*}
+	\delta_3 > 0
+\end{equation*}
+\end{conjecture}
+
+\begin{conjecture}[\textbf{Strong Exponential-Time Hypothesis, SETH}]\label{SETH}
+	
+	\begin{equation*}
+	\lim\limits_{q \rightarrow \infty}\delta_q = 1
+	\end{equation*}
+\end{conjecture}
+
+Intuitively, ETH states that we need to browse through exponential number of assignments for $q$-{\sc SAT} while SETH implies that as the number of literals in clauses grows, brute force check is inevitable. However, in this paper we do not refer to the above consequences, but to the following consequence of Conjecture \ref{SETH}
+
+\begin{conjecture}
+	\cnfsat{} cannot be solved in time $\mathcal{O}^*((2-\epsilon)^n)$ for some $\epsilon>0$.
+\end{conjecture}
 
 \chapter{Spanning Star Forest Problem}\label{sec3}
 
@@ -718,7 +756,7 @@ Lemma \ref{ssfep reduction} and Lemma \ref{cnfsat reduction} directly imply the 
 
 In this section, in addition to an instance $(G,F)$ we receive a parameter $k$ which is equal to the number of forced edges. We show two major results: \ssfep{} parameterized by the number of forced edges does not admit a kernel of polynomial size and a lower bound under Strong Exponential Hypothesis.
 
-\subsection{Lower bound for a run time}
+\subsection{Lower bound for a running time}
 
 Previously in this chapter, we proved that \ssfep{} is NP-complete. We showed that the problem is NP-complete, it does not admit a polynomial kernel and we stated reduction rules to simplify instances. In this subsection, we show a simple routine that solves \ssfep{} parameterized by the number of forced edges. Furthermore, we prove that there does not exist a faster algorithm unless \cnfsat{} cannot be solved in time $\mathcal{O}^*((2-\epsilon)^n)$, for $\epsilon>0$.
 
