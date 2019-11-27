@@ -1,0 +1,61 @@
+\begin{thebibliography}{10}
+
+\bibitem{DomSet}
+M.~P\u{a}tra\c{s}cu and R.~Williams, ``On the possibility of faster sat
+  algorithms,'' in {\em Proceedings of the Twenty-first Annual ACM-SIAM
+  Symposium on Discrete Algorithms}, SODA '10, (Philadelphia, PA, USA),
+  pp.~1065--1075, Society for Industrial and Applied Mathematics, 2010.
+
+\bibitem{Bodlaender}
+H.~L. Bodlaender, R.~G. Downey, M.~R. Fellows, and D.~Hermelin, ``On problems
+  without polynomial kernels,'' {\em Journal of Computer and System Sciences},
+  vol.~75, no.~8, pp.~423 -- 434, 2009.
+
+\bibitem{ParComp}
+R.~G. Downey and M.~R. Fellows, {\em Parameterized Complexity}.
+\newblock Springer Publishing Company, Incorporated, 2012.
+
+\bibitem{ParCompThm}
+J.~Flum and M.~Grohe, {\em Parameterized Complexity Theory (Texts in
+  Theoretical Computer Science. An EATCS Series)}.
+\newblock Berlin, Heidelberg: Springer-Verlag, 2006.
+
+\bibitem{ParAlg}
+M.~Cygan, F.~V. Fomin, L.~Kowalik, D.~Lokshtanov, D.~Marx, M.~Pilipczuk,
+  M.~Pilipczuk, and S.~Saurabh, {\em Parameterized Algorithms}.
+\newblock Springer Publishing Company, Incorporated, 1st~ed., 2015.
+
+\bibitem{DomSetAlg}
+F.~Eisenbrand and F.~Grandoni, ``On the complexity of fixed parameter clique
+  and dominating set,'' {\em Theor. Comput. Sci.}, vol.~326, pp.~57--67, Oct.
+  2004.
+
+\bibitem{CNFSAT}
+L.~Fortnow and R.~Santhanam, ``Infeasibility of instance compression and
+  succinct pcps for np,'' {\em J. Comput. Syst. Sci.}, vol.~77, pp.~91--106,
+  Jan. 2011.
+
+\bibitem{MAXSAT}
+I.~Bliznets and A.~Golovnev, ``A new algorithm for parameterized max-sat,'' in
+  {\em Proceedings of the 7th International Conference on Parameterized and
+  Exact Computation}, IPEC'12, (Berlin, Heidelberg), pp.~37--48,
+  Springer-Verlag, 2012.
+
+\bibitem{Crown}
+B.~Chor, M.~Fellows, and D.~Juedes, ``Linear kernels in linear time, or how to
+  save k colors in o(n2) steps,'' in {\em Proceedings of the 30th International
+  Conference on Graph-Theoretic Concepts in Computer Science}, WG'04, (Berlin,
+  Heidelberg), pp.~257--269, Springer-Verlag, 2004.
+
+\bibitem{Hopcroft-Karp}
+J.~E. Hopcroft and R.~M. Karp, ``An $n^{5/2} $ algorithm for maximum
+  matchings in bipartite graphs,'' {\em SIAM Journal on Computing}, vol.~2,
+  no.~4, pp.~225--231, 1973.
+
+\bibitem{CoverProduct}
+A.~Bj\"{o}rklund, T.~Husfeldt, P.~Kaski, and M.~Koivisto, ``Fourier meets
+  m\"{o}bius: Fast subset convolution,'' in {\em Proceedings of the
+  Thirty-ninth Annual ACM Symposium on Theory of Computing}, STOC '07, (New
+  York, NY, USA), pp.~67--74, ACM, 2007.
+
+\end{thebibliography}

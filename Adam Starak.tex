@@ -879,7 +879,7 @@ In this section, we parameterize  \ssfep{} by the number of free edges. We begin
 Then, unlike in the first variant, we present a kernelization algorithm. We show, that the reduced instance has at most $3k$ vertices where $k$ is the parameter.
 
 \subsection{Algorithm}
-We start with stating a theorem for the \cnfsat{} problem parameterized by the number of clauses proven by 
+We start with stating a theorem for the \cnfsat{} problem parameterized by the number of clauses proven by Bliznets, et al. \cite{MAXSAT}.
 
 \begin{theorem}\label{cnfsatmtime}
 	\cnfsat{} parameterized by the number of clauses can be solved in $\mathcal{O}^*(1.358^k)$ where $k$ is the number of clauses.
@@ -1083,7 +1083,7 @@ Computing a join node is the bottleneck in this algorithm. A naive approach to o
 	\end{equation*}
 \end{definition}
 
-Now, we state the theorem proved by Björklund, et al. \cite{Cover product}:
+Now, we state the theorem proved by Björklund, et al. \cite{CoverProduct}:
 
 \begin{theorem}\label{cproduct}
 	For two functions $f,g:2^V \rightarrow \mathbb{Z}$, given all $2^n$ values of $f$ and $g$ in the input, all the $2^n$ values of the cover product $f*_cg$ can be computed in $\mathcal{O}(2^n\cdot n)$ arithmetic operations.
@@ -1166,39 +1166,10 @@ We have just proven the complexity of the algorithm stated in the previous subse
 	
 	\noindent
 	We claim that the evaluation satisfies $\phi$. Firstly, note that in $G_i$ there are no switches. Fix an arbitrary clause $C_j$. Now, observe that there exists a literal $l_k \in C_j$ such that $v^i_j[l_k]v^i_j[c] \in S$. Then, $\degree{S}{l_k}>1$. By the definition of $\sigma$, $\sigma(l_k)=\true$, and therefore $\sigma(C_j)=\true$. We conclude that $\sigma(\phi)=\true$ as we proved that an arbitrary clause in the formula is satisfied.\qedhere
-	
 \end{proof}
 
-\begin{thebibliography}{99}
-\addcontentsline{toc}{chapter}{Bibliografia}
-
-\bibitem{ParComp}  Downey, R., Fellows, M.: \textit{Parameterized Complexity}. Springer-Verlag, New York (1999).
-
-\bibitem{ParCompThm} Flum, J., Grohe, M.: \textit{Parameterized Complexity Theory}. Texts in Theoretical Computer Science. An EATCS Series. Springer-Verlag, Berlin (2006).
-
-\bibitem{ParAlg} Cygan, M., Fomin, F., Kowalik L., Lokshtanov, D., Marx, D., Pilipczuk, M., Pilipczuk, M., Saurabh, S.: \textit{Parameterized Algorithms}. Springer, (2015).
-
-\bibitem{DomSet} Pătraşcu, M., Williams, R.: \textit{On the Possibility of Faster SAT Algorithms}. Proceedings of the 20th Annual ACM-SIAM Symposium on Discrete Algorithms (SODA), pp. 1065-1075. SIAM (2010).
-
-\bibitem{DomSetAlg} Eisenbrand F., Grandoni F.: \textit{On the
-Complexity of Fixed Parameter Clique and Dominating Set}. Theor. Comput. Sci. 326, pp. 57–67, (2004).
-
-\bibitem{Crown} Chor, B., Fellows, M, Juedes, D.: \textit{Linear kernels in linear time, or how to save k colors in $O(n^2)$ steps}. WG'04 Proceedings of the 30th international conference on Graph-Theoretic Concepts in Computer Science, pp. 257-269, (2004).
-
-\bibitem{Konig} König, D.: \textit{Über Graphen und ihre Anwendung auf Determinantentheorie und Mengenlehre}. Math. Ann. 77(4), pp. 453-465, (1916)
-\bibitem{Hall} Hall, P.: \textit{On representatives of subsets}, J. London Math. Soc. 10, pp. 26-30, (1935).
-
-\bibitem{Hopcroft-Karp} Hopcroft, J.E., Karp, R.M.: \textit{An $n^{5/2}$ algorithm for maximum matchings in bipartite graphs}. SIAM J. Computing 2, pp. 225-231, (1973).
-
-\bibitem{Bodlaender} Bodlaender, H., Downey, R., Fellows, M., Hermelin, D.: \textit{On problems without polynomial kernels}. Proceedings of 35th International Colloquium on Automata, Languages and Programming, pp. 563–574, (2008).
-
-\bibitem{CNFSAT} Fortnow, L., Santhanam, R.: \textit{Infeasibility of instance compression and succinct pcps for NP}. Journal of Computer and System Sciences, 77(1), pp. 91–106, (2011).
-
-\bibitem{Cover product} Björklund, A., Husfeldt, T., Kaski, P., Koivisto, M.: \textit{Fourier meets Möbius: fast subset convolution}. Proceedings of the 39th Annual ACM Symposium on Theory of Computing (STOC), pp. 67-74. ACM, New York (2007).
-
-
-
-\end{thebibliography}
+\bibliography{biblio} 
+\bibliographystyle{ieeetr}
 
 \end{document}
 
