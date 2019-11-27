@@ -20,7 +20,7 @@
 \autor{Adam Starak}{361021}
 
 \title{Application of parameterized techniques to finding spanning star forests in graphs}
-\titlepl{Zastosowanie technik algorytmów parametryzowanych dla problemu znajdowania gwiazd rozpinających grafy}
+\titlepl{Zastosowanie technik algorytmów parametryzowanych dla problemu znajdowania  rozpinających lasów gwiazd w grafach}
 
 %\tytulang{An implementation of a difference blabalizer based on the theory of $\sigma$ -- $\rho$ phetors}
 
@@ -66,14 +66,11 @@
 }
 
 %Klasyfikacja tematyczna wedlug AMS (matematyka) lub ACM (informatyka)
-%TODO - dodać klasyfikację
-\klasyfikacja{D. Software\\
-  D.127. Blabalgorithms\\
-  D.127.6. Numerical blabalysis}
 
-%TODO - dodać słowa kluczowe]
+\klasyfikacja{ Theory of computation $\rightarrow$ Parameterized complexity and exact algorithms}
+
 % Słowa kluczowe:
-\keywords{parameterized algorithm, kernelization, SETH, tree decomposition, cross-composition}
+\keywords{parameterized algorithm, kernelization, Strong Expotential-Time Hypothesis, tree decomposition, cross-composition}
 
 % Tu jest dobre miejsce na Twoje własne makra i~środowiska:
 
@@ -143,14 +140,8 @@
 \maketitle
 
 %tu idzie streszczenie na strone poczatkowa
-%TODO - dodaj abstract
 \begin{abstract}
-  W~pracy przedstawiono prototypową implementację blabalizatora
-  różnicowego bazującą na teorii fetorów $\sigma$-$\rho$ profesora
-  Fifaka.  Wykorzystanie teorii Fifaka daje wreszcie możliwość
-  efektywnego wykonania blabalizy numerycznej.  Fakt ten stanowi
-  przełom technologiczny, którego konsekwencje trudno z~góry
-  przewidzieć.
+	The paper describes application of parameterized techniques to finding spanning star forests in graphs. We examine three different variants and multiple parametrizations. We present positive results such us parameterized algorithm, kernelization, algorithm over a tree decomposition of an input graph as well as negative ones i.e. hardness based on Strong Expotential-Time Hypothesis.
 \end{abstract}
 
 \tableofcontents
@@ -185,10 +176,12 @@ Based on reductions, we show a brute force algorithm. We point out that this run
 \end{restatable}
 
 \begin{restatable}{theorem}{thmmssfplowerbound}\label{thm-mssfp-lowerbound}
-	Unless \cnfsat{} cannot be solved in time $\mathcal{O}^*((2-\epsilon')^n)$ for some $\epsilon' > 0$, there does not exist constants $\epsilon > 0,k\geq 7$ and an algorithm solving \mssfp{} on instance with parameter equal to $k$ in time $\mathcal{O}(N^{k-\epsilon})$, where $N$ is the number of vertices of the graph.
+	Unless \cnfsat{} cannot be solved in time $\mathcal{O}^*((2-\epsilon')^n)$
+	\footnote{The notation $\mathcal{O}^*$ is commonly used while stating the running time of a parameterized algorithm. The notation hides poly-logarithmic factors when discussing.}
+	 for some $\epsilon' > 0$, there does not exist constants $\epsilon > 0,k\geq 7$ and an algorithm solving \mssfp{} on instance with parameter equal to $k$ in time $\mathcal{O}(N^{k-\epsilon})$, where $N$ is the number of vertices of the graph.
 \end{restatable}
 
-Finally, we introduce the last variant. In \ssfep{} we are given a graph and a subset of forced edges. We ask whether there exists a spanning star forest in the graph that contains all the forced edges. In further, vertices that do not have any forced edge are called free vertices. We prove that this problem is essentially equivalent to \cnfsat{}, where the number of forced edges corresponds to the number of variables while the number of free vertices corresponds to the number of clauses. Thus, we obtain:
+Finally, we introduce the last variant. In \ssfep{} we are given a graph and a subset of forced edges. We ask whether there exists a spanning star forest in the graph that extends the subset of forced edges. By free vertices, we denote vertices that do not have any forced edge. We prove that this problem is essentially equivalent to \cnfsat{}, where the number of forced edges corresponds to the number of variables while the number of free vertices corresponds to the number of clauses. Thus, we obtain:
 
 \begin{restatable}{theorem}{thmssfepnpc}\label{thm-ssfep-npc}
 	\ssfep{} is \textup{NP}-complete.
@@ -198,15 +191,16 @@ Finally, we introduce the last variant. In \ssfep{} we are given a graph and a s
 For the parametrization by the number of forced edges, our reductions yield the following:
 
 \begin{restatable}{theorem}{thmssfepfetime}\label{thm-ssfep-fe-time}
-	\ssfep{} parameterized by the number of forced edges can be solved in time $\mathcal{O}^*(2^{|F|})$ where $|F|$is the number of forced edges.
+	\ssfep{} parameterized by the number of forced edges can be solved in time $\mathcal{O}^*(2^{|F|})$ where $|F|$ is the number of forced edges.
 \end{restatable}
 
 \begin{restatable}{theorem}{thmssfepseth}\label{thm-ssfep-seth}
-	There exists an algorithm solving \cnfsat{} in time $2^{o(n)}$, where $n$ is the number of variables, if and only if there exists an algorithm solving \ssfep{} parameterized by the number of forced edges in time $2^{o(n)}$, where $n$ is the number of forced edges.
+	There exists an algorithm solving \cnfsat{} in time $\mathcal{O}^*((2-\epsilon)^n)$, for a constant $\epsilon > 0$, where $n$ is the number of variables , if and only if there exists an algorithm solving \ssfep{} parameterized by the number of forced edges in time $\mathcal{O}^*((2-\epsilon')
+^n)$, for some $\epsilon'>0$, where $n$ is the number of forced edges.
 \end{restatable}
 
 \noindent
-Also, we argue that there does not exist a polynomial kernel for \ssfep{} when parameterized by the number of forced edges unless NP $\subseteq$ coNP/poly. We show two different approaches. The first one uses \cnfsat{}. In the second approach, we use the composition framework proposed by Bodlaender et al. \cite{Bodlaender}. Namely, we prove that there exists a cross-composition of \ssfep{} into itself. All in all, we obtain the following result:
+Also, we argue that there does not exist a polynomial kernel for \ssfep{} when parameterized by the number of forced edges unless NP $\subseteq$ coNP/poly. We show two different approaches. The first one uses \cnfsat{}. In the second approach, we apply the composition framework proposed by Bodlaender et al. \cite{Bodlaender}. Namely, we prove that there exists a cross-composition of \ssfep{} into itself. All in all, we obtain the following result:
 
 \begin{restatable}{theorem}{thmssfepnokernel}\label{thm-ssfep-nokernel}
 	\ssfep{} parameterized by the number of forced edges does not admit a polynomial kernel unless NP $\subseteq$ coNP/poly.
@@ -222,20 +216,20 @@ Recall that our reductions provides a link between free vertices and clauses. Th
 Furthermore, unlike in the case of the previous parametrization, we provide an algorithm that outputs a linear kernel.
 
 \begin{restatable}{theorem}{thmssfepkernel}\label{thm-ssfep-kernel}
-	\ssfep{} parameterized by the number of free vertices admits a kernel with at most $k$ clauses and $2k$ variables.
+	\ssfep{} parameterized by the number of free vertices admits a kernel with at most $k$ free vertices and $k$ forced edges.
 \end{restatable}
 
-Finally, we study the parameterization of the extension variant by the treewidth of the input graph. We propose a dynamic programming algorithm over a decomposition of a graph which uses fast cover product proposed by Björklund, et al. \cite{Cover product}. Our algorithm works in time $2^t \cdot poly(t) \cdot n$. In addition, we show that improving the running time would give a faster algorithm for a \cnfsat{}.
+Finally, we study the parameterization of the extension variant by the treewidth of the input graph. We propose a dynamic programming algorithm over a decomposition of a graph which uses fast cover product proposed by Björklund, et al. \cite{Cover product}. In addition, we show that improving the running time would give a faster algorithm for the \cnfsat{} problem.
 
 \begin{restatable}{theorem}{thmssfeptwtime}\label{thm-ssfep-tw-time}
 	\ssfep{} parameterized by treewidth can be solved in time $2^t\cdot poly(t)\cdot n$.
 \end{restatable}
 
 \begin{restatable}{theorem}{thmssfeptwseth}\label{thm-ssfep-tw-seth}
-	Unless \cnfsat cannot be solved in time $\mathcal{O}^*((2-\epsilon')^n)$ for some $\epsilon' > 0$, there is no algorithm for \ssfep{} parameterized by treewidth that achieves running time $\mathcal{O}^*((2-\epsilon)^{t})$ for any $\epsilon > 0$, where \textup{\textrm{t}} is the treewidth of the input graph.
+	Unless \cnfsat{} cannot be solved in time $\mathcal{O}^*((2-\epsilon')^n)$ for some $\epsilon' > 0$, there is no algorithm for \ssfep{} parameterized by treewidth that achieves running time $\mathcal{O}^*((2-\epsilon)^{t})$ for any $\epsilon > 0$, where \textup{\textrm{t}} is the treewidth of the input graph.
 \end{restatable}
 
-\paragraph{Outline.} In Section 2 we settle notation. Section 3 contains results for \ssfp{}. In Section 4 we prove all the theorems dedicated for \mssfp{}. Section 5 give the algorithms and lower bounds for \ssfep{} parameterized by three different values.
+\paragraph{Outline.} In Section 2 we settle notation. Section 3 contains results for \ssfp{}. In Section 4 we prove all the theorems dedicated for \mssfp{}. Section 5 gives the algorithms and lower bounds for \ssfep{} parameterized in three different ways.
 
 \chapter{Preliminaries}\label{sec2}
 
@@ -264,6 +258,7 @@ We now introduce basic terminology. We begin with formally defining a parameteri
 	A \textit{parameterized problem} is a language $L \subseteq \ \Sigma^* \times \mathbf{N}$, where $\Sigma$ is a fixed, finite alphabet. For an instance $(x,k) \in L$, $k$ is called the \textit{parameter}.
 \end{definition}
 
+\noindent
 Consider the example problems:
 
 \begin{definition}
@@ -274,14 +269,15 @@ Consider the example problems:
 	\domsetp{}: Given a graph $G$ and a positive integer $k$, decide whether there exists a set $D$ such that $|D| \leq k$ and every vertex is either in $D$ or is adjacent to one of the vertices from $D$.
 \end{definition}
 
-There are multiple different parameters for a single problem. For example, \domsetp{} can be parameterized by the sought size of dominating set $k$, or by the treewidth of the input graph. 
+There are multiple different parameters for a single problem. For example, \domsetp{} can be parameterized by the sought size of dominating set or by the treewidth of the input graph. 
 
 Now, we want to introduce different complexity classes. The first one is called FPT (fixed parameter tractable). We say that a parameterized problem is in FPT if and only if it has an FPT algorithm defined below:
 
 \begin{definition}\label{FPT algorithm}
-	For a parameterized problem $Q$, an \textit{FPT algorithm} is an algorithm $\mathcal{A}$ which, for any input $(x,k)$, decides whether $(x,k) \in Q$ in time $f(k)\cdot n^c$ where c is a constant, independent of $n,k$, and $f$ is a computable function.
+	For a parameterized problem $Q$, an \textit{FPT algorithm} is an algorithm $\mathcal{A}$ which, for every input $(x,k)$, decides whether $(x,k) \in Q$ in time $f(k)\cdot n^c$ where c is a constant, independent of $n,k$, and $f$ is a computable function.
 \end{definition}
 
+\noindent
 Another important class of parameterized problems is XP. Similarly, a problem is in XP if and only if it has an XP algorithm defined below:
 
 \begin{definition}
@@ -299,7 +295,7 @@ Similar by polynomial-time reductions, we now introduce a \textit{parameterized 
 	\end{enumerate}
 \end{definition}
 
-Finally, we introduce the last family of complexity classes. \emph{W-hierarchy} is an ascending chain of classes : $\w{1} \subseteq \w{2} \subseteq \w{3} \subseteq...$. For the purpose of this paper, we define \w{1} as the closure of the \indset{} problem and \w{2} as the closure of the \domsetp{} problem. In other words, \indset{} parameterized by the size of independent set is  \w{1}-complete and \domsetp{} parameterized by the size of dominating set is \w{2}-complete with respect to parameterized reductions. There is a lemma that proves $\textrm{FPT} \subseteq \w{1}$ and it is conjectured that this containment is strict.
+Finally, we introduce the last family of complexity classes. \emph{W-hierarchy} is an ascending chain of classes : $\w{1} \subseteq \w{2} \subseteq \w{3} \subseteq...$ . For the purpose of this paper, we define \w{1} as the closure of the \indset{} problem and \w{2} as the closure of the \domsetp{} problem. In other words, \indset{} parameterized by the size of independent set is  \w{1}-complete and \domsetp{} parameterized by the size of dominating set is \w{2}-complete with respect to parameterized reductions. There is a lemma that proves $\textrm{FPT} \subseteq \w{1}$ and it is conjectured that this containment is strict.
 
 Last but not least, we introduce a \emph{kernelization algorithm} --- a way of reducing the size of input instances in polynomial time:
 
@@ -340,13 +336,13 @@ In this section we present the \cnfsat{} problem. We also show two hypotheses. T
 
 A \textit{conjunctive normal form} (CNF) of a propositional formula $\phi$ on $n$ Boolean variables $x_1,x_2,...,x_n$ is a formula of form $\phi=C_1 \land C_2 \land ... \land C_m$, where $C_i$ is a \textit{clause}. Each clause $C_i$ consists of disjunction of \textit{literals}, that is, $C_i=l_1 \lor l_2 \lor ... \lor l_j$. A literal $l_j$ corresponds to either a variable $x_k$ or its negation $\neg x_k$. We also introduce an abbreviation $l_i \in C_j$ which means that a literal $l_i$ occurs in $C_j$.
 
-After this introduction, we are ready to finally formulate the \cnfsat{} problem:
+Now, we are ready to formally formulate the \cnfsat{} problem:
 
 \begin{definition}
-	\cnfsat{}: given a propositional formula $\phi$ on $n$ Boolean variables $x_1,x_2,...,x_n$ that is in \textit{conjunctive normal form} decide whether there exists an evaluation of variables $\sigma$, such that $\sigma(\phi)=\true$.
+	\cnfsat{}: given a propositional formula $\phi$ on $n$ Boolean variables $x_1,x_2,...,x_n$ that is in conjunctive normal form decide whether there exists an evaluation of variables $\sigma$, such that $\sigma(\phi)=\true$.
 \end{definition}
 
-It is worth mentioning one more variant of a satisfiability problem. By restricting the number of literals in clauses to some constant $q$ we arrive at the $q$-{\sc SAT} problem. Observe that for $q \geq 3$, $q$-{\sc SAT} is NP-Complete due to Cook-Levin Theorem. Let $\delta_q$ be a infinimum of the set of constants $c$ for which there exists an algorithm solving $q$-{\sc SAT} in time $\mathcal{O}^*(2^{cn})$. The \textit{Exponential-Time Hypothesis} and \textit{Strong Exponential-Time Hypothesis} are defined as follows:
+It is worth mentioning one more variant of a satisfiability problem. By restricting the number of literals in clauses to some constant $q$ we arrive at the $q$-{\sc SAT} problem. Observe that for $q \geq 3$, $q$-{\sc SAT} is NP-Complete due to Cook-Levin Theorem. Let $\delta_q$ be an infinimum of the set of constants $c$ for which there exists an algorithm solving $q$-{\sc SAT} in time $\mathcal{O}^*(2^{cn})$. The \textit{Exponential-Time Hypothesis} and \textit{Strong Exponential-Time Hypothesis} are defined as follows:
 
 \begin{conjecture}[\textbf{Exponential-Time Hypothesis, ETH}]
 
@@ -362,7 +358,7 @@ It is worth mentioning one more variant of a satisfiability problem. By restrict
 	\end{equation*}
 \end{conjecture}
 
-Intuitively, ETH states that we need to browse through exponential number of assignments for $q$-{\sc SAT} while SETH implies that as the number of literals in clauses grows, brute force check is inevitable. However, in this paper we do not refer to the above consequences, but to the following consequence of Conjecture \ref{SETH}
+Intuitively, ETH states that we need to browse through exponential number of assignments for $3$-{\sc SAT} while SETH implies that as the number of literals in clauses grows, brute force check is inevitable. However, in this paper we do not refer directly to the above conjectures, but to the following consequence of Conjecture \ref{SETH}
 
 \begin{conjecture}
 	\cnfsat{} cannot be solved in time $\mathcal{O}^*((2-\epsilon)^n)$ for some $\epsilon>0$.
@@ -383,7 +379,7 @@ In the decision variant of \ssfp{}, all that we have to do is to answer whether 
 \begin{proof}
 	If $G$ has a \ssf{} $S$, then we have that for all $v \in V(G),\ 1 \leq deg_S(v) \leq deg_G(v)$. Thus, none of the vertices is isolated.
 	
-	For the opposite direction, we prove the lemma by induction on $|V(G)|$. Assume $|V(G)|=2$. The statement trivially holds because a graph consisting of one edge and two vertices is a correct \ssf{}. Let $|V(G)| >2$. For the induction step, we split the proof into two parts. 
+	For the opposite direction, we prove the lemma by induction on $|V(G)|$. Assume $|V(G)|=2$. The statement trivially holds because a graph consisting of one edge and two vertices is a \ssf{}. Let $|V(G)| >2$. For the induction step, we split the proof into two parts. 
 	
 	Firstly, suppose that for all vertices $v \in V(G)$, it holds that $\degree{G}{v}=1$.  Clearly, $G$ is a matching. Hence, it is a \ssf{} by itself. 
 	
@@ -407,7 +403,7 @@ Application of Lemma \ref{SSF lemma} yields the following result for \ssfp{}.
 
 \section{Constructing a solution}
 
-In the previous section, we gave an algorithm that only determines the existence of a solution. Now, we focus on constructing an arbitrary solution for a given instance. We propose an algorithm that for a graph outputs a spanning star forest in linear time if it exists. Firstly, let us introduce two claims:
+In the previous section, we gave an algorithm that only determines the existence of a solution. Now, we focus on constructing an arbitrary solution for a given instance. We propose an algorithm that given a graph it outputs a spanning star forest in linear time if it exists. Firstly, let us introduce two claims:
 
 \begin{claim} \label{SSF sum}
 	If $C_1,C_2,...C_n$ are the connected components of a graph $G$ and $S_1,S_2,...,S_n$ are their \ssf{}s respectively, then $\bigcup\limits_{i=1}^n S_i$ is a \ssf{} for $G$.
@@ -442,15 +438,15 @@ The first claim can be trivially proven by the definition of a \ssf{} while the 
 	\caption{Obtaining a spanning star forest from a connected graph.}
 \end{algorithm}
 
-Firstly, the algorithm creates a spanning tree $T$, say rooted. Then, it does a simple bottom-up traversal. If the current node $v$ has not been added to the solution yet, the algorithm adds the edge connecting it with parent. If the root has not been added to the solution during the for loop, we add an arbitrary edge incident to it, which finishes the algorithm.
+Firstly, the algorithm creates a spanning tree $T$, say rooted. Then, it does a simple bottom-up traversal. If the current node $v$ has not been added to the solution yet, the algorithm adds the edge connecting it with its parent. If the root has not been added to the solution during the for loop, we add an arbitrary edge incident to it, which finishes the algorithm.
 
-Now we need to check that the obtained graph is a spanning star forest. There is one non-trivial operation that the algorithm does. Specifically, if the root has not  been added during the for loop, we connect the root to any existing star without checking whether it remains a correct star. Before we proceed to the lemma about the correctness of Algorithm \ref{alg1}, let us prove the following claim:
+Now we need to check that the obtained graph is a spanning star forest. There is one non-trivial operation that the algorithm does. Specifically, if the root has not  been added during the for loop, we connect the root to any existing star without checking whether the component remains a star. Before we proceed to the lemma about the correctness of Algorithm \ref{alg1}, let us prove the following claim:
 \begin{claim}\label{ssf root}
 	Suppose that a connected graph $G$ is the input for Algorithm \ref{alg1}. Let $T$ be a spanning tree obtained during \textrm{SpanningTree}$(G)$ procedure and $S$ be the output graph. If $u_1 u_2,u_2 u_3 \in E(S)$, $u_2 = \textrm{parent}(T,u_1)$ and $u_3=\textrm{parent}(T,u_2)$, then $u_3$ is the root and $u_3$ has exactly one neighbor in $S$.
 \end{claim}
 
 \begin{proof}
-	Observe that no two consecutive parents can be added during the for loop. Thus, edge $u_2 u_3$ must have been added in the if statement. Since $u_3 = \textrm{parent}(T,u_2)$, $u_3$ must be the root. Moreover, having known that the root becomes spanned by $S$ for the first time during the if statement, we conclude that $u_2$ is the only neighbor of $u_3$ in $S$. 
+	Observe that no two consecutive parents can be added during the for loop. Thus, edge $u_2 u_3$ must have been added in the if statement. Since $u_3 = \textrm{parent}(T,u_2)$, $u_3$ must be the root. Moreover, having known that the root becomes added to $S$ during the if statement, we conclude that $u_2$ is the only neighbor of $u_3$ in $S$. 
 \end{proof}
 
 \begin{lemma}\label{alg1 correctness}
@@ -467,7 +463,7 @@ Now we need to check that the obtained graph is a spanning star forest. There is
 	\end{enumerate}
 	Let $T \subseteq G$ be a tree created during \textrm{SpanningTree}$(G)$ procedure. Trivially, $S$ does not contain a cycle because $S$ is a subgraph of $T$, which is a tree. Now, observe that the algorithm iterates over all vertices and, except for the root, pairs every vertex with its parent. The last pair, the root and its child, is added either in the for loop or in the if statement. Thus, we conclude that $S$ does not have any isolated vertices. 
 	
-	Finally, we prove that $S$ does not contain a path of length $3$. Note that such a path would need to contain a vertex $v$, its parent $u$ and its grandparent $w$. From the Claim \ref{ssf root} we infer that $w$ is the root and $u$ is the only neighbour of $w$ in $S$. Now, observe that if any other child of $u$ existed in that star, the last condition would still hold. So, suppose that a child of $v$ is in the same component. Contradiction, because $u$ would be the root then.
+	Finally, we prove that $S$ does not contain a path of length $3$. Note that such a path would need to contain a vertex $v$, its parent $u$ and its grandparent $w$. From the Claim \ref{ssf root} we infer that $w$ is the root and $u$ is the only neighbour of $w$ in $S$. Now, observe that if any other child of $u$ existed in that star, the last condition would still hold. So, suppose that a child of $v$ is in this component too. Contradiction, because $u$ would be the root then.
 	Therefore, there does not exist a path of length $3$ and we conclude that $S$ is a spanning star forest for $G$. 
 \end{proof}
 
@@ -479,7 +475,7 @@ Having proven the correctness of Algorithm \ref{alg1}, we proceed to the complex
 	Given a graph $G$ we run Algorithm \ref{alg1} on every connected component of $G$. Then, we  merge the obtained \ssf{} in linear time. Notice that an arbitrary spanning tree of any connected component can be found in linear time. The main loop of the algorithm has $n-1$ iterations, where $n$ is the number of vertices of the component, because every vertex is processed once. Moreover, it takes constant time to finish one iteration. Thus, the total run time is linear.
 \end{proof}
 
-Thus, obtaining a \ssf{} without any limitations is easy. Both the decision and the constructive variant of the problem can be solved in linear time.
+Obtaining a \ssf{} without any limitations is easy. Both the decision and the constructive variant of the problem can be solved in linear time.
 
 \chapter{Minimal Spanning Star Forest problem}\label{sec4}
 
@@ -487,7 +483,7 @@ In \mssfp{}, given a graph $G$ and a natural number $k$, the objective is to det
 
 It is natural to ask whether one can find a solution that minimizes the number of connected components. The problem formulated in that way resembles \domsetp{}. At first glance, one can say that a center corresponds to a dominating vertex whereas a ray corresponds to a dominated vertex. Candidates corresponds to either a dominating or a dominated vertex. However, in \domsetp{} isolated dominating vertices are allowed and some vertices can be dominated by multiple neighbors. 
 
-To give a systematic parameterized reduction between these two problems, we need to get a better understanding of \domsetp{}.
+To give a systematic parameterized reduction between these two problems, we need to get a better understanding of the \domsetp{} problem.
 
 \begin{definition}
 	Given a graph $G$ and a dominating set $D$, a {\normalfont domination mapping} is a function $\mu:V(G) \setminus D \rightarrow D$ such that satisfies $(x,\mu(x)) \in E(G)$ for all $x \in V(G) \setminus D$.
@@ -529,11 +525,11 @@ Claim \ref{dom-set-rr} follows by observing that every isolated vertex must be i
 \end{lemma}
 
 \begin{proof}
-	Firstly, we modify the instance. By Claim \ref{dom-set-rr}, let $(G,',k')=(G \setminus I, k - |I|)$ be the instance without isolated vertices. If $k' < 0$ we conclude that $(G,k)$ is a NO-instance. Otherwise, we claim that $(G',k')$ is a YES-instance of \domsetp{} if and only if $(G',k')$ is a YES-instance of \mssfp{}. 
+	Firstly, we modify the instance. By Claim \ref{dom-set-rr}, let $(G',k')=(G \setminus I, k - |I|)$ be the instance without isolated vertices. If $k' < 0$ we conclude that $(G,k)$ is a NO-instance. Otherwise, we claim that $(G',k')$ is a YES-instance of \domsetp{} if and only if $(G',k')$ is a YES-instance of \mssfp{}. 
 	
 	Consider the backward implication. Suppose $S$ is a spanning star forest for $(G',k')$. We create the \domset{} $D$ as follows: for every star in $S$ of size $2$ pick an arbitrary candidate and for every star of size greater than $2$ pick its center. Obviously, $|D| \leq k'$ because there are at most $k'$ stars in $S$. Moreover, observe that every vertex $v \in V(G') \setminus D$ is either a ray or a candidate in $S$. Thus, there exists an edge $vu \in E(G')$ where $u \in D$.
 	
-	To prove the forward implication, let $D$ be a minimum size dominating set for $(G',k')$. By Lemma \ref{dom mapping}, there exists a domination mapping $\mu$ that is surjective. Now, we claim that the graph $S=(V(G'),\{x\mu(x): x \in V(G') \setminus D\})$ is a solution for the instance $(G',k')$ of \mssfp{}. Observe that $S$ has at most $k'$ components as $|D| \leq k'$ By surjectivity, there are no isolated vertices in $S$ because dominated vertices are paired with dominating ones. Moreover, $\mu$ maps vertices from $V(G') \setminus D$ to $D$. Thus, we obtain that for all $v \in V(G') \setminus D$, $\degree{S}{v}=1$ and there does not exist an edge in $S$ connecting two dominating vertices. Thus, $S$ is a spanning star forest.
+	To prove the forward implication, let $D$ be a dominating set of minimum size for $(G',k')$. By Lemma \ref{dom mapping}, there exists a domination mapping $\mu$ that is surjective. Now, we claim that the graph $S=(V(G'),\{x\mu(x): x \in V(G') \setminus D\})$ is a solution for the instance $(G',k')$ of \mssfp{}. Observe that $S$ has at most $k'$ components as $|D| \leq k'$ By surjectivity, there are no isolated vertices in $S$ because dominated vertices are paired with dominating ones. Moreover, $\mu$ maps vertices from $V(G') \setminus D$ to $D$. Thus, we obtain that for all $v \in V(G') \setminus D$, $\degree{S}{v}=1$ and there does not exist an edge in $S$ connecting two dominating vertices. Thus, $S$ is a spanning star forest.
 \end{proof}
 
 The problems look so similar that one could ask whether there exists a reverse parameterized reduction. Indeed, this is true and the following lemma formally proves it:
@@ -543,11 +539,11 @@ The problems look so similar that one could ask whether there exists a reverse p
 \end{lemma}
 
 \begin{proof}
-	Let $(G,k)$ be an instance of \mssfp{}. If $G$ contains an isolated vertex, then return $(G,0)$. Otherwise, return $(G,k)$. Now, we claim that $(G,k)$ is a YES-instance of \mssfp{} if and only if $(G,k')$ is a YES-instance of \domset{} where $k'=0$ or $k'=k$.
+	Let $(G,k)$ be an instance of \mssfp{}. If $G$ contains an isolated vertex, then return $(G,0)$. Otherwise, return $(G,k)$. Now, we claim that $(G,k)$ is a YES-instance of \mssfp{} if and only if $(G,k')$ is a YES-instance of \domsetp{} where $k'=0$ or $k'=k$.
 	
 	Consider the forward implication. Let $S$ be a spanning star forest of at most $k$ stars for the graph $G$. Then, by Lemma \ref{SSF lemma}, $G$ does not have any isolated vertices and $k'=k$. Observe that $G$ does not change during the reduction. We create a dominating set $D$ as follows: for every star of size $2$ pick an arbitrary candidate and for every star of size at least $3$ pick its center. Obviously, $|D| \leq k$ because $S$ contains at most $k$ stars. So, suppose that there exists $v \in V(G) \setminus D$ that is not dominated. However, $S$ spans $G$ which means that $v$ is in one of the stars. Therefore, not only $v$ is either a ray or a candidate in $S$, but also there exists an edge $vu \in E(S)$ such that $u$ is either a center or a candidate. By the definition of $D$, $u \in D$. Contradiction because $u$ dominates $v$.
 	
-	For the backward implication, let $D$ be a minimum size dominating set for $(G,k')$. Note that $G$ has no isolated vertices and $k'=k$. By Lemma \ref{dom mapping}, there exists a domination mapping $\mu$ such that $\mu$ is surjective. Now, we claim that the graph $S$ = $(V(G), \{x\mu(x): x \in V(G) \setminus D\})$ is a spanning star forest. $S$ spans $G$ as it contains all the vertices from $G$. Moreover, there are no isolated vertices because for every vertex $v \in V(G) \setminus D$ there exists exactly one vertex $u \in D$ such that $vu \in E(S)$ and for every vertex $u \in D$ there exists at least one vertex $v \in V(G) \setminus D$ such that $vu \in E(S)$. From the previous sentence we also infer that the mapping forces every connected component to be a star, which concludes the proof.
+	For the backward implication, let $D$ be a dominating set of minimum size for $(G,k')$. Note that $G$ has no isolated vertices and $k'=k$. By Lemma \ref{dom mapping}, there exists a domination mapping $\mu$ such that $\mu$ is surjective. Now, we claim that the graph $S$ = $(V(G), \{x\mu(x): x \in V(G) \setminus D\})$ is a spanning star forest. $S$ spans $G$ as it contains all the vertices from $G$. Moreover, there are no isolated vertices because for every vertex $v \in V(G) \setminus D$ there exists exactly one vertex $u \in D$ such that $vu \in E(S)$ and for every vertex $u \in D$ there exists at least one vertex $v \in V(G) \setminus D$ such that $vu \in E(S)$. From the previous sentence we also infer that the mapping forces every connected component to be a star, which concludes the proof.
 \end{proof}
 
 Provided that there exist reductions from \domsetp{} to \mssfp{} and from \mssfp{} to \domsetp{} we are ready to prove the main results.
@@ -566,7 +562,7 @@ Moreover, note that the parameterized reductions stated in the previous lemmas c
 	\domsetp{} is an NP-complete problem. As observed in the previous proof, \domsetp{} and \mssfp{} are equivalent with respect to polynomial reductions. Therefore, we conclude that \mssfp{} is  also NP-complete.
 \end{proof}
 
-Interreducibility is a useful tool. Especially, if one of the problems has been deeply studied in the past. As an example, we show how to transfer a lower bound for the running time from \domsetp{} to \mssfp{}. Firstly, we prove the existence of an algorithm that works in time stated in Theorem \ref{thm-mssfp-time}:
+Now, we show how to transfer a lower bound for the running time from \domsetp{} to \mssfp{}. Firstly, we prove the existence of an algorithm that works in time stated in Theorem \ref{thm-mssfp-time}:
 
 \thmmssfptime*
 
@@ -614,7 +610,7 @@ In this section we propose a definition of a \emph{normalized instance} --- an i
 Surprisingly, every instance of \ssfep{} can be either normalized or discarded as a NO-instance. This is explained in the following lemma:
 
 \begin{lemma}
-	There is an algorithm working in polynomial time that takes an instance $(G,F)$ of \ssfep{} and either conclude that the instance is a NO-instance or outputs an equivalent normalized instance $(G',F')$ satisfying $G' \subseteq G$ and $F' \subseteq F$ and $U' \subseteq U$, where $U'$ is the set of free vertices in $G'$.
+	There is an algorithm working in polynomial time that takes an instance $(G,F)$ of \ssfep{} and either concludes that the instance is a NO-instance or outputs an equivalent normalized instance $(G',F')$ satisfying $G' \subseteq G$,  $F' \subseteq F$ and $U' \subseteq U$, where $U'$ is the set of free vertices in $G'$.
 \end{lemma}
 
 \begin{proof}
@@ -623,7 +619,7 @@ Surprisingly, every instance of \ssfep{} can be either normalized or discarded a
 		\item If graph $G$ contains an isolated vertex, then $(G,F)$ is a NO-instance.
 	\end{enumerate}
 	
-	Obviously, an isolated vertex cannot be a star by Lemma \ref{SSF lemma}. Now, observe, that in the extension variant, there exists a set of edges that must be added to the solution. Therefore, we can instantly conclude that an instance is a NO-instance if $F$ forms a forbidden subgraph.
+	Obviously, a graph that has an isolated vertex cannot be spanned by a star forest by Lemma \ref{SSF lemma}. Now, observe, that in the extension variant, there exists a set of edges that must be added to the solution. Therefore, we can instantly conclude that an instance is a NO-instance if $F$ forms a forbidden subgraph.
 	
 	\begin{enumerate}[leftmargin=*,label=\textbf{Reduction \arabic{enumi}},labelindent=0pt,resume]
 		\item If $F$ contains a path or a cycle of length at least $3$, then $(G,F)$ is a NO-instance.
@@ -883,10 +879,10 @@ In this section, we parameterize  \ssfep{} by the number of free edges. We begin
 Then, unlike in the first variant, we present a kernelization algorithm. We show, that the reduced instance has at most $3k$ vertices where $k$ is the parameter.
 
 \subsection{Algorithm}
-We start with stating a theorem for the \cnfsat{} problem parameterized by the number of clauses proven by AUTHORS. %TODO
+We start with stating a theorem for the \cnfsat{} problem parameterized by the number of clauses proven by 
 
 \begin{theorem}\label{cnfsatmtime}
-	TODO
+	\cnfsat{} parameterized by the number of clauses can be solved in $\mathcal{O}^*(1.358^k)$ where $k$ is the number of clauses.
 \end{theorem}
 
 Now, observe that \cnfsat{} parameterized by the number of clauses and \ssfep{} parameterized by the number of free vertices are interreducible with respect to polynomial reductions. Thus, we are ready to show an algorithm.
@@ -894,7 +890,7 @@ Now, observe that \cnfsat{} parameterized by the number of clauses and \ssfep{} 
 \thmssfepfetime*
 
 \begin{proof}
-	Let $(G,F)$ be an arbitrary instance of \ssfep{} parameterized by the number of free vertices. Firstly, we apply Lemma \ref{norm-ssfe}. If the lemma yields that the instance is a NO-instance, then we conclude. Otherwise, let $(G',F')$ be the output graph of normalization lemma. We apply Lemma \ref{cnfsat reduction} and obtain a formula $\phi$. Observe that $\phi$ has at most $|F|$ variables and at most $|U|$ clauses. Now, by Theorem \ref{cnfsatmtime} there exists an algorithm that decides whether $\phi$ is satisfiable or not. So, we apply it and obtain the answer for the instance $(G,F)$.
+	Let $(G,F)$ be an arbitrary instance of \ssfep{} parameterized by the number of free vertices. Firstly, we apply Lemma \ref{norm-ssfe}. If the lemma yields that the instance is a NO-instance, then we conclude. Otherwise, let $(G',F')$ be the normalized instance. We apply Lemma \ref{cnfsat reduction} and obtain an equivalent formula $\phi$. Observe that $\phi$ has at most $|F|$ variables and at most $|U|$ clauses. Now, by Theorem \ref{cnfsatmtime} there exists an algorithm that decides whether $\phi$ is satisfiable or not.
 \end{proof}
 
 \subsection{Kernelization}
@@ -911,70 +907,67 @@ At first we introduce a definition of a crown decomposition proposed by Chor, et
 	\end{itemize}
 \end{definition}
 
-Without digging into details, we show the results of Kőnig \cite{Konig}, Hall \cite{Hall} and an algorithm invented by Hopcroft and Karp \cite{Hopcroft-Karp} that are used further in this subsection.
-
-\begin{theorem}[\textbf{Kőnig's theorem}]
-	In every undirected bipartite graph the size of a maximum matching is equal to the size of a minimum vertex cover.
-\end{theorem}
-
-\begin{theorem}[\textbf{Hall's theorem}]
-	Let $G$ be an undirected bipartite graph with bipartition $(V_1,V_2)$. The graph $G$ has a matching of $V_1$ into $V_2$ if and only if for all $X \subseteq V_1$, we have $|N(X)| \geq |X|$.
-\end{theorem}
+The essential tool for proving the kernelization is Hopcroft-Karp's algorithm \cite{Hopcroft-Karp}.
 
 \begin{theorem}[\textbf{Hopcroft-Karp algorithm}]
 	Let $G$ be an undirected Let G be an undirected bipartite graph with bipartition $(V_1,V_2)$, on $n$ vertices and $m$ edges.	Then, we can find a maximum matching as well as a minimum vertex cover of $G$ in time $\mathcal{O}(m\sqrt{n})$. Furthermore, in time $\mathcal{O}(m\sqrt{n})$ either we can find a matching of $V_1$ into $V_2$ or an inclusion-wise minimal set $X \subseteq V_1$ such that $|N(X)| < |X|$.
 \end{theorem}
 
-Now, we present the lemma proposed by Cygan, et al. \cite{ParAlg} %TODO%
-that is a fundamental concept for designing kernelization algorithms.
-
-\begin{lemma}
-	Let $G$ be a graph without isolated vertices with at least $3k+1$ vertices. There is a polynomial-time algorithm that either
-	\begin{itemize}
-		\item finds a matching of size $k+1$ in $G$; or 
-		\item finds a crown decomposition of $G$.
-	\end{itemize} 
-\end{lemma}
-
 Finally, equipped with the above information, we are ready to show a linear kernel for \ssfep{}  parameterized by the number of free vertices.
 
-\begin{lemma}
-	There exists a polynomial-time algorithm, that, given an instance $(G,F)$ with a parameter $|U|$, either
+\begin{lemma}\label{kernel-ssfep}
+	There exists a polynomial-time algorithm, that, given an instance $(G,F)$ with a parameter $|U|$, such that $|F| \geq |U|$, either
 	\begin{itemize}
-		\item answers whether $(G,F)$ has a spanning star forest or
-		\item outputs a subgraph of $(G,F)$ such that it has at most $|U|$ forced edges.
+		\item answers that $(G,F)$ is a YES-instance or
+		\item outputs an equivalent instance $(G',F')$ such that $|U'| \leq |U|$ and $|F'| < |F|$ where $U'$ is the set of free vertices in $G'$.
 	\end{itemize} 
 \end{lemma}
 
 
 \begin{proof}
-	Firstly, observe a trivial case. If $|F| \leq |U|$, then $(G,F)$ is the reduced instance. Otherwise, we apply Lemma \ref{norm-ssfe}. We either conclude that $(G,F)$ is a NO-instance, which satisfies the first bullet of the stated lemma, or obtain a normalized graph $(G',F')$. Observe that an isolated edge is a star and it cannot be expanded. Thus, we can remove them as well. In further, we consider only the case where $|F'| \geq |U'|$. If $|F'| < |U'|$, then $(G',F')$ is the reduced instance.
-	
-	Let $G_{F',U'}$ be a bipartite graph formed from $(G',F')$ by contracting forced edges. We apply Hopcroft-Karp's algorithm to $G_{F',U'}$. We either obtain a matching $M$ of $F'$ into $U'$ or an inclusion-wise minimal set $X \subseteq F'$ such that $|N(X)| < |X|$.
-	\\\\
+	By Lemma \ref{norm-ssfe}, we assume that $(G,F)$ is a normalized instance. Let $G_{F,U}$ be a bipartite graph formed from $(G,F)$ by contracting forced edges. We apply Hopcroft-Karp's algorithm to $G_{F,U}$. We either obtain a matching $M$ of $F$ into $U$ or an inclusion-wise minimal set $X \subseteq F$ such that $|N(X)| < |X|$.
+
 	Consider the first case in which Hoprocft-Karp's algorithm returns a matching. Then, we conclude that $(G,F)$ is a YES-instance due to the following claim:
 	\begin{claim}
-		Assume $(G,F)$ is a normalized instance of \ssfep{} where $|F| \leq |U|$. If Hoprocft-Karp's algorithm ran on $G_{F,U}$ returns a matching $M$ of $F$ into $U$, then $(G,F)$ is a YES-instance.
+		Assume $(G,F)$ is a normalized instance of \ssfep{} where $|F| \geq |U|$. If Hoprocft-Karp's algorithm ran on $G_{F,U}$ returns a matching $M$ of $F$ into $U$, then $(G,F)$ is a YES-instance.
 	\end{claim}
 
 	\begin{proof}
-		Since $M$ is a matching of $F$ into $U$, then we infer that $|F| \geq |U|$. Furthermore, we assumed that $|F| \leq |U|$. Thus, $|F|=|U|$ and $M$ is also a matching of $U$ into $F$. Now, we claim that there exists a spanning star forest for $(G,F)$. Indeed, let $M' \subseteq E(G')$ be a set of edges of minimum size such that $M'$ corresponds to $M$. Then, $M' \cup F$ is a spanning star forest for $G$.
+		Since $M$ is a matching of $F$ into $U$, then we infer that $|F| \leq |U|$. Furthermore, we assumed that in $(G,F)$, $|F| \geq |U|$. Thus, $|F|=|U|$ and $M$ is also a matching of $U$ into $F$. Now, we claim that there exists a spanning star forest for $(G,F)$. Indeed, let $M' \subseteq E(G)$ be a matching such that $M'$ corresponds to $M$ in $G_{F,U}$. Then, $S = M' \cup F$ is a spanning star forest for $G$ as every free vertex $v$ is in $M'$. Moreover, since $M'$ is a matching, it follows that $\degree{S}{v}=1$.
 	\end{proof}
-	\noindent
-	Observe that the normalized instance $(G',F')$ satisfies the assumptions from the above claim.
-	\\\\
-	Now, consider the second case. Let $X \subseteq$ be an inclusion-wise minimal set such that $|N(X)| < |X|$. Let $C=X$, $H=N(X)$ and $R= V(G_{F',U'}) \setminus (H \cup C)$. Now, we claim that:
+
+	Now, consider the second case. Let $X \subseteq$ be an inclusion-wise minimal set such that $|N(X)| < |X|$. Let $C=X$, $H=N(X)$ and $R= V(G_{F,U}) \setminus (H \cup C)$. Now, we claim that:
 	\begin{claim}
-		$(C,H,R)$ is a crown decomposition of $G_{F',U'}$.
+		$(C,H,R)$ is a crown decomposition of $G_{F,U}$.
 	\end{claim}
 	\begin{proof}
-		$C$ is nonempty and $C$ is an independent set as $F'$ is an induced matching in $G'$. Moreover, $H$ separates $C$ from $R$ because $H$ is a set of all the neighbors of $C$. Now, we prove that there exists a matching of $H$ into $C$. Select an arbitrary $v \in C$. There is a matching of $C \setminus \{v\}$ into $H$ since $|N(C')| \geq |C|$ for every $C' \subseteq C$. Since $|C| > |H|$, we have that the matching of $C \setminus \{v\}$ into $H$ is actually a matching of $H$ into $C$. Therefore, $(C,H,R)$ is a crown decomposition of $G_{F',U'}$.
+		Observe that $C$ is nonempty and $C$ is an independent set as $F$ is an induced matching in $G$. Moreover, $H$ separates $C$ from $R$ because $H$ is a set of all the neighbors of $C$. Now, we prove that there exists a matching of $H$ into $C$. Select an arbitrary $v \in C$. There is a matching of $C \setminus \{v\}$ into $H$ since $|N(C')| \geq |C|$ for every $C' \subseteq C$. Since $|C| > |H|$, we have that the matching of $C \setminus \{v\}$ into $H$ is actually a matching of $H$ into $C$. Therefore, $(C,H,R)$ is a crown decomposition of $G_{F,U}$.
 	\end{proof}
+
+	We proceed to the construction of a reduced instance. Let $D \subseteq V(G)$ be a set of vertices which corresponds to vertices from $C \cup H$. Now, let $(G',F')$ be an instance formed from $(G,F)$ by removing vertices from $D$. We claim that the operation is safe:
+	
+	\begin{claim}
+		$(G,F)$ has a spanning star forest if and only if $(G',F')$ has a spanning star forest.
+	\end{claim}
+	\begin{proof}
+		For the sake of clarity, by $D_F$ and $D_U$ we denote the sets of forced vertices and free vertices that appear in $G$ and do not appear in $G'$.
+		
+		Let $S$ be a solution for $(G,F)$. We claim that $S' = S[V(G')]$, that is, $S$ restricted to the vertices of the graph $G'$, is a spanning star forest for $(G',F')$. Observe that $N_G(D_F) = D_U \cup D_F$ by the choice of sets for a crown decomposition. Hence, in $S$, there does not exist an edge $vu$ such that $v \in D_F$ and $u \in U \setminus D_U$. We conclude that $S'$ is a spanning star forest for $(G',F')$.
+		
+		For the backward implication, let $S$ be a solution for $(G',F')$. Recall that $G_{F,U}$ has a crown decomposition $(C,H,R)$ where vertices of $C$ corresponds to $D_F$ and vertices of $H$ corresponds to $D_U$. By the definition of a crown decomposition, there exists a matching of $H$ into $C$, say $M'$. Therefore, let $M$ be a matching between $D_F$ and $D_U$ in $G$ such that it corresponds to $M'$. Observe that now $S \cup M$ is a spanning star forest for $(G,F)$.
+	\end{proof}
+	
+	Observe that a crown decomposition requires that $C$ is nonempty. Thus, $|F'| < |F|$ which concludes the proof. \qedhere
 	
 \end{proof}
 
-%\thmssfepkernel*
+The lemma immediately proves the following theorem:
 
+\thmssfepkernel*
+
+\begin{proof}
+	Exhaustive application of Lemma \ref{kernel-ssfep} on a normalized instance $(G,F)$ either outputs that the instance is a YES-instance or or outputs an equivalent instance $(G',F')$ such that $|F'| \leq |U'|$ and $|U'| \leq |U|$.
+\end{proof}
 
 \section{Parametrization by treewidth}
 
