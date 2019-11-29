@@ -11,6 +11,18 @@ H.~L. Bodlaender, R.~G. Downey, M.~R. Fellows, and D.~Hermelin, ``On problems
   without polynomial kernels,'' {\em Journal of Computer and System Sciences},
   vol.~75, no.~8, pp.~423 -- 434, 2009.
 
+\bibitem{MAXSAT}
+I.~Bliznets and A.~Golovnev, ``A new algorithm for parameterized max-sat,'' in
+  {\em Proceedings of the 7th International Conference on Parameterized and
+  Exact Computation}, IPEC'12, (Berlin, Heidelberg), pp.~37--48,
+  Springer-Verlag, 2012.
+
+\bibitem{CoverProduct}
+A.~Bj\"{o}rklund, T.~Husfeldt, P.~Kaski, and M.~Koivisto, ``Fourier meets
+  m\"{o}bius: Fast subset convolution,'' in {\em Proceedings of the
+  Thirty-ninth Annual ACM Symposium on Theory of Computing}, STOC '07, (New
+  York, NY, USA), pp.~67--74, ACM, 2007.
+
 \bibitem{ParComp}
 R.~G. Downey and M.~R. Fellows, {\em Parameterized Complexity}.
 \newblock Springer Publishing Company, Incorporated, 2012.
@@ -35,11 +47,9 @@ L.~Fortnow and R.~Santhanam, ``Infeasibility of instance compression and
   succinct pcps for np,'' {\em J. Comput. Syst. Sci.}, vol.~77, pp.~91--106,
   Jan. 2011.
 
-\bibitem{MAXSAT}
-I.~Bliznets and A.~Golovnev, ``A new algorithm for parameterized max-sat,'' in
-  {\em Proceedings of the 7th International Conference on Parameterized and
-  Exact Computation}, IPEC'12, (Berlin, Heidelberg), pp.~37--48,
-  Springer-Verlag, 2012.
+\bibitem{CROSS}
+H.~L. Bodlaender, B.~M.~P. Jansen, and S.~Kratsch, ``Kernelization lower bounds
+  by cross-composition,'' {\em CoRR}, vol.~abs/1206.5941, 2012.
 
 \bibitem{Crown}
 B.~Chor, M.~Fellows, and D.~Juedes, ``Linear kernels in linear time, or how to
@@ -48,14 +58,8 @@ B.~Chor, M.~Fellows, and D.~Juedes, ``Linear kernels in linear time, or how to
   Heidelberg), pp.~257--269, Springer-Verlag, 2004.
 
 \bibitem{Hopcroft-Karp}
-J.~E. Hopcroft and R.~M. Karp, ``An $n^{5/2} $ algorithm for maximum
-  matchings in bipartite graphs,'' {\em SIAM Journal on Computing}, vol.~2,
-  no.~4, pp.~225--231, 1973.
-
-\bibitem{CoverProduct}
-A.~Bj\"{o}rklund, T.~Husfeldt, P.~Kaski, and M.~Koivisto, ``Fourier meets
-  m\"{o}bius: Fast subset convolution,'' in {\em Proceedings of the
-  Thirty-ninth Annual ACM Symposium on Theory of Computing}, STOC '07, (New
-  York, NY, USA), pp.~67--74, ACM, 2007.
+J.~E. Hopcroft and R.~M. Karp, ``An $n^{5/2} $ algorithm for maximum matchings
+  in bipartite graphs,'' {\em SIAM Journal on Computing}, vol.~2, no.~4,
+  pp.~225--231, 1973.
 
 \end{thebibliography}

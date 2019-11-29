@@ -141,7 +141,7 @@
 
 %tu idzie streszczenie na strone poczatkowa
 \begin{abstract}
-	The paper describes application of parameterized techniques to finding spanning star forests in graphs. We examine three different variants and multiple parametrizations. We present positive results such us parameterized algorithm, kernelization, algorithm over a tree decomposition of an input graph as well as negative ones i.e. hardness based on Strong Expotential-Time Hypothesis.
+	We present applications of parameterized techniques to finding spanning star forests in graphs. We examine three different variants of the problem and multiple parametrizations. We present positive results such as parameterized algorithms, kernelization procedures, algorithms over a tree decomposition of an input graph as well as negative ones, like hardness results based on Strong Exponential-Time Hypothesis.
 \end{abstract}
 
 \tableofcontents
@@ -150,9 +150,9 @@
 
 \chapter{Introduction}
 
-A spanning star forest of a graph is a subgraph such that it contains all the vertices and its every connected component is a tree of depth $2$. In the \ssfp{} problem, given a graph, we ask whether there exists a spanning star forest. 
+A spanning star forest of a graph is a subgraph that contains all the vertices and any connected component is a tree of depth $2$. In the \ssfp{} problem, given a graph, we ask whether there exists a spanning star forest. 
 
-The goal of this paper is to apply numerous parameterized techniques to three different variants of the problem. We start with the most basic variant, denoted \ssfp{} where we only ask whether a graph has a spanning star forest. We show a simple condition, verifiable in linear time, that is necessary and sufficient for the existence of a spanning star forest in a graph. Later, we present an algorithm that constructs a spanning star forest. The following theorem summarizes these results:
+The goal of this paper is to apply numerous parameterized techniques to three different variants of the problem. We start with the most basic variant, denoted \ssfp{} where we only ask whether a graph has a spanning star forest. We show a simple condition, verifiable in linear time, that is necessary and sufficient for the existence of a spanning star forest in a graph. Later, we present a linear time algorithm that constructs a spanning star forest. The following theorem summarizes these results:
 
 \begin{restatable}{theorem}{thmssfp}\label{thm-ssfp}
 	\ssfp{} can be solved in linear time. Moreover, given a graph $G$, one can find a solution in linear time if it exists.
@@ -161,7 +161,7 @@ The goal of this paper is to apply numerous parameterized techniques to three di
 Afterwards, we introduce the second variant. In \mssfp{}, we look for a spanning star forest with the minimum possible number of stars. We show that \mssfp{} and \domsetp{} are essentially equivalent. That is, they are interreducible with respect to parameterized and polynomial-time reductions. Thus, we obtain with the following outcomes:
 
 \begin{restatable}{theorem}{thmmssfpwc}\label{thm-mssfp-w2c}
-	\mssfp{} is \textup{W[2]}-complete.
+	\mssfp{} parameterized by the number of stars is \textup{W[2]}-complete.
 \end{restatable}
 
 \begin{restatable}{theorem}{thmmssfpnpc}\label{thm-mssfp-npc}
@@ -169,19 +169,19 @@ Afterwards, we introduce the second variant. In \mssfp{}, we look for a spanning
 \end{restatable}
 
 \noindent
-Based on reductions, we show a brute force algorithm. We point out that this running time is tight, using a lower bound proved for \domsetp{} due to Pătraşcu and Williams \cite{DomSet}. 
+Based on reductions, we show a brute force algorithm. We point out that its running time is tight, using a lower bound proved for \domsetp{} by Pătraşcu and Williams \cite{DomSet}. 
 
 \begin{restatable}{theorem}{thmmssfptime}\label{thm-mssfp-time}
 	\mssfp{} can be solved in $\mathcal{O}^*(N^{k + o_k(1)})$, where $N$ is the number of vertices.
 \end{restatable}
 
 \begin{restatable}{theorem}{thmmssfplowerbound}\label{thm-mssfp-lowerbound}
-	Unless \cnfsat{} cannot be solved in time $\mathcal{O}^*((2-\epsilon')^n)$
-	\footnote{The notation $\mathcal{O}^*$ is commonly used while stating the running time of a parameterized algorithm. The notation hides poly-logarithmic factors when discussing.}
+	Unless \cnfsat{} can be solved in time $\mathcal{O}^*((2-\epsilon')^n)$
+	\footnote{The notation $\mathcal{O}^*$ is commonly used when stating the running times of parameterized algorithms. The notation hides polynomial factors.}
 	 for some $\epsilon' > 0$, there does not exist constants $\epsilon > 0,k\geq 7$ and an algorithm solving \mssfp{} on instance with parameter equal to $k$ in time $\mathcal{O}(N^{k-\epsilon})$, where $N$ is the number of vertices of the graph.
 \end{restatable}
 
-Finally, we introduce the last variant. In \ssfep{} we are given a graph and a subset of forced edges. We ask whether there exists a spanning star forest in the graph that extends the subset of forced edges. By free vertices, we denote vertices that do not have any forced edge. We prove that this problem is essentially equivalent to \cnfsat{}, where the number of forced edges corresponds to the number of variables while the number of free vertices corresponds to the number of clauses. Thus, we obtain:
+Finally, we introduce the last variant. In \ssfep{} we are given a graph and a subset of forced edges. We ask whether there exists a spanning star forest in the graph that extends the subset of forced edges. By free vertices we denote vertices that are not adjacent to any forced edge. We prove that this problem is essentially equivalent to \cnfsat{}, where the number of forced edges corresponds to the number of variables, while the number of free vertices corresponds to the number of clauses. Thus, we obtain:
 
 \begin{restatable}{theorem}{thmssfepnpc}\label{thm-ssfep-npc}
 	\ssfep{} is \textup{NP}-complete.
@@ -195,41 +195,40 @@ For the parametrization by the number of forced edges, our reductions yield the 
 \end{restatable}
 
 \begin{restatable}{theorem}{thmssfepseth}\label{thm-ssfep-seth}
-	There exists an algorithm solving \cnfsat{} in time $\mathcal{O}^*((2-\epsilon)^n)$, for a constant $\epsilon > 0$, where $n$ is the number of variables , if and only if there exists an algorithm solving \ssfep{} parameterized by the number of forced edges in time $\mathcal{O}^*((2-\epsilon')
-^n)$, for some $\epsilon'>0$, where $n$ is the number of forced edges.
+	For every $\epsilon > 0$, there exists an algorithm solving \cnfsat{} in time $\mathcal{O}^*((2-\epsilon)^n)$ where $n$ is the number of variables if and only if there exists an algorithm solving \ssfep{} parameterized by the number of forced edges in time $\mathcal{O}^*((2-\epsilon)^n)$ where $n$ is the number of forced edges.
 \end{restatable}
 
 \noindent
-Also, we argue that there does not exist a polynomial kernel for \ssfep{} when parameterized by the number of forced edges unless NP $\subseteq$ coNP/poly. We show two different approaches. The first one uses \cnfsat{}. In the second approach, we apply the composition framework proposed by Bodlaender et al. \cite{Bodlaender}. Namely, we prove that there exists a cross-composition of \ssfep{} into itself. All in all, we obtain the following result:
+Also, we argue that there does not exist a polynomial kernel for \ssfep{} when parameterized by the number of forced edges unless NP $\subseteq$ coNP/poly. We show two different approaches. The first one uses \cnfsat{} and its hardness of kernelization. In the second approach, we apply the composition framework proposed by Bodlaender et al. \cite{Bodlaender}. Namely, we prove that there exists a cross-composition of \ssfep{} into itself. All in all, we obtain the following result:
 
 \begin{restatable}{theorem}{thmssfepnokernel}\label{thm-ssfep-nokernel}
 	\ssfep{} parameterized by the number of forced edges does not admit a polynomial kernel unless NP $\subseteq$ coNP/poly.
 \end{restatable}
 
-Recall that our reductions provides a link between free vertices and clauses. Therefore, when we parameterize the problem by the number of free vertices, we can immediately transform the algorithm proposed by ?? and obtain the following: %TODO ADD AUTHOR OF THE ALGORITHM%
+Recall that our reductions provides a link between free vertices and clauses. Therefore, when we parameterize the problem by the number of free vertices, we can immediately transform algorithms for \cnfsat{} parameterized by the number of clauses proposed by Bliznets, et al.\cite{MAXSAT} and obtain the following:
 
 \begin{restatable}{theorem}{thmssfepfreealg}\label{thm-ssfep-free-alg}
-	\ssfep{} parameterized by the number of free vertices can be solved in ??.%TODO add time%
+	\ssfep{} parameterized by the number of free vertices can be solved in $\mathcal{O}^*(1.358^n)$ where $n$ is the number of free vertices.
 \end{restatable}
 
 \noindent
 Furthermore, unlike in the case of the previous parametrization, we provide an algorithm that outputs a linear kernel.
 
 \begin{restatable}{theorem}{thmssfepkernel}\label{thm-ssfep-kernel}
-	\ssfep{} parameterized by the number of free vertices admits a kernel with at most $k$ free vertices and $k$ forced edges.
+	\ssfep{} parameterized by the number of free vertices admits a kernel with at most $k$ free vertices and at most $k$ forced edges.
 \end{restatable}
 
-Finally, we study the parameterization of the extension variant by the treewidth of the input graph. We propose a dynamic programming algorithm over a decomposition of a graph which uses fast cover product proposed by Björklund, et al. \cite{Cover product}. In addition, we show that improving the running time would give a faster algorithm for the \cnfsat{} problem.
+Finally, we study the parameterization of the extension variant by the treewidth of the input graph. We propose a dynamic programming algorithm over a decomposition of a graph which uses fast cover product computation proposed by Björklund, et al. \cite{CoverProduct}. In addition, we show that improving the running time would give a faster algorithm for the \cnfsat{} problem.
 
 \begin{restatable}{theorem}{thmssfeptwtime}\label{thm-ssfep-tw-time}
 	\ssfep{} parameterized by treewidth can be solved in time $2^t\cdot poly(t)\cdot n$.
 \end{restatable}
 
 \begin{restatable}{theorem}{thmssfeptwseth}\label{thm-ssfep-tw-seth}
-	Unless \cnfsat{} cannot be solved in time $\mathcal{O}^*((2-\epsilon')^n)$ for some $\epsilon' > 0$, there is no algorithm for \ssfep{} parameterized by treewidth that achieves running time $\mathcal{O}^*((2-\epsilon)^{t})$ for any $\epsilon > 0$, where \textup{\textrm{t}} is the treewidth of the input graph.
+	Unless \cnfsat{} can be solved in time $\mathcal{O}^*((2-\epsilon')^n)$ for some $\epsilon' > 0$, there is no algorithm for \ssfep{} parameterized by treewidth that achieves running time $\mathcal{O}^*((2-\epsilon)^{t})$ for any $\epsilon > 0$, where $t$ is the treewidth of the input graph.
 \end{restatable}
 
-\paragraph{Outline.} In Section 2 we settle notation. Section 3 contains results for \ssfp{}. In Section 4 we prove all the theorems dedicated for \mssfp{}. Section 5 gives the algorithms and lower bounds for \ssfep{} parameterized in three different ways.
+\paragraph{Outline.} In Section 2 we present notation and recall basic definitions related to parameterized complexity. Section 3 contains results for \ssfp{}. In Section 4 we prove all the theorems about \mssfp{}. Section 5 gives the algorithms and lower bounds for \ssfep{} parameterized in three different ways.
 
 \chapter{Preliminaries}\label{sec2}
 
@@ -250,7 +249,7 @@ For a given graph $G$, we say that $S$ is a \emph{\ssf{}} if $V(S)=V(G)$ and eve
 
 \section{Parameterized complexity}
 
-\emph{Parameterized complexity} is a young branch of computational complexity theory. We refer the reader to textbooks of Downey and Fellows \cite{ParComp}, Flum and Grohe \cite{ParCompThm} pr Cygan et al. \cite{ParAlg}, for an overview of the field.
+\emph{Parameterized complexity} is a young branch of computational complexity theory. We refer the reader to textbooks of Downey and Fellows \cite{ParComp}, Flum and Grohe \cite{ParCompThm} and Cygan et al. \cite{ParAlg} for an overview of the field.
 
 We now introduce basic terminology. We begin with formally defining a parameterized problem. For the sake of clarity, all the definitions are taken from \cite{ParAlg}.
 
@@ -332,17 +331,17 @@ We distinguish one special case. If a tree $\mathcal{T}$ forms a path, we call i
 
 \section{Satisfiability problem}
 
-In this section we present the \cnfsat{} problem. We also show two hypotheses. They are fundamental to prove lower bounds for algorithms. 
+In this section we present the \cnfsat{} problem. We also recall two hypotheses about its complexity. They are fundamental for proving lower bounds on running times of algorithms. 
 
 A \textit{conjunctive normal form} (CNF) of a propositional formula $\phi$ on $n$ Boolean variables $x_1,x_2,...,x_n$ is a formula of form $\phi=C_1 \land C_2 \land ... \land C_m$, where $C_i$ is a \textit{clause}. Each clause $C_i$ consists of disjunction of \textit{literals}, that is, $C_i=l_1 \lor l_2 \lor ... \lor l_j$. A literal $l_j$ corresponds to either a variable $x_k$ or its negation $\neg x_k$. We also introduce an abbreviation $l_i \in C_j$ which means that a literal $l_i$ occurs in $C_j$.
 
 Now, we are ready to formally formulate the \cnfsat{} problem:
 
 \begin{definition}
-	\cnfsat{}: given a propositional formula $\phi$ on $n$ Boolean variables $x_1,x_2,...,x_n$ that is in conjunctive normal form decide whether there exists an evaluation of variables $\sigma$, such that $\sigma(\phi)=\true$.
+	\cnfsat{}: given a propositional formula $\phi$ on $n$ Boolean variables $x_1,x_2,...,x_n$ that is in conjunctive normal form, decide whether there exists an evaluation of variables $\sigma$, such that $\sigma(\phi)=\true$.
 \end{definition}
 
-It is worth mentioning one more variant of a satisfiability problem. By restricting the number of literals in clauses to some constant $q$ we arrive at the $q$-{\sc SAT} problem. Observe that for $q \geq 3$, $q$-{\sc SAT} is NP-Complete due to Cook-Levin Theorem. Let $\delta_q$ be an infinimum of the set of constants $c$ for which there exists an algorithm solving $q$-{\sc SAT} in time $\mathcal{O}^*(2^{cn})$. The \textit{Exponential-Time Hypothesis} and \textit{Strong Exponential-Time Hypothesis} are defined as follows:
+It is worth mentioning one more variant of a satisfiability problem. By restricting the number of literals in clauses to some constant $q$ we arrive at the $q$-{\sc SAT} problem. Observe that for $q \geq 3$, $q$-{\sc SAT} is NP-Complete by Cook-Levin Theorem. Let $\delta_q$ be an infinimum of the set of constants $c$ for which there exists an algorithm solving $q$-{\sc SAT} in time $\mathcal{O}^*(2^{cn})$. The \textit{Exponential-Time Hypothesis} and \textit{Strong Exponential-Time Hypothesis} are defined as follows:
 
 \begin{conjecture}[\textbf{Exponential-Time Hypothesis, ETH}]
 
@@ -358,10 +357,10 @@ It is worth mentioning one more variant of a satisfiability problem. By restrict
 	\end{equation*}
 \end{conjecture}
 
-Intuitively, ETH states that we need to browse through exponential number of assignments for $3$-{\sc SAT} while SETH implies that as the number of literals in clauses grows, brute force check is inevitable. However, in this paper we do not refer directly to the above conjectures, but to the following consequence of Conjecture \ref{SETH}
+Intuitively, ETH states that we need to browse through exponential number of assignments for $3$-{\sc SAT}, while SETH implies that as the number of literals in clauses grows, brute force check is inevitable. However, in this paper we do not refer directly to the above conjectures, but to the following consequence of Conjecture \ref{SETH}
 
 \begin{conjecture}
-	\cnfsat{} cannot be solved in time $\mathcal{O}^*((2-\epsilon)^n)$ for some $\epsilon>0$.
+	\cnfsat{} cannot be solved in time $\mathcal{O}^*((2-\epsilon)^n)$ for any $\epsilon>0$.
 \end{conjecture}
 
 \chapter{Spanning Star Forest Problem}\label{sec3}
@@ -692,9 +691,9 @@ Surprisingly, every instance of \ssfep{} can be either normalized or discarded a
 
 Finally, we want to point out an advantage of a normalized instance of \ssfep{} over an arbitrary one. Consider the following claim:
 
-\begin{claim}\label{span-lemma}
+\begin{lemma}\label{span-lemma}
 	Let $(G,F)$ be a normalized instance of \ssfep{}. Then, $(G,F)$ is a YES-instance if and only if there exists an independent set $C \subseteq V(F)$ such that $U \subseteq N(C)$.
-\end{claim}
+\end{lemma}
 
 \begin{proof}
 	For the forward implication, let $S$ be a \ssf{} for $(G,F)$. We claim that $C = N_S(U)$ satisfies the required condition. Clearly, $C \subseteq V(F)$ as free vertices have edges to forced vertices only. Additionally, for every forced edge $vu \in F$ either $v$ or $u$ does not have edge to free vertices in $S$. Thus, $C$ is an independent set. 
@@ -750,23 +749,23 @@ Lemma \ref{ssfep reduction} and Lemma \ref{cnfsat reduction} directly imply the 
 
 \section{Parametrization by the number of forced edges}
 
-In this section, in addition to an instance $(G,F)$ we receive a parameter $k$ which is equal to the number of forced edges. We show two major results: \ssfep{} parameterized by the number of forced edges does not admit a kernel of polynomial size and a lower bound under Strong Exponential Hypothesis.
+In this section, in addition to an instance $(G,F)$ we receive a parameter $k$ which is equal to the number of forced edges. We show two results: \ssfep{} parameterized by the number of forced edges does not admit a kernel of polynomial size, and a lower bound under Strong Exponential-Time Hypothesis.
 
 \subsection{Lower bound for a running time}
 
-Previously in this chapter, we proved that \ssfep{} is NP-complete. We showed that the problem is NP-complete, it does not admit a polynomial kernel and we stated reduction rules to simplify instances. In this subsection, we show a simple routine that solves \ssfep{} parameterized by the number of forced edges. Furthermore, we prove that there does not exist a faster algorithm unless \cnfsat{} cannot be solved in time $\mathcal{O}^*((2-\epsilon)^n)$, for $\epsilon>0$.
+Previously in this chapter, we proved that \ssfep{} is NP-complete and we showed an algorithm to simplify instances. In this subsection, we show a simple routine that solves \ssfep{} parameterized by the number of forced edges. Furthermore, we prove that there does not exist a faster algorithm unless \cnfsat{} can be solved in time $\mathcal{O}^*((2-\epsilon)^n)$, for any $\epsilon>0$.
 
 \begin{algorithm}\label{alg2}
 	\KwData{normalized instance $(G,F)$}
 	\KwResult{\ssf{} of $G$ extending $F$}
 	$Centers \leftarrow \{C: C \subseteq V(F) \text{, }|C|=|F| \text{ and } \forall u,v \in C,\ vu \notin F\}$\;
 	\For{$C \in Centers$ }{
-		\If{$U \subseteq G(C)$}{
-			\Return YES-instance\;
+		\If{$U \subseteq N(C)$}{
+			\Return YES\;
 		}
 	}
-	\Return NO-instance\;
-	\caption{Extending a spanning star forest from a normalized graph.}
+	\Return NO\;
+	\caption{Finding a spanning star forest in a normalized graph with forced edges.}
 \end{algorithm}
 
 Consider the following Algorithm \ref{alg2}. It simply iterates over all maximal independent sets of forced candidates. If a set spans all the vertices, then it means that the set of forced edges can be extended to a spanning star forest. Otherwise, if none of the sets satisfies the condition, then the input is a NO-instance. Now, see the following lemma:
@@ -775,11 +774,7 @@ Consider the following Algorithm \ref{alg2}. It simply iterates over all maximal
 	Given a normalized instance $(G,F)$ parameterized by $|F|$, Algorithm \ref{alg2} outputs the answer whether $(G,F)$ has a spanning star forest.
 \end{lemma}
 
-\begin{proof}
-	Lemma \ref{span-lemma} proves the correctness of the algorithm.
-\end{proof}
-
-With Lemma \ref{alg2-correctness}, we can proceed to the next theorem stated in the introduction:
+Observe that the proof directly follows from Lemma \ref{span-lemma}. Now, we can proceed to the next theorem stated in the introduction:
 
 \thmssfepfetime*
 
@@ -787,34 +782,34 @@ With Lemma \ref{alg2-correctness}, we can proceed to the next theorem stated in 
 	Firstly, we normalize the input instance by Lemma \ref{norm-ssfe} which takes a polynomial time. We either conclude that an instance is a NO-instance or obtain $(G,F)$. Then, we apply Algorithm \ref{alg2}. It does at most $2^{|F|}$ iterations because this is the number of different maximal independent sets in an induced matching. Every iteration takes polynomial time to process the set. Hence, we conclude that the algorithm works in time $\mathcal{O}^*(2^{|F|})$.
 \end{proof}
 
-Note that the described algorithm is a simple brute force. We do not optimize the search. Moreover, there is no need to fight for a better complexity unless SETH fails. The following theorem proves it:
+Note that the described algorithm is a simple brute force. We do not optimize the search. Moreover, there is no point in struggling for a better complexity, unless SETH fails. The following theorem proves it:
 
 \thmssfepseth*
 
 \begin{proof}
-	Suppose $\mathcal{A}$ is an algorithm that solves \cnfsat{} in time $2^{o(n)}$, where $n$ is the number of variables. Now, we show an algorithm solving \ssfep{} parameterized by the number of forced edges. Let $(G,F)$ be an arbitrary instance of \ssfep{} with a parameter equal to $|F|$. We apply the reduction from Lemma \ref{ssfep reduction} and obtain a formula $\phi$, that has exactly $|F|$ variables. Then, we apply algorithm $\mathcal{A}$ to obtain the result. Observe that the reduction works in polynomial time. Thus, the above algorithm works in time $2^{o(n)}$.
+	Suppose $\mathcal{A}$ is an algorithm that solves \cnfsat{} in time $\mathcal{O}^*((2-\epsilon)^n)$, where $n$ is the number of variables. Now, we show an algorithm solving \ssfep{} parameterized by the number of forced edges. Let $(G,F)$ be an arbitrary instance of \ssfep{} with a parameter equal to $|F|$. We apply the reduction from Lemma \ref{ssfep reduction} and obtain a formula $\phi$ that has at most $|F|$ variables. Then, we apply algorithm $\mathcal{A}$ to $\phi$ to obtain the result. Observe that the reduction works in polynomial time. Thus, the above algorithm works in time $\mathcal{O}^*((2-\epsilon)^|F|)$ where $|F| \leq n$.
 	
-	For the converse implication, assume $\mathcal{A}$ is an algorithm that solves \ssfep{} parameterized by the number of forced edges in time $2^{o(n)}$, where $n$ is the number of forced edges. We show an algorithm for \cnfsat{} problem now. Let $\phi$ be an arbitrary CNF-formula with $n$ variables. We apply the reduction from Lemma \ref{cnfsat reduction} and obtain a normalized instance $(G,F)$ of \ssfep{}, such that $|F|=n$. Now, we run the algorithm $\mathcal{A}$ on $(G,F)$, and hence we get the answer. The described algorithm works in time $2^{o(n)}$.
+	For the converse implication, assume $\mathcal{A}$ is an algorithm that solves \ssfep{} parameterized by the number of forced edges in time $\mathcal{O}^*((2-\epsilon)^n)$, where $n$ is the number of forced edges. We show an algorithm for \cnfsat{} problem now. Let $\phi$ be an arbitrary CNF-formula with $n$ variables. We apply the reduction from Lemma \ref{cnfsat reduction} and obtain a normalized instance $(G,F)$ of \ssfep{}, such that $|F|=n$. Now, we run the algorithm $\mathcal{A}$ on $(G,F)$, and hence we get the answer. The described algorithm works in time $\mathcal{O}^*((2-\epsilon)^n)$.
 \end{proof}
 
 \subsection{Lower bound for a kernel}
 
-In this section, we prove that \ssfep{} parameterized by the number of forced edges does not admit a polynomial kernel unless some classes collapse. To achieve this, we show two different approaches. Firstly, we show a proof based on parameterized reductions stated in previous subsection. Consider the following lemma:
+In this section, we prove that \ssfep{} parameterized by the number of forced edges does not admit a polynomial kernel unless NP $\subseteq$ coNP/poly. To achieve this, we show two different approaches. Firstly, we show a proof based on parameterized reductions stated in the previous subsection. Consider the following lemma:
 
 \begin{lemma}\label{kernel}
-	\cnfsat{} parameterized by the number of variables has a polynomial kernel if and only if \ssfep{} parameterized by the number of vertices has one.
+	\cnfsat{} parameterized by the number of variables has a polynomial kernel if and only if \ssfep{} parameterized by the number of forced edges has one.
 \end{lemma}
 
 \begin{proof}
-	For the forward implication, let $\mathcal{A}$ be such kernelization algorithm. Now, we show a kernelization algorithm for \ssfep{} problem. Let $(G,F)$ be an arbitrary instance. We apply the reduction from Lemma \ref{cnfsat reduction} and obtain a formula $\phi$ of $|U|$ clauses and $|F|$ variables. Now, we apply the algorithm $\mathcal{A}$ and obtain a formula $\phi'$ such that $|\phi'| \leq \textrm{poly}(|F|)$. Finally, we create an instance $(G',F')$ by the reduction from \ref{ssfep reduction}. Note that now, $|G'|+|F'| \leq \textrm{poly}(|F|)$ as the second reduction does not change the size.
+	For the forward implication, let $\mathcal{A}$ be such kernelization algorithm for \cnfsat{}. Now, we show a kernelization algorithm for \ssfep{} problem. Let $(G,F)$ be an arbitrary instance. We apply the reduction from Lemma \ref{cnfsat reduction} and obtain a formula $\phi$ of $|U|$ clauses and $|F|$ variables. Now, we apply the algorithm $\mathcal{A}$ and obtain a formula $\phi'$ such that $|\phi'| \leq \textrm{poly}(|F|)$. Finally, we create an instance $(G',F')$ using the reduction from Lemma \ref{ssfep reduction} applied to $\phi'$. Note that now, $|G'|+|F'| \leq \textrm{poly}(|F|)$ as the second reduction does not change the size.
 	
-	Observe that for the converse implication, one can use the same reasoning.
+	Observe that for the converse implication, one can use the converse reasoning.
 \end{proof}
 
 Now, we state the following result of Fortnow and Santhanam \cite{CNFSAT}:
 
 \begin{theorem}\label{Fortnow}
-	\cnfsat{} is not polynomially kernelizable unless NP $\subseteq$ coNP/poly.
+	\cnfsat{} does not admit a polynomial kernel unless NP $\subseteq$ coNP/poly.
 \end{theorem}
 
 Immediately, we get:
@@ -825,53 +820,54 @@ Immediately, we get:
 	The theorem follows directly from Lemma \ref{kernel} and Theorem \ref{Fortnow}.
 \end{proof}
 
-The second approach that we show is completely different. We show a notion of \textit{cross-composition}. It is a framework for proving kernelization lower bounds. A technique, firstly introduced in 2008 by Bodleander et al. \cite{Bodlaender} has significantly increased the interest in kernelization. We know introduce the schema. The following definitions and corollary are taken from Parameterized Complexity \cite{ParAlg} book.
+The second approach that we show is more direct. We first recall \textit{cross-compositions}, a framework for proving kernelization lower bounds. The technique, firstly introduced in 2008 by Bodleander, et al. \cite{Bodlaender} has significantly increased the interest in kernelization. We now introduce the scheme. The following definitions and corollary are taken from \cite{ParAlg}. Note that by $\Sigma$ we denote a finite alphabet used to encode instances.
 
 \begin{definition}\label{polynomial equivalence relation}
 	An equivalence relation $\mathcal{R}$ on $\Sigma^*$ is called a \textit{polynomial equivalence relation} if the following conditions hold:
 	\begin{enumerate}
-		\item There exists an algorithm $\mathcal{A}$ such that given given $x,y \in \Sigma^*$ decides whether $x \equiv_{\mathcal{R}} y$ in time $p(|x|+|y|)$ for a polynomial $p$..
+		\item There exists an algorithm $\mathcal{A}$ that given $x,y \in \Sigma^*$ decides whether $x \equiv_{\mathcal{R}} y$ in time $p(|x|+|y|)$ for a polynomial $p$.
 		\item Relation $\mathcal{R}$ restricted to the set $\Sigma^{\leq n}$ has at most polynomially many equivalence classes.
 	\end{enumerate}
 \end{definition}
 
 \begin{definition}\label{cross-composition}
-	Let $L \subseteq \Sigma^*$ be a language, $\mathcal{R}$ be an equivalence relation $Q \subseteq \Sigma^* \times \mathbb{N}$ be a parameterized problem. A \textit{cross-composition} of a language $L$ into $Q$ is an algorithm $\mathcal{A}$ that given an input $x_1,...,x_t \in L$, equivalent with respect to $\mathcal{R}$, outputs an instance $(x,k') \in \Sigma^* \times \mathbb{N}$ such that:
+	Let $L \subseteq \Sigma^*$ be a language, $\mathcal{R}$ be an equivalence relation, and $Q \subseteq \Sigma^* \times \mathbb{N}$ be a parameterized problem. A \textit{cross-composition} of a language $L$ into $Q$ is an algorithm $\mathcal{A}$ that given on input $x_1,...,x_t \in L$, equivalent with respect to $\mathcal{R}$, outputs an instance $(x,k) \in \Sigma^* \times \mathbb{N}$ such that:
 	\begin{enumerate}
 		\item $k \leq p(\max\limits_{1 \leq i \leq t} |x_i| + log(t))$ for a polynomial $p$.
-		\item $(x,k') \in Q$ if and only if there exists an index $i$ such that $x_i \in L$.
+		\item $(x,k) \in Q$ if and only if there exists an index $i$ such that $x_i \in L$.
 	\end{enumerate}
 \end{definition}
 
-\begin{corollary}\label{nokernel}
-	If an NP-hard language $L$ cross-composes into the parameterized language $Q$, then $Q$ does not admit a polynomial kernel unless \textit{NP$\subseteq$ coNP/poly}.
-\end{corollary}
+And finally we recall a theorem proved by Bodleander, et al. \cite{CROSS}:
 
-We prove nonexistence of a polynomial kernel by a cross-composition from \ssfep{} into itself. Observe that \ssfep{} is NP-complete by Theorem \ref{thm-ssfep-npc}. In the proof, we use an \emph{instance selector}, a pattern commonly applied to solve a composition. Intuitively, we need to come up with a gadget that satisfies all instances but one. Therefore, we require that at least one of the packed instances has a solution.
+\begin{theorem}\label{nokernel}
+	If an NP-hard language $L$ cross-composes into the parameterized language $Q$, then $Q$ does not admit a polynomial kernel unless \textit{NP$\subseteq$ coNP/poly}.
+\end{theorem}
+
+We prove the nonexistence of a polynomial kernel by a cross-composition from \ssfep{} into itself. Observe that \ssfep{} is NP-complete by Theorem \ref{thm-ssfep-npc}. In the proof, we use an \emph{instance selector}, a pattern commonly applied to solve a composition. Intuitively, we need to come up with a gadget that satisfies all instances but one. Thus, we express the requirement that at least one of the packed instances has a solution.
 
 \begin{lemma}\label{cross-ssfe}
 	There exists a cross-composition from \ssfep{} into itself, parameterized by the number of forced edges.
 \end{lemma}
 
 \begin{proof}
-	Firstly, we define a relation $\mathcal{R}$. Assume that all malformed graphs are considered as equivalent. Moreover, we say that $(G_1,F_1) \equiv_\mathcal{R} (G_2,F_2)$ if and only if graphs induces by forced vertices are isomorphic. Observe that the relation implies that the graphs have the same amount of forced edges.
+	Firstly, we define a relation $\mathcal{R}$. Assume that all malformed graphs are considered as equivalent. Moreover, we say that $(G_1,F_1) \equiv_\mathcal{R} (G_2,F_2)$ if and only if $|F_1|=|F_2|$.
 	
-	Now, let $(G_1,F_1),\cdots,(G_t,F_t)$ be the input instances. We normalize them by applying Lemma \ref{norm-ssfe}. If all of the instances are NO-instances, we return an isolated vertex. Otherwise, let $(H_0,F'_0,\cdot,H_{p-1},F'_{p-1})$ be the normalized instances. Because we operate on binary representation of indices, we duplicated some instances so that $p=2^s$ for some integer $s>0$. Observe that the step at most doubles the number of instances.
+	Now, let $(G_0,F_0),\cdots,(G_{t-1},F_{t-1})$ be the input instances where for each $0 \leq i \leq t-1$, $|F_i|=n$. We normalize them by applying Lemma \ref{norm-ssfe}. If all of the instances are NO-instances, we return an isolated vertex. Otherwise, let $(G_0,F_0,\cdot,G_{p-1},F_{p-1})$ be the normalized instances. Because we operate on binary representation of indices, we duplicated some instances so that $p=2^s$ for some integer $s>0$. Observe that the step at most doubles the number of instances. Also, for every graph $(G_i,F_i)$ such that $|F_i| < n$ we introduce additional forced edges so that $|F_i|=n$.
 	
-	We now proceed to the construction of the output instance. Firstly, for every input instance we label forced edges with $f_1,...,f_n$. Then, let $(G,F)$ be a sum of graphs $H_0,...,H_{p-1}$ such that the forced edges with the same labels are unified. Thus, we have that $|F|=n$. Now, we introduce $2s$ forced vertices $v_\alpha^\beta$ where $\beta \in \{0,1\}$ and $0 \leq \alpha \leq s-1$, and $s$ forced edges $v_\alpha^0v_\alpha^1$. In addition, for every forced edge $v_\alpha^0v_\alpha^1$ we introduce a free vertex $v_\alpha$ and edges $v_\alpha^0v_\alpha,v_\alpha^1v_\alpha$. Observe that now $|F|\leq n + \log(t)$. Recall that by $U_i$ we denote a set of free vertices of the graph $G_i$. For every index $i$, where $0 \leq i \leq p-1$, we do the following: let $i=b_0b_1...b_{s-1}$ be a bit representation. If necessary, we add leading zeros so that every value is represented by $s$ bits. For every vertex $v \in U_i$ we introduce a set of edges $\{vv^{1-b_\alpha}_\alpha: 0 \leq \alpha \leq s-1\}$.
+	We now proceed to the construction of the output instance. Firstly, for every input instance we label forced edges with $f_1,...,f_n$. Then, let $(G,F)$ be a sum of graphs $G_0,...,G_{p-1}$ such that the forced edges with the same labels are unified in an arbitrarily manner. Thus, we have that $|F|=n$. Now, we create a selector. We introduce $2s$ vertices $v_\alpha^\beta$ where $\beta \in \{0,1\}$ and $0 \leq \alpha \leq s-1$, and $s$ forced edges $v_\alpha^0v_\alpha^1$. In addition, for every forced edge $v_\alpha^0v_\alpha^1$ we introduce a free vertex $v_\alpha$ and edges $v_\alpha^0v_\alpha,v_\alpha^1v_\alpha$. Observe that now $|F|\leq n + \log(t)$. Recall that by $U_i$ we denote the set of free vertices of the graph $G_i$. For every index $i$, where $0 \leq i \leq p-1$, we do the following: let $i=b_0b_1...b_{s-1}$ be the bit representation of $i$. If necessary, we add leading zeros so that every value is represented by $s$ bits. For every vertex $v \in U_i$ we introduce the set of edges $\{vv^{1-b_\alpha}_\alpha: 0 \leq \alpha \leq s-1\}$.
 	
 	We output the modified instance $(G,F)$. Observe that $(G,F)$ is also a normalized instance. The first condition of the cross-composition is satisfied as $|F| \leq n + \log(p)$. So, to finish the proof, we need to show that one of the instances $(G_i,F_i)$ is a YES-instance if and only if $(G,F)$ is a YES-instance.
 	
 	For the forward implication, let $S$ be a spanning star forest for $(G_i,F_i)$. Let $C_S = N_S(U_i)$ be a set of centers in $S$. We construct a solution for $(G,F)$ as follows. Let $i=b_0...b_{s-1}$ be a bit representation with leading zeros if necessary. Let $C_G = \{v_{\alpha}^{b_\alpha}: 0 \leq \alpha \leq s-1\}$. By the definition of $G$, we get that $N(C_S \cup C_G) = U$. Thus, by Lemma \ref{span-lemma}, $(G,F)$ has a spanning star forest.
 	
-	Conversely, let $S$ be a solution for $(G,F)$. We define $C_G = N(\{v_\alpha: 0 \leq \alpha \leq s-1\})$. Superscripts of vertices $v^{\alpha_0}_0,...,v^{\alpha_{s-1}}_{s-1}$ create a value $i$. Now, observe that $N(U_i) \subseteq V(F)$ because the superscripts of vertices $v^{\alpha_j}_j$, for $0 \leq j \leq s-1$, match bit representation of $i$. Thus, $(G_i,F_i)$ is a yes instance.
+	Conversely, let $S$ be a solution for $(G,F)$. We define $C_G = N_S(\{v_\alpha: 0 \leq \alpha \leq s-1\})$. Superscripts of vertices $v^{b_0}_0,...,v^{b_{s-1}}_{s-1}$ create a binary encoding of a value $i$. Now, observe that vertices from $U_i$ are adjacent to a subset of vertices that were unified because the superscripts of vertices $v^{b_j}_j$, for $0 \leq j \leq s-1$, match the bit representation of $i$. Thus, $(G_i,F_i)$ is a yes instance.
+	
 \end{proof}
+
+Immediately, by Theorem \ref{nokernel} and Lemma \ref{cross-ssfe} we obtain the following:
 
 \thmssfepnokernel*
-
-\begin{proof}
-	By Corollary \ref{nokernel} and Lemma \ref{cross-ssfe} we obtain that \ssfep{} parameterized by $|F|$ does not admit a polynomial size kernel unless \textup{NP $\subseteq$ coNP/poly}.
-\end{proof}
 
 \section{Parametrization by the number of free vertices}
 
