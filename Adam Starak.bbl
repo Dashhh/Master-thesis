@@ -51,6 +51,10 @@ L.~Fortnow and R.~Santhanam, ``Infeasibility of instance compression and
 H.~L. Bodlaender, B.~M.~P. Jansen, and S.~Kratsch, ``Kernelization lower bounds
   by cross-composition,'' {\em CoRR}, vol.~abs/1206.5941, 2012.
 
+\bibitem{MAXSATKERNEL}
+D.~Lokshtanov, ``New methods in parameterized algorithms and complexity,''
+  2009.
+
 \bibitem{Crown}
 B.~Chor, M.~Fellows, and D.~Juedes, ``Linear kernels in linear time, or how to
   save k colors in o(n2) steps,'' in {\em Proceedings of the 30th International

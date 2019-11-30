@@ -249,7 +249,7 @@ For a given graph $G$, we say that $S$ is a \emph{\ssf{}} if $V(S)=V(G)$ and eve
 
 \section{Parameterized complexity}
 
-\emph{Parameterized complexity} is a young branch of computational complexity theory. We refer the reader to textbooks of Downey and Fellows \cite{ParComp}, Flum and Grohe \cite{ParCompThm} and Cygan et al. \cite{ParAlg} for an overview of the field.
+\emph{Parameterized complexity} is a young branch of computational complexity theory. We refer the reader to textbooks of Downey and Fellows \cite{ParComp}, Flum and Grohe \cite{ParCompThm} and Cygan, et al. \cite{ParAlg} for an overview of the field.
 
 We now introduce basic terminology. We begin with formally defining a parameterized problem. For the sake of clarity, all the definitions are taken from \cite{ParAlg}.
 
@@ -753,7 +753,7 @@ In this section, in addition to an instance $(G,F)$ we receive a parameter $k$ w
 
 \subsection{Lower bound for a running time}
 
-Previously in this chapter, we proved that \ssfep{} is NP-complete and we showed an algorithm to simplify instances. In this subsection, we show a simple routine that solves \ssfep{} parameterized by the number of forced edges. Furthermore, we prove that there does not exist a faster algorithm unless \cnfsat{} can be solved in time $\mathcal{O}^*((2-\epsilon)^n)$, for any $\epsilon>0$.
+Previously in this chapter, we proved that \ssfep{} is NP-complete and we showed an algorithm to normalize instances. In this subsection, we show a simple routine that solves \ssfep{} parameterized by the number of forced edges. Furthermore, we prove that there does not exist a faster algorithm unless \cnfsat{} can be solved in time $\mathcal{O}^*((2-\epsilon)^n)$, for any $\epsilon>0$.
 
 \begin{algorithm}\label{alg2}
 	\KwData{normalized instance $(G,F)$}
@@ -871,11 +871,10 @@ Immediately, by Theorem \ref{nokernel} and Lemma \ref{cross-ssfe} we obtain the 
 
 \section{Parametrization by the number of free vertices}
 
-In this section, we parameterize  \ssfep{} by the number of free edges. We begin with the algorithm that solves the problem in time ??.%TODO%. 
-Then, unlike in the first variant, we present a kernelization algorithm. We show, that the reduced instance has at most $3k$ vertices where $k$ is the parameter.
+In this section, we parameterize  \ssfep{} by the number of free vertices. We begin with the algorithm that solves the problem in time $\mathcal{O}^*(1.358^n)$ where $n$ is the number of free vertices. Then, unlike in the first variant, we present a kernelization algorithm. We show, that the reduced instance has at most $3k$ vertices where $k$ is the parameter.
 
 \subsection{Algorithm}
-We start with stating a theorem for the \cnfsat{} problem parameterized by the number of clauses proven by Bliznets, et al. \cite{MAXSAT}.
+We start with stating a result for the \cnfsat{} problem parameterized by the number of clauses proven by Bliznets and Golovnev. \cite{MAXSAT}.
 
 \begin{theorem}\label{cnfsatmtime}
 	\cnfsat{} parameterized by the number of clauses can be solved in $\mathcal{O}^*(1.358^k)$ where $k$ is the number of clauses.
@@ -883,15 +882,17 @@ We start with stating a theorem for the \cnfsat{} problem parameterized by the n
 
 Now, observe that \cnfsat{} parameterized by the number of clauses and \ssfep{} parameterized by the number of free vertices are interreducible with respect to polynomial reductions. Thus, we are ready to show an algorithm.
 
-\thmssfepfetime*
+\thmssfepfreealg*
 
 \begin{proof}
-	Let $(G,F)$ be an arbitrary instance of \ssfep{} parameterized by the number of free vertices. Firstly, we apply Lemma \ref{norm-ssfe}. If the lemma yields that the instance is a NO-instance, then we conclude. Otherwise, let $(G',F')$ be the normalized instance. We apply Lemma \ref{cnfsat reduction} and obtain an equivalent formula $\phi$. Observe that $\phi$ has at most $|F|$ variables and at most $|U|$ clauses. Now, by Theorem \ref{cnfsatmtime} there exists an algorithm that decides whether $\phi$ is satisfiable or not.
+	Let $(G,F)$ be an arbitrary instance of \ssfep{} parameterized by the number of free vertices. Firstly, we apply Lemma \ref{norm-ssfe}. If the lemma yields that the instance is a NO-instance, then we conclude. Otherwise, let $(G',F')$ be the normalized instance. We apply Lemma \ref{cnfsat reduction} and obtain an equivalent formula $\phi$. Observe that $\phi$ has at most $|F|$ variables and at most $|U|$ clauses. Now, by Theorem \ref{cnfsatmtime} we can apply an algorithm that decides whether $\phi$ is satisfiable or not.
 \end{proof}
 
 \subsection{Kernelization}
 
-At first we introduce a definition of a crown decomposition proposed by Chor, et al. \cite{Crown}. Recall that for a disjoint sets $X,Y \subseteq V(G)$, a \textit{matching of $X$ into $Y$} is a matching $M$ such that every edge has one endpoint in $X$ and one endpoint in $Y$. In addition, for every $x \in X$ there exists exactly one edge $xy \in M$ such that $y \in Y$.
+This subsection is inspired by Lokshtanov. In \cite{MAXSATKERNEL}, he shows a kernelization algorithm for the {\sc Maximum Satisfiability} problem in which, given a formula $\phi$ and an integer $k$, we ask whether there exists an evaluation $\sigma$ such that at least $k$ clauses are satisfied in $\phi$. Lokshtanov shows an algorithm that outputs an equivalent instance with at most $k$ variables and at most $2k$ clauses. For \ssfep{} parameterized by the number of free vertices we show a kernelization algorithm that outputs an equivalent instance with at most $k$ free vertices and $k$ forced edges, where $k$ is the parameter.
+
+At first we introduce a definition of a crown decomposition proposed by Chor, et al. \cite{Crown}. Recall that for a disjoint sets $X,Y \subseteq V(G)$, a \textit{matching of $X$ into $Y$} is a matching $M$ such that every edge has one endpoint in $X$ and one endpoint in $Y$, and for every $x \in X$ there exists exactly one edge $xy \in M$ such that $y \in Y$.
 
 \begin{definition}
 	A \textit{crown decomposition} of a graph $G$ is a partitioning of $V(G)$ into three parts $C,H$ and $R$, such that:
@@ -912,16 +913,16 @@ The essential tool for proving the kernelization is Hopcroft-Karp's algorithm \c
 Finally, equipped with the above information, we are ready to show a linear kernel for \ssfep{}  parameterized by the number of free vertices.
 
 \begin{lemma}\label{kernel-ssfep}
-	There exists a polynomial-time algorithm, that, given an instance $(G,F)$ with a parameter $|U|$, such that $|F| \geq |U|$, either
+	There exists a polynomial-time algorithm, that, given an instance $(G,F)$ such that $|F| \geq |U|$, either
 	\begin{itemize}
-		\item answers that $(G,F)$ is a YES-instance or
-		\item outputs an equivalent instance $(G',F')$ such that $|U'| \leq |U|$ and $|F'| < |F|$ where $U'$ is the set of free vertices in $G'$.
+		\item answers that $(G,F)$ is a YES-instance, or
+		\item outputs an equivalent instance $(G',F')$ such that $|U'| \leq |U|$ and $|F'| < |F|$ where $U'$ is the set of free vertices in $(G',F')$.
 	\end{itemize} 
 \end{lemma}
 
 
 \begin{proof}
-	By Lemma \ref{norm-ssfe}, we assume that $(G,F)$ is a normalized instance. Let $G_{F,U}$ be a bipartite graph formed from $(G,F)$ by contracting forced edges. We apply Hopcroft-Karp's algorithm to $G_{F,U}$. We either obtain a matching $M$ of $F$ into $U$ or an inclusion-wise minimal set $X \subseteq F$ such that $|N(X)| < |X|$.
+	By Lemma \ref{norm-ssfe}, we assume that $(G,F)$ is a normalized instance. Let $G_{F,U}$ be the 	 bipartite graph formed from $(G,F)$ by contracting forced edges. We apply Hopcroft-Karp's algorithm to $G_{F,U}$. We either obtain a matching $M$ of $F$ into $U$ or an inclusion-wise minimal set $X \subseteq F$ such that $|N_{G_{F,U}}(X)| < |X|$.
 
 	Consider the first case in which Hoprocft-Karp's algorithm returns a matching. Then, we conclude that $(G,F)$ is a YES-instance due to the following claim:
 	\begin{claim}
@@ -929,28 +930,26 @@ Finally, equipped with the above information, we are ready to show a linear kern
 	\end{claim}
 
 	\begin{proof}
-		Since $M$ is a matching of $F$ into $U$, then we infer that $|F| \leq |U|$. Furthermore, we assumed that in $(G,F)$, $|F| \geq |U|$. Thus, $|F|=|U|$ and $M$ is also a matching of $U$ into $F$. Now, we claim that there exists a spanning star forest for $(G,F)$. Indeed, let $M' \subseteq E(G)$ be a matching such that $M'$ corresponds to $M$ in $G_{F,U}$. Then, $S = M' \cup F$ is a spanning star forest for $G$ as every free vertex $v$ is in $M'$. Moreover, since $M'$ is a matching, it follows that $\degree{S}{v}=1$.
+		Since $M$ is a matching of $F$ into $U$, then we infer that $|F| \leq |U|$. Furthermore, we assumed that in $(G,F)$, $|F| \geq |U|$. Thus, $|F|=|U|$ and $M$ is also a matching of $U$ into $F$. Now, we claim that there exists a spanning star forest for $(G,F)$. Indeed, let $M' \subseteq E(G)$ be a matching such that $M'$ corresponds to $M$ in $G_{F,U}$. Then, $S = M' \cup F$ is a spanning star forest for $G$ as every free vertex $v$ is in $M'$.
 	\end{proof}
 
-	Now, consider the second case. Let $X \subseteq$ be an inclusion-wise minimal set such that $|N(X)| < |X|$. Let $C=X$, $H=N(X)$ and $R= V(G_{F,U}) \setminus (H \cup C)$. Now, we claim that:
+	Now, consider the second case. Let $X \subseteq F$ be an inclusion-wise minimal set such that $|N_{G_{F,U}}(X)| < |X|$. Let $C=X$, $H=N(X)$ and $R= V(G_{F,U}) \setminus (H \cup C)$. Now, we claim that:
 	\begin{claim}
 		$(C,H,R)$ is a crown decomposition of $G_{F,U}$.
 	\end{claim}
 	\begin{proof}
-		Observe that $C$ is nonempty and $C$ is an independent set as $F$ is an induced matching in $G$. Moreover, $H$ separates $C$ from $R$ because $H$ is a set of all the neighbors of $C$. Now, we prove that there exists a matching of $H$ into $C$. Select an arbitrary $v \in C$. There is a matching of $C \setminus \{v\}$ into $H$ since $|N(C')| \geq |C|$ for every $C' \subseteq C$. Since $|C| > |H|$, we have that the matching of $C \setminus \{v\}$ into $H$ is actually a matching of $H$ into $C$. Therefore, $(C,H,R)$ is a crown decomposition of $G_{F,U}$.
+		Observe that $C$ is nonempty and $C$ is an independent set as $F$ is an induced matching in $G$. Moreover, $H$ separates $C$ from $R$ because $H$ is the set of all the neighbors of $C$. Now, we prove that there exists a matching of $H$ into $C$. Select an arbitrary $v \in C$. There is a matching of $C \setminus \{v\}$ into $H$ since $|N_{G_{F,U}}(C')| \geq |C|$ for every $C' \subsetneq C$. Since $|C| > |H|$, we have that the matching of $C \setminus \{v\}$ into $H$ is actually a matching of $H$ into $C$. Therefore, $(C,H,R)$ is a crown decomposition of $G_{F,U}$.
 	\end{proof}
 
-	We proceed to the construction of a reduced instance. Let $D \subseteq V(G)$ be a set of vertices which corresponds to vertices from $C \cup H$. Now, let $(G',F')$ be an instance formed from $(G,F)$ by removing vertices from $D$. We claim that the operation is safe:
+	We proceed to the construction of a reduced instance. Let $D_F \subseteq F$ and $D_U \subseteq U$ be the sets such that $G_{D_F,D_U} = G_{F,U}[C \cup H]$. Now, let $(G',F')$ be an instance formed from $(G,F)$ by removing vertices from $D$, where $D = D_F \cup D_U$. We claim that the operation is safe:
 	
 	\begin{claim}
 		$(G,F)$ has a spanning star forest if and only if $(G',F')$ has a spanning star forest.
 	\end{claim}
-	\begin{proof}
-		For the sake of clarity, by $D_F$ and $D_U$ we denote the sets of forced vertices and free vertices that appear in $G$ and do not appear in $G'$.
+	\begin{proof}		
+		Let $S$ be a solution for $(G,F)$. We claim that $S' = S[V(G')]$, that is, $S$ restricted to the vertices of the graph $G'$, is a spanning star forest for $(G',F')$. Suppose there exists and edge $vu \in S$ such that $v \in D$ and $v \notin D$. Observe that $N_G[D_F] = D_U \cup D_F$ by the choice of sets for a crown decomposition. Hence, $v \in D_U$ and $u \in V(F) \setminus D_F$. Since $u$ is adjacent to a forced edge, we have that $u$ is not isolated in $S'$. We conclude that $S'$ is a spanning star forest for $(G',F')$.
 		
-		Let $S$ be a solution for $(G,F)$. We claim that $S' = S[V(G')]$, that is, $S$ restricted to the vertices of the graph $G'$, is a spanning star forest for $(G',F')$. Observe that $N_G(D_F) = D_U \cup D_F$ by the choice of sets for a crown decomposition. Hence, in $S$, there does not exist an edge $vu$ such that $v \in D_F$ and $u \in U \setminus D_U$. We conclude that $S'$ is a spanning star forest for $(G',F')$.
-		
-		For the backward implication, let $S$ be a solution for $(G',F')$. Recall that $G_{F,U}$ has a crown decomposition $(C,H,R)$ where vertices of $C$ corresponds to $D_F$ and vertices of $H$ corresponds to $D_U$. By the definition of a crown decomposition, there exists a matching of $H$ into $C$, say $M'$. Therefore, let $M$ be a matching between $D_F$ and $D_U$ in $G$ such that it corresponds to $M'$. Observe that now $S \cup M$ is a spanning star forest for $(G,F)$.
+		For the backward implication, let $S$ be a solution for $(G',F')$. Recall that $G_{F,U}$ has a crown decomposition $(C,H,R)$ such that $G_{F,U}[C \cup H] = G_{D_F,D_U}$. By the definition of a crown decomposition, there exists a matching of $D_U$ into $D_F$, say $M'$. Therefore, let $M$ be a matching between $D_F$ and $D_U$ in $G$ such that if we contract forced edges adjacent to $M$, then $M$ is equivalent to $M'$ in $G_{F,U}$. Observe that now $S \cup M$ is a spanning star forest for $(G,F)$.
 	\end{proof}
 	
 	Observe that a crown decomposition requires that $C$ is nonempty. Thus, $|F'| < |F|$ which concludes the proof. \qedhere
@@ -962,18 +961,18 @@ The lemma immediately proves the following theorem:
 \thmssfepkernel*
 
 \begin{proof}
-	Exhaustive application of Lemma \ref{kernel-ssfep} on a normalized instance $(G,F)$ either outputs that the instance is a YES-instance or or outputs an equivalent instance $(G',F')$ such that $|F'| \leq |U'|$ and $|U'| \leq |U|$.
+	Exhaustive application of Lemma \ref{kernel-ssfep} on a normalized instance $(G,F)$ either outputs that the instance is a YES-instance, or outputs an equivalent instance $(G',F')$ such that $|F'| \leq |U'|$ and $|U'| \leq |U|$.
 \end{proof}
 
 \section{Parametrization by treewidth}
 
-In this section, we parameterize the problem by the treewidth of the input graph. As an input, we receive a tuple $(G,F,\mathcal{T})$ where $\mathcal{T}$ is a tree decomposition of $G$. We present a dynamic programming algorithm that works on a given tree decomposition. Later, we prove a lower bound of a running time based on a reduction from the \cnfsat{} problem. Note that we only consider $G$ as a normalized instance.
+In this section, we parameterize the problem by the treewidth of the input graph. As an input, we receive a tuple $(G,F,\mathcal{T})$ where $\mathcal{T}$ is a tree decomposition of $G$. We present a dynamic programming algorithm that works on a given tree decomposition. Later, we prove a lower bound of the running time based on a reduction from the \cnfsat{} problem. Note that we may only consider $(G,F)$ as a normalized instance based on Lemma \ref{norm-ssfe}.
 
 \subsection{Preliminaries}
 
-We extend the notation of tree decomposition. Namely, for introduce vertex node, we distinguish \textit{introduce free vertex node} and \textit{introduce forced vertex node}. Similarly, We extend the definition for introduce edge and forget vertex node consequently. Every entry of a dynamic table $\text{dp}$ has three parameters: a tree decomposition node $t$ and two assignment functions $f,g$. An \textit{assignment function for forced vertices} $f: (X_t \cap V(F)) \rightarrow \{\true, \false\}$ is a mapping that distinguishes two states. If $f(v)=1$, then we say that $v$ is a center whereas, if $f(v)=0$, then $v$ is either a candidate or a ray. An \textit{assignment function for free vertices} $g: (X_t \cap U) \rightarrow \{\true, \false\}$ is a mapping that indicates whether a free vertex has been0 added to a star or not. Hence, for a free vertex $v$ we say that $v$ is in a star if $f(v)=1$ and, if it is not, then $f(v)=0$.
+We extend the notation of tree decomposition. Namely, for introduce vertex node, we distinguish \textit{introduce free vertex node} and \textit{introduce forced vertex node}. Similarly, we extend the definition for introduce edge and forget vertex node. Recall that a tree decomposition $\mathcal{T}$ of a graph $G$ consists of a tree $T$, and for every node $t \in T$ there exists a set $X_t \subseteq V(G)$. Every entry of a dynamic table $\text{dp}$ has three parameters: a tree decomposition node $t$ and two assignment functions $f,g$. An \textit{assignment function for forced vertices} $f: (X_t \cap V(F)) \rightarrow \{\true, \false\}$ is a mapping that distinguishes two states. If $f(v)=\true$, then we say that $v$ is a center whereas, if $f(v)=\false$, then $v$ is either a candidate or a ray. An \textit{assignment function for free vertices} $g: (X_t \cap U) \rightarrow \{\true, \false\}$ is a mapping that indicates whether a free vertex has been added to a star or not. Hence, for a free vertex $v$ we say that $v$ is in a star if $f(v)=\true$ and, if it is not, then $f(v)=\false$.
 
-For the sake of clarity, we introduce the following notation. Suppose $(G,F,\mathcal{T})$ is an input instance. Let $(t,X_t) \in \mathcal{T}$ be a node and the corresponding set of vertices of a tree decomposition. By $G_t$ we define a subgraph of $G$ such that $V(G_t) = X_t$ and $G_t$ has edges that have been introduced in a subtree rooted in $t$. Let $\mathcal{F}_t = \{(X_t \cap V(F)) \rightarrow \{\false,\true\}\}$ be a family of all assignment functions for forced vertices from $X_t$ and let $\mathcal{G}_t = \{(X_t \setminus V(F)) \rightarrow \{\false,\true\}\}$ be a family of all assignment functions for free vertices from $X_t$. For any assignment function $h$ and $X' \subseteq X$, where $X$ is the domain of $h$, we use $h_{|X'}$ to denote the restriction of $h$ to $X'$. For a subset $X \subseteq V(G)$ consider an assignment function $h$. For a vertex $v \in V(G)$ and a logic value $p \in \{\true, \false\}$ we define a new assignment $h_{v \rightarrow p}: X \cup \{v\} \rightarrow \{\true, \false\}$ as follows:
+For the sake of clarity, we introduce the following notation. Suppose $(G,F,\mathcal{T})$ is an input instance. Let $(t,X_t) \in \mathcal{T}$ be a node and the corresponding set of vertices of a tree decomposition. By $G_t$ we define a subgraph of $G$ such that $V(G_t) = X_t$ and $G_t$ has edges that have been introduced in the subtree rooted in $t$. Let $\mathcal{F}_t = \{(X_t \cap V(F)) \rightarrow \{\false,\true\}\}$ be the family of all assignment functions for forced vertices from $X_t$ and let $\mathcal{G}_t = \{(X_t \setminus V(F)) \rightarrow \{\false,\true\}\}$ be the family of all assignment functions for free vertices from $X_t$. For any assignment function $h$ and $X' \subseteq X$, where $X$ is the domain of $h$, we use $h|_{X'}$ to denote the restriction of $h$ to $X'$. For a subset $X \subseteq V(G)$ consider an assignment function $h$. For a vertex $v \in V(G)$ and a logic value $p \in \{\true, \false\}$ we define a new assignment $h_{v \rightarrow p}: X \cup \{v\} \rightarrow \{\true, \false\}$ as follows:
 
 \begin{equation*}
 	f_{v \rightarrow p} =
@@ -987,13 +986,13 @@ For the sake of clarity, we introduce the following notation. Suppose $(G,F,\mat
 
 \subsection{Algorithm}
 
-We provide formulas for every type of a node. To call an entry from a dynamic table we provide three arguments1. The first one is a node $t$ from a tree decomposition. The second one is a forced vertices assignment $f \in \mathcal{F}_t$. The last one is  a free vertices assignment $g \in \mathcal{G}_t$. By $\dpt{t,f,g}$ the answer whether in $G_t$ there exists an independent set $C \subseteq V(F)$ such that
+We provide formulas for every type of a node. To call an entry from a dynamic table we provide three arguments. The first one is a node $t$ from a tree decomposition. The second one is a forced vertices assignment $f \in \mathcal{F}_t$. The last one is  a free vertices assignment $g \in \mathcal{G}_t$. Then, we shall compute a Boolean value $\dpt{t,f,g}$ equal to whether in $G_t$ there exists an independent set $C \subseteq V(F)$ such that
 \begin{itemize}
 	\item $C \cap X_t = f^{-1}(\true)$, and
-	\item $g^{-1}(\true) \subseteq N_{G_t}(C)$
+	\item $g^{-1}(\true) \subseteq N_{G_t}(C)$.
 \end{itemize}
 
-Observe that the existence of an independent set implies the existence of a spanning star forest based on Lemma \ref{span-lemma}.
+Observe that the existence of such an independent set for $t$ being the root is equivalent to the existence of a spanning star forest based on Lemma \ref{span-lemma}.
 
 \paragraph{Leaf node} For a leaf node $t$ we have that $X_t=\emptyset$. An empty graph is a spanning star forest. Hence:
 
@@ -1004,7 +1003,7 @@ Observe that the existence of an independent set implies the existence of a span
 \paragraph{Introduce forced vertex node} Let $t$ be an introduce node with a child $t'$ such that $X_t = X_{t'} \cup \{v\}$ and $v \in V(F)$. Observe that $v$ is isolated in $G_t$. Thus, we pass the value from the child node:
 
 \begin{equation*}
-	\dpt{t,f,g}= \dpt{t',f_{|X_{t'}},g}
+	\dpt{t,f,g}= \dpt{t',f|_{X_{t'}},g}
 \end{equation*}
 
 \paragraph{Introduce free vertex node} Let $t$ be an introduce free vertex node with a child $t'$ such that $X_t = X_{t'} \cup \{v\}$. Note that $\dpt{t,f,g}=\false$ if $g(v)=\true$ as $v$ is isolated in $G_t$. Thus, we obtain the following:
@@ -1012,7 +1011,7 @@ Observe that the existence of an independent set implies the existence of a span
 \begin{equation*}
 	\dpt{t,f,g} =
 	\begin{cases}
-		\dpt{t',f,g_{|X_{t'}}}, & \text{if $g(v)=\false$} \\
+		\dpt{t',f,g|_{X_{t'}}}, & \text{if $g(v)=\false$} \\
 		\false, &\text{otherwise}
 	\end{cases}
 \end{equation*}
