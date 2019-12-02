@@ -85,6 +85,8 @@
 \usepackage{thm-restate}
 \usepackage{hyperref}
 \usepackage{cleveref}
+\usepackage{tikz}
+\usetikzlibrary{positioning,shapes,calc,fit}
 
 \newdateformat{monthyeardate}{%
 	\monthname[\THEMONTH], \THEYEAR}
@@ -855,7 +857,7 @@ We prove the nonexistence of a polynomial kernel by a cross-composition from \ss
 	
 	Now, let $(G_0,F_0),\cdots,(G_{t-1},F_{t-1})$ be the input instances where for each $0 \leq i \leq t-1$, $|F_i|=n$. We normalize them by applying Lemma \ref{norm-ssfe}. If all of the instances are NO-instances, we return an isolated vertex. Otherwise, let $(G_0,F_0,\cdot,G_{p-1},F_{p-1})$ be the normalized instances. Because we operate on binary representation of indices, we duplicated some instances so that $p=2^s$ for some integer $s>0$. Observe that the step at most doubles the number of instances. Also, for every graph $(G_i,F_i)$ such that $|F_i| < n$ we introduce additional forced edges so that $|F_i|=n$.
 	
-	We now proceed to the construction of the output instance. Firstly, for every input instance we label forced edges with $f_1,...,f_n$. Then, let $(G,F)$ be a sum of graphs $G_0,...,G_{p-1}$ such that the forced edges with the same labels are unified in an arbitrarily manner. Thus, we have that $|F|=n$. Now, we create a selector. We introduce $2s$ vertices $v_\alpha^\beta$ where $\beta \in \{0,1\}$ and $0 \leq \alpha \leq s-1$, and $s$ forced edges $v_\alpha^0v_\alpha^1$. In addition, for every forced edge $v_\alpha^0v_\alpha^1$ we introduce a free vertex $v_\alpha$ and edges $v_\alpha^0v_\alpha,v_\alpha^1v_\alpha$. Observe that now $|F|\leq n + \log(t)$. Recall that by $U_i$ we denote the set of free vertices of the graph $G_i$. For every index $i$, where $0 \leq i \leq p-1$, we do the following: let $i=b_0b_1...b_{s-1}$ be the bit representation of $i$. If necessary, we add leading zeros so that every value is represented by $s$ bits. For every vertex $v \in U_i$ we introduce the set of edges $\{vv^{1-b_\alpha}_\alpha: 0 \leq \alpha \leq s-1\}$.
+	We now proceed to the construction of the output instance. Firstly, for every input instance we label forced edges with $f_1,...,f_n$. Then, let $(G,F)$ be a sum of graphs $G_0,...,G_{p-1}$ such that the forced edges with the same labels are unified in an arbitrarily manner. Thus, we have that $|F|=n$. Now, we create a selector. We introduce $2s$ vertices $v_\alpha^\beta$ where $\beta \in \{0,1\}$ and $0 \leq \alpha \leq s-1$, and $s$ forced edges $v_\alpha^0v_\alpha^1$. In addition, for every forced edge $v_\alpha^0v_\alpha^1$ we introduce a free vertex $v_\alpha$ and edges $v_\alpha^0v_\alpha,v_\alpha^1v_\alpha$. Observe that now $|F|\leq n + \log(t)$. Recall that by $U_i$ we denote the set of free vertices of the graph $G_i$. For every index $i$, where $0 \leq i \leq p-1$, we do the following: let $i=b_0b_1...b_{s-1}$ be the bit representation of $i$. If necessary, we add leading zeros so that every value is represented by $s$ bits. For every vertex $v \in U_i$ we introduce the set of edges $\{vv^{1-b_\alpha}_\alpha: 0 \leq \alpha \leq s-1\}$. Observe Figure \ref{fig1} for a better understanding.
 	
 	We output the modified instance $(G,F)$. Observe that $(G,F)$ is also a normalized instance. The first condition of the cross-composition is satisfied as $|F| \leq n + \log(p)$. So, to finish the proof, we need to show that one of the instances $(G_i,F_i)$ is a YES-instance if and only if $(G,F)$ is a YES-instance.
 	
@@ -864,6 +866,117 @@ We prove the nonexistence of a polynomial kernel by a cross-composition from \ss
 	Conversely, let $S$ be a solution for $(G,F)$. We define $C_G = N_S(\{v_\alpha: 0 \leq \alpha \leq s-1\})$. Superscripts of vertices $v^{b_0}_0,...,v^{b_{s-1}}_{s-1}$ create a binary encoding of a value $i$. Now, observe that vertices from $U_i$ are adjacent to a subset of vertices that were unified because the superscripts of vertices $v^{b_j}_j$, for $0 \leq j \leq s-1$, match the bit representation of $i$. Thus, $(G_i,F_i)$ is a yes instance.
 	
 \end{proof}
+
+\begin{figure}\label{fig1}
+	
+	\begin{tikzpicture}
+	
+		\tikzset{nodestyle/.style={draw,circle,fill=black,minimum size=25pt, scale=0.25}}
+		\tikzset{dotstyle/.style={draw,circle,fill=black, minimum size=5pt, scale=0.25}}
+		\tikzset{forcededge/.style={-,line width=2pt}}
+		\tikzset{graphstyle/.style={draw, inner sep=0pt,fit={(0,0) (2.1,1.4)}}}
+		
+		\tikzset{freedge/.style={-}}
+		
+		\newcommand\makeDots[2]
+		{
+			\node at ($(#1)!.5!(#2)$) {\ldots};
+		}
+		
+		\newcommand\edgeSize{3}
+		\newcommand\gadgetHeight{2}
+		\newcommand\textSpacingV{0.1}
+		\newcommand\textSpacingH{0.2}
+		\newcommand\spacing{1.5}
+		
+		\newcommand{\gadget}[2]{
+			\node[
+			nodestyle,
+			label={[below=\textSpacingH]:$v_{#2}$}
+			] at (#1+\edgeSize/2,0) (g#2) {};
+			\node[
+			nodestyle,
+			label={[left=\textSpacingV]:$v^0_{#2}$}
+			] at (#1,\gadgetHeight) (g#20) {};
+			\node[
+			nodestyle,
+			label={[right=\textSpacingV]:$v^1_{#2}$}
+			] at (#1+\edgeSize,\gadgetHeight) (g#21) {};
+			\draw[forcededge] (g#20) to (g#21);
+			\draw[freedge] 
+			(g#20) to (g#2) 
+			(g#21) to (g#2);
+			
+			\node at (#1+\edgeSize/2,\gadgetHeight/2) (g#2center) {};
+		}
+		
+		\newcommand\drawGadget
+		{
+			\gadget{0}{0}
+			\gadget{\edgeSize+\spacing}{1}
+			\gadget{2*\edgeSize+3*\spacing}{s}
+			\node at ($(g1center)!.5!(gscenter)$) {\ldots};	
+		}
+		
+		\newcommand\forcedEdge[3] % {name}{width}{height}
+		{
+			\node[nodestyle] at (#2, #3) (f#11) {};
+			\node[nodestyle] at (#2+\edgeSize, #3) (f#12) {};
+			\draw[forcededge] (f#11) -- (f#12) node[above,midway] {$f_{#1}$};	
+		}
+		\newcommand\drawForcedSet[1]
+		{
+			\forcedEdge{0}{0}{#1}
+			\forcedEdge{1}{\edgeSize+\spacing}{#1}
+			\forcedEdge{n}{2*\edgeSize+3*\spacing}{#1}
+			\makeDots{f12}{fn1}
+		}	
+		
+		\newcommand\drawFreeVertices[1]
+		{
+			\node[
+			graphstyle, 
+			label={[anchor=south,above=0.1cm]150:$U_0$},
+			ellipse] at (1.5,#1) (U1) {};	
+			\node[
+			graphstyle, 
+			ellipse,
+			label={[anchor=south,above=0.1cm]150:$U_1$}
+			] at (1.5+\edgeSize+\spacing,#1) (U2) {};	
+			\node[
+			graphstyle,
+			label={[anchor=south,above=0.1cm]150:$U_{t-1}$},
+			ellipse
+			] at (1.5+2*\edgeSize+3*\spacing,#1) (Un) {};
+			\node[nodestyle] at (U2) (v2) {};
+			\node[nodestyle, left=\edgeSize/4 of v2] (v1) {};
+			\node[nodestyle, right=\edgeSize/4 of v2] (v3) {};
+			\makeDots{U2}{Un}
+		}
+		
+		\drawGadget{0}
+		\drawForcedSet{8}
+		\drawFreeVertices{5}
+		
+		\foreach \x in {1,...,3}
+		{
+			\draw[-]
+			(g00) to (v\x)
+			(g11) to (v\x)
+			(gs1) to (v\x);	
+		}
+		
+		\draw[-]
+		(v1) to (f01)
+		(v3) to (f02)
+		(v2) to (f11)
+		(v2) to (f12)
+		(v3) to (fn2)
+		(v1) to (fn1);
+	\end{tikzpicture}
+	\caption{Construction of the composed instance $(G,F)$}
+\end{figure}
+
 
 Immediately, by Theorem \ref{nokernel} and Lemma \ref{cross-ssfe} we obtain the following:
 
@@ -1116,6 +1229,9 @@ We have just proven the complexity of the algorithm stated in the previous subse
 
 \thmssfeptwseth*
 
+\begin{figure}
+\end{figure}
+
 \begin{proof}
 	We provide a polynomial-time reduction that takes a \cnfsat{} instance $\phi$ of $n$ variables and $m$ clauses, and constructs an instance $(G,F)$ of width $n$. If there existed an algorithm solving \ssfep{} parameterized by the treewidth of the input graph in $\mathcal{O}^*((2-\epsilon)^n)$, then we could compose the reduction with this algorithm and solve \cnfsat{} in time  $\mathcal{O}^*((2-\epsilon')^n)$.
 	
@@ -1162,6 +1278,169 @@ We have just proven the complexity of the algorithm stated in the previous subse
 	\noindent
 	We claim that the evaluation satisfies $\phi$. Firstly, note that in $G_i$ there are no switches. Fix an arbitrary clause $C_j$. Now, observe that there exists a literal $l_k \in C_j$ such that $v^i_j[l_k]v^i_j[c] \in S$. Then, $\degree{S}{l_k}>1$. By the definition of $\sigma$, $\sigma(l_k)=\true$, and therefore $\sigma(C_j)=\true$. We conclude that $\sigma(\phi)=\true$ as we proved that an arbitrary clause in the formula is satisfied.\qedhere
 \end{proof}
+
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+		\tikzset{nodestyle/.style={draw,circle,fill=black,minimum size=20pt, scale=0.25}}
+		\tikzset{forcededge/.style={-,line width=1.5pt}}
+		
+		%\draw[help lines, blue] (0,0) grid (15,10);
+		
+		\newcommand\edgeSize{1.5}
+		\newcommand\spacing{1}
+		
+		\newcommand\drawNode[4] % {width} {height} {label} {name}
+		{
+			\node[
+				nodestyle,
+				label={[below=0.1cm]:#3}
+			] at (#1, #2) (#4) {};
+		}
+	
+		\newcommand\drawClauseNode[4] % {width} {height} {label} {name}
+		{
+			\node[
+				nodestyle,
+				label={[above]:#3}
+			] at (#1, #2) (#4) {};
+		}
+	
+		\newcommand\frontPadding{1}
+		
+		\drawNode{1}{1}{$v^1_1[x_n]$}{x11n1}
+		\drawNode{1}{3}{$v^1_1[x_2]$}{x1121}
+		\drawNode{1}{4}{$v^1_1[x_1]$}{x1111}
+		
+		\drawNode{2.5}{1}{$v^1_1[\neg x_n]$}{x11n0}
+		\drawNode{2.5}{3}{$v^1_1[\neg x_2]$}{x1120}
+		\drawNode{2.5}{4}{$v^1_1[\neg x_1]$}{x1110}
+		
+		\drawClauseNode{1.75}{6}{$v^1_1[c]$}{c11}
+		
+		\draw[forcededge] 
+			(x11n1) to (x11n0)
+			(x1121) to (x1120)
+			(x1111) to (x1110);
+			
+		\draw[]
+			(x1110) to (c11)
+			(x11n1) to[out=120, in=220] (c11);
+		
+		\drawNode{4}{1}{$g^1_1[n]$}{g11n}
+		\drawNode{4}{3}{$g^1_1[2]$}{g112}
+		\drawNode{4}{4}{$g^1_1[1]$}{g111}
+
+		\drawNode{5.5}{1}{$v^1_2[x_n]$}{x12n}
+		\drawNode{5.5}{3}{$v^1_2[x_2]$}{x122}
+		\drawNode{5.5}{4}{$v^1_2[x_1]$}{x121}
+		
+		\draw[]
+			(x11n0) to (g11n)
+			(x1120) to (g112)
+			(x1110) to (g111)
+			(g11n) to (x12n)
+			(g112) to (x122)
+			(g111) to (x121);
+			
+		\draw[forcededge]
+			(x12n) to ($(x12n) + (0.5,0)$)			
+			(x122) to ($(x122) + (0.5,0)$)
+			(x121) to ($(x121) + (0.5,0)$);
+			
+		\draw[dotted]
+			(x12n) to ($(x12n) + (1,0)$)			
+			(x122) to ($(x122) + (1,0)$)
+			(x121) to ($(x121) + (1,0)$);
+		
+		\drawNode{8}{1}{$v^1_m[\neg x_n]$}{x1mn}
+		\drawNode{8}{3}{$v^1_m[\neg x_2]$}{x1m2}
+		\drawNode{8}{4}{$v^1_m[\neg x_1]$}{x1m1}
+		
+		\drawNode{9.5}{1}{$g^1_m[n]$}{g1mn}
+		\drawNode{9.5}{3}{$g^1_m[2]$}{g1m2}
+		\drawNode{9.5}{4}{$g^1_m[1]$}{g1m1}
+		
+		\draw[forcededge]
+			(x1mn) to ($(x1mn) - (0.5,0)$)			
+			(x1m2) to ($(x1m2) - (0.5,0)$)
+			(x1m1) to ($(x1m1) - (0.5,0)$);
+			
+		\draw[dotted]
+			(x1mn) to ($(x1mn) - (1,0)$)			
+			(x1m2) to ($(x1m2) - (1,0)$)
+			(x1m1) to ($(x1m1) - (1,0)$);
+			
+		\draw[]
+			(x1mn) to (g1mn)
+			(x1m2) to (g1m2)
+			(x1m1) to (g1m1);
+		
+		
+		\drawNode{11}{1}{$v^2_1[n]$}{v21n}
+		\drawNode{11}{3}{$v^2_1[2]$}{v212}
+		\drawNode{11}{4}{$v^2_1[1]$}{v211}
+		
+		\drawNode{14}{1}{$v^{n+1}_m[\neg x_n]$}{xn1mn}
+		\drawNode{14}{3}{$v^{n+1}_m[\neg x_2]$}{xn1m2}
+		\drawNode{14}{4}{$v^{n+1}_m[\neg x_1]$}{xn1m1}
+		
+		\draw[]
+			(g1mn) to (v21n)
+			(g1m2) to (v212)
+			(g1m1) to (v211);
+		
+		\draw[forcededge]
+			(xn1mn) to ($(xn1mn) - (0.5,0)$)			
+			(xn1m2) to ($(xn1m2) - (0.5,0)$)
+			(xn1m1) to ($(xn1m1) - (0.5,0)$);
+		
+		\draw[dotted]
+			(xn1mn) to ($(xn1mn) - (1,0)$)			
+			(xn1m2) to ($(xn1m2) - (1,0)$)
+			(xn1m1) to ($(xn1m1) - (1,0)$);
+			
+		\draw[forcededge]
+			(v21n) to ($(v21n) + (0.5,0)$)			
+			(v212) to ($(v212) + (0.5,0)$)
+			(v211) to ($(v211) + (0.5,0)$);
+		
+		\draw[dotted]
+			(v21n) to ($(v21n) + (1,0)$)			
+			(v212) to ($(v212) + (1,0)$)
+			(v211) to ($(v211) + (1,0)$);
+		
+		\draw[rounded corners=10pt] (0,0) rectangle (3.25,7);
+		\node[label={:$C_1$}] at (3,6.8) {};
+		\draw[rounded corners=10pt] (3.5,0) rectangle (4.5,4.5);
+		\node[label={:$H^1_1$}] at (4.25,4.3) {};
+		\draw[rounded corners=10pt] (-0.25,-0.25) rectangle (8.75,8);
+		\node[label={:$G_1$}] at (8.5,7.8) {};
+		\draw[rounded corners=10pt] (10.5, -0.25) rectangle (12.25,8);
+		\node[label={:$G_2$}] at (12,7.8) {};
+		\draw[rounded corners=10pt] (12.5, -0.25) rectangle (15,8); 
+		\node[label={:$G_{n+1}$}] at (14.5,7.8) {};
+		
+		\node[rotate=90] at ($(x1121)!.6!(x11n1)$) {\ldots};
+		\node[rotate=90] at ($(x1120)!.6!(x11n0)$) {\ldots};
+		\node[rotate=90] at ($(g112)!.6!(g11n)$) {\ldots};
+		\node[rotate=90] at ($(x122)!.6!(x12n)$) {\ldots};
+		\node[rotate=90] at ($(x1m2)!.6!(x1mn)$) {\ldots};
+		\node[rotate=90] at ($(g1m2)!.6!(g1mn)$) {\ldots};
+		\node[rotate=90] at ($(v212)!.6!(v21n)$) {\ldots};
+		\node[rotate=90] at ($(xn1m2)!.6!(xn1mn)$) {\ldots};
+		
+		\drawClauseNode{6}{6}{$v^1_2[c]$}{c12}
+		\drawClauseNode{7.5}{6}{$v^1_m[c]$}{c1m}
+		\node[] at ($(c12)!.5!(c1m)$) {\ldots};
+		
+		\drawClauseNode{11.5}{6}{$v^2_1[c]$}{c21}
+		
+		\drawClauseNode{13.25}{6}{$v^{n+1}_m[c]$}{cn1m}
+				
+	\end{tikzpicture}
+	\caption{Construction of an instance $(G,F)$ from a formula}
+\end{figure}
 
 \bibliography{biblio} 
 \bibliographystyle{ieeetr}
