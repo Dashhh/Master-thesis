@@ -210,7 +210,7 @@ Also, we argue that there does not exist a polynomial kernel for \ssfep{} when p
 Recall that our reductions provides a link between free vertices and clauses. Therefore, when we parameterize the problem by the number of free vertices, we can immediately transform algorithms for \cnfsat{} parameterized by the number of clauses proposed by Bliznets and Golovnev \cite{MAXSAT} and obtain the following:
 
 \begin{restatable}{theorem}{thmssfepfreealg}\label{thm-ssfep-free-alg}
-	\ssfep{} parameterized by the number of free vertices can be solved in $\mathcal{O}^*(1.358^n)$ where $n$ is the number of free vertices.
+	\ssfep{} can be solved in time $\mathcal{O}^*(1.358^k)$ where $k$ is the number of free vertices.
 \end{restatable}
 
 \noindent
@@ -220,14 +220,14 @@ Furthermore, unlike in the case of the previous parametrization, we provide an a
 	\ssfep{} parameterized by the number of free vertices admits a kernel with at most $k$ free vertices and at most $k$ forced edges.
 \end{restatable}
 
-Finally, we study the parameterization of the extension variant by the treewidth of the input graph. We propose a dynamic programming algorithm over a decomposition of a graph which uses fast cover product computation proposed by Björklund, et al. \cite{CoverProduct}. In addition, we show that improving the running time would give a faster algorithm for the \cnfsat{} problem.
+Finally, we study the parameterization of the extension variant by the treewidth of the input graph. We propose a dynamic programming algorithm over a decomposition of a graph which uses fast cover product computation proposed by Björklund et al. \cite{CoverProduct}. In addition, we show that improving the running time would give a faster algorithm for the \cnfsat{} problem.
 
 \begin{restatable}{theorem}{thmssfeptwtime}\label{thm-ssfep-tw-time}
-	\ssfep{} parameterized by treewidth can be solved in time $2^t\cdot poly(t)\cdot n$.
+	\ssfep{} can be solved in time $2^w\cdot poly(w)\cdot n$, where $w$ is the width of a given tree decomposition.
 \end{restatable}
 
 \begin{restatable}{theorem}{thmssfeptwseth}\label{thm-ssfep-tw-seth}
-	Unless \cnfsat{} can be solved in time $\mathcal{O}^*((2-\epsilon')^n)$ for some $\epsilon' > 0$, there is no algorithm for \ssfep{} parameterized by treewidth that achieves running time $\mathcal{O}^*((2-\epsilon)^{t})$ for any $\epsilon > 0$, where $t$ is the treewidth of the input graph.
+	Unless \cnfsat{} can be solved in time $\mathcal{O}^*((2-\epsilon)^n)$ for some $\epsilon > 0$, there is no algorithm for \ssfep{} parameterized by width that achieves running time $\mathcal{O}^*((2-\epsilon)^{w})$ for any $\epsilon > 0$, where $w$ is the width of a given tree decomposition.
 \end{restatable}
 
 \paragraph{Outline.} In Section 2 we present notation and recall basic definitions related to parameterized complexity. Section 3 contains results for \ssfp{}. In Section 4 we prove all the theorems about \mssfp{}. Section 5 gives the algorithms and lower bounds for \ssfep{} parameterized in three different ways.
@@ -251,7 +251,7 @@ For a given graph $G$, we say that $S$ is a \emph{\ssf{}} if $V(S)=V(G)$ and eve
 
 \section{Parameterized complexity}
 
-\emph{Parameterized complexity} is a young branch of computational complexity theory. We refer the reader to textbooks of Downey and Fellows \cite{ParComp}, Flum and Grohe \cite{ParCompThm} and Cygan, et al. \cite{ParAlg} for an overview of the field.
+\emph{Parameterized complexity} is a young branch of computational complexity theory. We refer the reader to textbooks of Downey and Fellows \cite{ParComp}, Flum and Grohe \cite{ParCompThm} and Cygan et al. \cite{ParAlg} for an overview of the field.
 
 We now introduce basic terminology. We begin with formally defining a parameterized problem. For the sake of clarity, all the definitions are taken from \cite{ParAlg}.
 
@@ -670,7 +670,7 @@ Surprisingly, every instance of \ssfep{} can be either normalized or discarded a
 	\end{claim}
 	
 	\begin{proof}
-		By the definition of $G_P$, Every vertex has at least one neighbor in $G_P$. Hence, by Lemma \ref{SSF lemma} $G_P$ has a spanning star forest.
+		By the definition of $G_P$, every vertex has at least one neighbor in $G_P$. Hence, by Lemma \ref{SSF lemma} $G_P$ has a spanning star forest.
 	\end{proof}
 
 	Observe that during partitioning $G$ into $G_P$ and $G_{NP}$ we lose the information about some edges. Specifically, let $L= \{vu: vu \in E(G), v \in V(G_{NP}),\ u \in V(G_P)\}$ be the set. Note that vertices from $G_{NP}$ that are incident to $L$ are the forced vertices. Additionally, both forced vertices and vertices from $G_P$ are already satisfied i.e. we can always span them by a star forest. Therefore, we can formally state the following claim:
@@ -822,7 +822,7 @@ Immediately, we get:
 	The theorem follows directly from Lemma \ref{kernel} and Theorem \ref{Fortnow}.
 \end{proof}
 
-The second approach that we show is more direct. We first recall \textit{cross-compositions}, a framework for proving kernelization lower bounds. The technique, firstly introduced in 2008 by Bodleander, et al. \cite{Bodlaender} has significantly increased the interest in kernelization. We now introduce the scheme. The following definitions and corollary are taken from \cite{ParAlg}. Note that by $\Sigma$ we denote a finite alphabet used to encode instances.
+The second approach that we show is more direct. We first recall \textit{cross-compositions}, a framework for proving kernelization lower bounds. The technique, firstly introduced in 2008 by Bodleander et al. \cite{Bodlaender} has significantly increased the interest in kernelization. We now introduce the scheme. The following definitions are taken from \cite{ParAlg}. Note that by $\Sigma$ we denote a finite alphabet used to encode instances.
 
 \begin{definition}\label{polynomial equivalence relation}
 	An equivalence relation $\mathcal{R}$ on $\Sigma^*$ is called a \textit{polynomial equivalence relation} if the following conditions hold:
@@ -835,18 +835,18 @@ The second approach that we show is more direct. We first recall \textit{cross-c
 \begin{definition}\label{cross-composition}
 	Let $L \subseteq \Sigma^*$ be a language, $\mathcal{R}$ be an equivalence relation, and $Q \subseteq \Sigma^* \times \mathbb{N}$ be a parameterized problem. A \textit{cross-composition} of a language $L$ into $Q$ is an algorithm $\mathcal{A}$ that given on input $x_1,...,x_t \in L$, equivalent with respect to $\mathcal{R}$, outputs an instance $(x,k) \in \Sigma^* \times \mathbb{N}$ such that:
 	\begin{enumerate}
-		\item $k \leq p(\max\limits_{1 \leq i \leq t} |x_i| + log(t))$ for a polynomial $p$.
+		\item $k \leq p(\max\limits_{1 \leq i \leq t} |x_i| + \log(t))$ for a polynomial $p$.
 		\item $(x,k) \in Q$ if and only if there exists an index $i$ such that $x_i \in L$.
 	\end{enumerate}
 \end{definition}
 
-And finally we recall a theorem proved by Bodleander, et al. \cite{CROSS}:
+And finally we recall a theorem proved by Bodleander et al. \cite{CROSS}:
 
 \begin{theorem}\label{nokernel}
-	If an NP-hard language $L$ cross-composes into the parameterized language $Q$, then $Q$ does not admit a polynomial kernel unless \textit{NP$\subseteq$ coNP/poly}.
+	If an NP-hard language $L$ cross-composes into the parameterized language $Q$, then $Q$ does not admit a polynomial kernel unless \textit{NP $\subseteq$ coNP/poly}.
 \end{theorem}
 
-We prove the nonexistence of a polynomial kernel by a cross-composition from \ssfep{} into itself. Observe that \ssfep{} is NP-complete by Theorem \ref{thm-ssfep-npc}. In the proof, we use an \emph{instance selector}, a pattern commonly applied to solve a composition. Intuitively, we need to come up with a gadget that satisfies all instances but one. Thus, we express the requirement that at least one of the packed instances has a solution.
+We prove the nonexistence of a polynomial kernel by a cross-composition from \ssfep{} into itself. Observe that \ssfep{} is NP-complete by Theorem \ref{thm-ssfep-npc}. In the proof, we use an \emph{instance selector}, a pattern commonly applied to give compositions. Intuitively, we need to come up with a gadget that satisfies all instances but one. Thus, we express the requirement that at least one of the packed instances has a solution.
 
 \begin{lemma}\label{cross-ssfe}
 	There exists a cross-composition from \ssfep{} into itself, parameterized by the number of forced edges.
@@ -855,19 +855,19 @@ We prove the nonexistence of a polynomial kernel by a cross-composition from \ss
 \begin{proof}
 	Firstly, we define a relation $\mathcal{R}$. Assume that all malformed graphs are considered as equivalent. Moreover, we say that $(G_1,F_1) \equiv_\mathcal{R} (G_2,F_2)$ if and only if $|F_1|=|F_2|$.
 	
-	Now, let $(G_0,F_0),\cdots,(G_{t-1},F_{t-1})$ be the input instances where for each $0 \leq i \leq t-1$, $|F_i|=n$. We normalize them by applying Lemma \ref{norm-ssfe}. If all of the instances are NO-instances, we return an isolated vertex. Otherwise, let $(G_0,F_0,\cdot,G_{p-1},F_{p-1})$ be the normalized instances. Because we operate on binary representation of indices, we duplicated some instances so that $p=2^s$ for some integer $s>0$. Observe that the step at most doubles the number of instances. Also, for every graph $(G_i,F_i)$ such that $|F_i| < n$ we introduce additional forced edges so that $|F_i|=n$.
+	Now, let $(G_0,F_0),\ldots,(G_{t-1},F_{t-1})$ be the input instances where for each $0 \leq i \leq t-1$, $|F_i|=n$. We normalize them by applying Lemma \ref{norm-ssfe}. If all of the instances are NO-instances, we return an isolated vertex. Otherwise, let $(G_0,F_0),\ldots,(G_{p-1},F_{p-1})$ be the normalized instances. Because we operate on binary representation of indices, we duplicate some instances so that $p=2^s$ for some integer $s>0$. Observe that the step at most doubles the number of instances. Also, for every graph $(G_i,F_i)$ such that $|F_i| < n$ we introduce additional forced edges so that $|F_i|=n$.
 	
-	We now proceed to the construction of the output instance. Firstly, for every input instance we label forced edges with $f_1,...,f_n$. Then, let $(G,F)$ be a sum of graphs $G_0,...,G_{p-1}$ such that the forced edges with the same labels are unified in an arbitrarily manner. Thus, we have that $|F|=n$. Now, we create a selector. We introduce $2s$ vertices $v_\alpha^\beta$ where $\beta \in \{0,1\}$ and $0 \leq \alpha \leq s-1$, and $s$ forced edges $v_\alpha^0v_\alpha^1$. In addition, for every forced edge $v_\alpha^0v_\alpha^1$ we introduce a free vertex $v_\alpha$ and edges $v_\alpha^0v_\alpha,v_\alpha^1v_\alpha$. Observe that now $|F|\leq n + \log(t)$. Recall that by $U_i$ we denote the set of free vertices of the graph $G_i$. For every index $i$, where $0 \leq i \leq p-1$, we do the following: let $i=b_0b_1...b_{s-1}$ be the bit representation of $i$. If necessary, we add leading zeros so that every value is represented by $s$ bits. For every vertex $v \in U_i$ we introduce the set of edges $\{vv^{1-b_\alpha}_\alpha: 0 \leq \alpha \leq s-1\}$. Observe Figure \ref{fig1} for a better understanding.
+	We now proceed to the construction of the output instance. Firstly, for every input instance we label forced edges with $f_1,...,f_n$. Then, let $(G,F)$ be a sum of graphs $G_0,...,G_{p-1}$ such that the forced edges with the same labels are unified in an arbitrarily manner. In further, we denote this set of forced edges by $F_G$. So, we have that $|F_G|=n$. Now, we create a selector. We introduce $2s$ vertices $v_\alpha^\beta$ where $\beta \in \{0,1\}$ and $0 \leq \alpha \leq s-1$, and $s$ forced edges $v_\alpha^0v_\alpha^1$. In addition, for every forced edge $v_\alpha^0v_\alpha^1$ we introduce a free vertex $v_\alpha$ and edges $v_\alpha^0v_\alpha,v_\alpha^1v_\alpha$. Observe that now $|F|= n + \log(t)$. Recall that by $U_i$ we denote the set of free vertices of the graph $G_i$. For every index $i$, where $0 \leq i \leq p-1$, we do the following: let $i=b_0b_1...b_{s-1}$ be the bit representation of $i$. If necessary, we add leading zeros so that every value is represented by $s$ bits. For every vertex $v \in U_i$ we introduce the set of edges $\{vv^{1-b_\alpha}_\alpha: 0 \leq \alpha \leq s-1\}$. See Figure \ref{fig1} for a better understanding.
 	
 	We output the modified instance $(G,F)$. Observe that $(G,F)$ is also a normalized instance. The first condition of the cross-composition is satisfied as $|F| \leq n + \log(p)$. So, to finish the proof, we need to show that one of the instances $(G_i,F_i)$ is a YES-instance if and only if $(G,F)$ is a YES-instance.
 	
-	For the forward implication, let $S$ be a spanning star forest for $(G_i,F_i)$. Let $C_S = N_S(U_i)$ be a set of centers in $S$. We construct a solution for $(G,F)$ as follows. Let $i=b_0...b_{s-1}$ be a bit representation with leading zeros if necessary. Let $C_G = \{v_{\alpha}^{b_\alpha}: 0 \leq \alpha \leq s-1\}$. By the definition of $G$, we get that $N(C_S \cup C_G) = U$. Thus, by Lemma \ref{span-lemma}, $(G,F)$ has a spanning star forest.
+	For the forward implication, let $S$ be a spanning star forest for $(G_i,F_i)$. Let $C_G = N_S(U_i)$ be a set of centers in $S$. We construct a solution for $(G,F)$ as follows. Let $i=b_0...b_{s-1}$ be the bit representation of $i$ with leading zeros if necessary. Let $C_S = \{v_{\alpha}^{b_\alpha}: 0 \leq \alpha \leq s-1\}$. By the definition of $G$, we get that $N(C_G \cup C_S) = U$. Moreover, $C_G \cup C_S$ is an independent set. Thus, by Lemma \ref{span-lemma}, $(G,F)$ has a spanning star forest.
 	
-	Conversely, let $S$ be a solution for $(G,F)$. We define $C_G = N_S(\{v_\alpha: 0 \leq \alpha \leq s-1\})$. Superscripts of vertices $v^{b_0}_0,...,v^{b_{s-1}}_{s-1}$ create a binary encoding of a value $i$. Now, observe that vertices from $U_i$ are adjacent to a subset of vertices that were unified because the superscripts of vertices $v^{b_j}_j$, for $0 \leq j \leq s-1$, match the bit representation of $i$. Thus, $(G_i,F_i)$ is a yes instance.
+	Conversely, let $S$ be a solution for $(G,F)$. Recall that by $F_G$ we denoted the set of unified forced edges labeled $f_1,\ldots,f_n$. We define $C_S = N_S(\{v_\alpha: 0 \leq \alpha \leq s-1\})$. Observe that for all $0 \leq i \leq s-1$ either $v^0_i \in C_S$ or $v^1_i \in C_S$. Thus, we put the vertices from $C_S$ in ascending order with respect to the subscript, say $v^{b_0}_0,...,v^{b_{s-1}}_{s-1}$. Superscripts of the vertices create a binary encoding of a value $i$. Note that vertices from $U_i$ are adjacent to the vertices from $F_G$ in $S$ because the superscripts of vertices in $C_S$ match the bit representation of $i$. Thus, $(G_i,F_i)$ is a yes instance.
 	
 \end{proof}
 
-\begin{figure}\label{fig1}
+\begin{figure}
 	
 	\begin{tikzpicture}
 	
@@ -914,8 +914,8 @@ We prove the nonexistence of a polynomial kernel by a cross-composition from \ss
 		{
 			\gadget{0}{0}
 			\gadget{\edgeSize+\spacing}{1}
-			\gadget{2*\edgeSize+3*\spacing}{s}
-			\node at ($(g1center)!.5!(gscenter)$) {\ldots};	
+			\gadget{2*\edgeSize+3*\spacing}{s-1}
+			\node at ($(g1center)!.5!(gs-1center)$) {\ldots};	
 		}
 		
 		\newcommand\forcedEdge[3] % {name}{width}{height}
@@ -963,7 +963,7 @@ We prove the nonexistence of a polynomial kernel by a cross-composition from \ss
 			\draw[-]
 			(g00) to (v\x)
 			(g11) to (v\x)
-			(gs1) to (v\x);	
+			(gs-11) to (v\x);	
 		}
 		
 		\draw[-]
@@ -974,7 +974,8 @@ We prove the nonexistence of a polynomial kernel by a cross-composition from \ss
 		(v3) to (fn2)
 		(v1) to (fn1);
 	\end{tikzpicture}
-	\caption{Construction of the composed instance $(G,F)$}
+	\caption{Construction of the composed instance $(G,F)$. Bold edges are forced.}
+	\label{fig1}
 \end{figure}
 
 
@@ -984,13 +985,13 @@ Immediately, by Theorem \ref{nokernel} and Lemma \ref{cross-ssfe} we obtain the 
 
 \section{Parametrization by the number of free vertices}
 
-In this section, we parameterize  \ssfep{} by the number of free vertices. We begin with the algorithm that solves the problem in time $\mathcal{O}^*(1.358^n)$ where $n$ is the number of free vertices. Then, unlike in the first variant, we present a kernelization algorithm. We show, that the reduced instance has at most $3k$ vertices where $k$ is the parameter.
+In this section, we parameterize  \ssfep{} by the number of free vertices. We begin with an algorithm that solves the problem in time $\mathcal{O}^*(1.358^k)$ where $k$ is the number of free vertices. Then, unlike in the first variant, we present a kernelization algorithm. We show that the reduced instance has at most $3k$ vertices where $k$ is the parameter.
 
 \subsection{Algorithm}
-We start with stating a result for the \cnfsat{} problem parameterized by the number of clauses proven by Bliznets and Golovnev. \cite{MAXSAT}.
+We start with stating a result for the \cnfsat{} problem parameterized by the number of clauses proven by Bliznets and Golovnev. \cite{MAXSAT}
 
 \begin{theorem}\label{cnfsatmtime}
-	\cnfsat{} parameterized by the number of clauses can be solved in $\mathcal{O}^*(1.358^k)$ where $k$ is the number of clauses.
+	\cnfsat{} can be solved in time $\mathcal{O}^*(1.358^k)$ where $k$ is the number of clauses.
 \end{theorem}
 
 Now, observe that \cnfsat{} parameterized by the number of clauses and \ssfep{} parameterized by the number of free vertices are interreducible with respect to polynomial reductions. Thus, we are ready to show an algorithm.
@@ -998,14 +999,14 @@ Now, observe that \cnfsat{} parameterized by the number of clauses and \ssfep{} 
 \thmssfepfreealg*
 
 \begin{proof}
-	Let $(G,F)$ be an arbitrary instance of \ssfep{} parameterized by the number of free vertices. Firstly, we apply Lemma \ref{norm-ssfe}. If the lemma yields that the instance is a NO-instance, then we conclude. Otherwise, let $(G',F')$ be the normalized instance. We apply Lemma \ref{cnfsat reduction} and obtain an equivalent formula $\phi$. Observe that $\phi$ has at most $|F|$ variables and at most $|U|$ clauses. Now, by Theorem \ref{cnfsatmtime} we can apply an algorithm that decides whether $\phi$ is satisfiable or not.
+	Let $(G,F)$ be an arbitrary instance of \ssfep{} parameterized by the number of free vertices. Firstly, we apply Lemma \ref{norm-ssfe}. If the lemma yields that the instance is a NO-instance, then we conclude. Otherwise, let $(G',F')$ be the normalized instance. We apply Lemma \ref{cnfsat reduction} and obtain an equivalent formula $\phi$. Observe that $\phi$ has at most $|F|$ variables and at most $|U|$ clauses. Now, by Theorem \ref{cnfsatmtime} we can apply an algorithm that decides whether $\phi$ is satisfiable or not in time $\mathcal{O}^*(1.358^{|U|})$.
 \end{proof}
 
 \subsection{Kernelization}
 
-This subsection is inspired by Lokshtanov. In \cite{MAXSATKERNEL}, he shows a kernelization algorithm for the {\sc Maximum Satisfiability} problem in which, given a formula $\phi$ and an integer $k$, we ask whether there exists an evaluation $\sigma$ such that at least $k$ clauses are satisfied in $\phi$. Lokshtanov shows an algorithm that outputs an equivalent instance with at most $k$ variables and at most $2k$ clauses. For \ssfep{} parameterized by the number of free vertices we show a kernelization algorithm that outputs an equivalent instance with at most $k$ free vertices and $k$ forced edges, where $k$ is the parameter.
+This subsection is inspired by the kernelization algorithm for the {\sc Maximum Satisfiability} problem shown by Lokshtanov in \cite{MAXSATKERNEL}. In the {\sc Maximum Satisfiability} problem, given a formula $\phi$ and an integer $k$ we ask whether there exists an evaluation $\sigma$ such that at least $k$ clauses are satisfied in $\phi$. Lokshtanov shows an algorithm that outputs an equivalent instance with at most $k$ variables and at most $2k$ clauses. For \ssfep{} parameterized by the number of free vertices we show a kernelization algorithm that outputs an equivalent instance with at most $k$ free vertices and at most $k$ forced edges, where $k$ is the parameter.
 
-At first we introduce a definition of a crown decomposition proposed by Chor, et al. \cite{Crown}. Recall that for a disjoint sets $X,Y \subseteq V(G)$, a \textit{matching of $X$ into $Y$} is a matching $M$ such that every edge has one endpoint in $X$ and one endpoint in $Y$, and for every $x \in X$ there exists exactly one edge $xy \in M$ such that $y \in Y$.
+At first we introduce a definition of a crown decomposition proposed by Chor et al. \cite{Crown}. Recall that for disjoint sets $X,Y \subseteq V(G)$, a \textit{matching of $X$ into $Y$} is a matching $M$ such that every edge has one endpoint in $X$ and one endpoint in $Y$, and for every $x \in X$ there exists exactly one edge $xy \in M$ such that $y \in Y$.
 
 \begin{definition}
 	A \textit{crown decomposition} of a graph $G$ is a partitioning of $V(G)$ into three parts $C,H$ and $R$, such that:
@@ -1013,14 +1014,14 @@ At first we introduce a definition of a crown decomposition proposed by Chor, et
 		\item $C$ is nonempty.
 		\item $C$ is an independent set.
 		\item There are no edges between $C$ and $H$. That is, $H$ separates $C$ from $R$.
-		\item Let $E'$ be the set of edges between $C$ and $H$. Then, $E'$ contains a matching of size $|H|$. In other words, $G$ contains a matching $H$ into $C$.
+		\item Let $E'$ be the set of edges between $C$ and $H$. Then, $E'$ contains a matching of size $|H|$. In other words, $G$ contains a matching of $H$ into $C$.
 	\end{itemize}
 \end{definition}
 
-The essential tool for proving the kernelization is Hopcroft-Karp's algorithm \cite{Hopcroft-Karp}.
+An essential tool in our kernelization is Hopcroft-Karp's algorithm \cite{Hopcroft-Karp}.
 
 \begin{theorem}[\textbf{Hopcroft-Karp algorithm}]
-	Let $G$ be an undirected Let G be an undirected bipartite graph with bipartition $(V_1,V_2)$, on $n$ vertices and $m$ edges.	Then, we can find a maximum matching as well as a minimum vertex cover of $G$ in time $\mathcal{O}(m\sqrt{n})$. Furthermore, in time $\mathcal{O}(m\sqrt{n})$ either we can find a matching of $V_1$ into $V_2$ or an inclusion-wise minimal set $X \subseteq V_1$ such that $|N(X)| < |X|$.
+	Let G be an undirected bipartite graph with bipartition $(V_1,V_2)$, on $n$ vertices and $m$ edges.	Then, we can find a maximum matching as well as a minimum vertex cover of $G$ in time $\mathcal{O}(m\sqrt{n})$. Furthermore, in time $\mathcal{O}(m\sqrt{n})$ either we can find a matching of $V_1$ into $V_2$ or an inclusion-wise minimal set $X \subseteq V_1$ such that $|N(X)| < |X|$.
 \end{theorem}
 
 Finally, equipped with the above information, we are ready to show a linear kernel for \ssfep{}  parameterized by the number of free vertices.
@@ -1035,7 +1036,7 @@ Finally, equipped with the above information, we are ready to show a linear kern
 
 
 \begin{proof}
-	By Lemma \ref{norm-ssfe}, we assume that $(G,F)$ is a normalized instance. Let $G_{F,U}$ be the 	 bipartite graph formed from $(G,F)$ by contracting forced edges. We apply Hopcroft-Karp's algorithm to $G_{F,U}$. We either obtain a matching $M$ of $F$ into $U$ or an inclusion-wise minimal set $X \subseteq F$ such that $|N_{G_{F,U}}(X)| < |X|$.
+	By Lemma \ref{norm-ssfe}, we assume that $(G,F)$ is a normalized instance. Let $G_{F,U}$ be the bipartite graph formed from $(G,F)$ by contracting forced edges. A vertex obrained by contracting edge $e$ is named $e$ as well, thus the sides of bipartion are $F$ and $U$.We apply Hopcroft-Karp's algorithm to $G_{F,U}$. We either obtain a matching $M$ of $F$ into $U$ or an inclusion-wise minimal set $X \subseteq F$ such that $|N_{G_{F,U}}(X)| < |X|$.
 
 	Consider the first case in which Hoprocft-Karp's algorithm returns a matching. Then, we conclude that $(G,F)$ is a YES-instance due to the following claim:
 	\begin{claim}
@@ -1043,10 +1044,10 @@ Finally, equipped with the above information, we are ready to show a linear kern
 	\end{claim}
 
 	\begin{proof}
-		Since $M$ is a matching of $F$ into $U$, then we infer that $|F| \leq |U|$. Furthermore, we assumed that in $(G,F)$, $|F| \geq |U|$. Thus, $|F|=|U|$ and $M$ is also a matching of $U$ into $F$. Now, we claim that there exists a spanning star forest for $(G,F)$. Indeed, let $M' \subseteq E(G)$ be a matching such that $M'$ corresponds to $M$ in $G_{F,U}$. Then, $S = M' \cup F$ is a spanning star forest for $G$ as every free vertex $v$ is in $M'$.
+		Since $M$ is a matching of $F$ into $U$, then we infer that $|F| \leq |U|$. Furthermore, we assumed that in $(G,F)$, $|F| \geq |U|$. Thus, $|F|=|U|$ and $M$ is also a matching of $U$ into $F$. Now, we claim that there exists a spanning star forest for $(G,F)$. Indeed, let $M' \subseteq E(G)$ be a matching such that if we contract forced edges adjacent to $M$, then $M'$ becomes $M$. So, $S = M' \cup F$ is a spanning star forest for $G$ as every free vertex is spanned by $M'$.
 	\end{proof}
 
-	Now, consider the second case. Let $X \subseteq F$ be an inclusion-wise minimal set such that $|N_{G_{F,U}}(X)| < |X|$. Let $C=X$, $H=N(X)$ and $R= V(G_{F,U}) \setminus (H \cup C)$. Now, we claim that:
+	Now, consider the second case. Let $X \subseteq F$ be an inclusion-wise minimal set such that $|N_{G_{F,U}}(X)| < |X|$. Let $C=X$, $H=N_{G_{F,U}}(X)$ and $R= V(G_{F,U}) \setminus (H \cup C)$. Now, we claim that:
 	\begin{claim}
 		$(C,H,R)$ is a crown decomposition of $G_{F,U}$.
 	\end{claim}
@@ -1054,15 +1055,15 @@ Finally, equipped with the above information, we are ready to show a linear kern
 		Observe that $C$ is nonempty and $C$ is an independent set as $F$ is an induced matching in $G$. Moreover, $H$ separates $C$ from $R$ because $H$ is the set of all the neighbors of $C$. Now, we prove that there exists a matching of $H$ into $C$. Select an arbitrary $v \in C$. There is a matching of $C \setminus \{v\}$ into $H$ since $|N_{G_{F,U}}(C')| \geq |C|$ for every $C' \subsetneq C$. Since $|C| > |H|$, we have that the matching of $C \setminus \{v\}$ into $H$ is actually a matching of $H$ into $C$. Therefore, $(C,H,R)$ is a crown decomposition of $G_{F,U}$.
 	\end{proof}
 
-	We proceed to the construction of a reduced instance. Let $D_F \subseteq F$ and $D_U \subseteq U$ be the sets such that $G_{D_F,D_U} = G_{F,U}[C \cup H]$. Now, let $(G',F')$ be an instance formed from $(G,F)$ by removing vertices from $D$, where $D = D_F \cup D_U$. We claim that the operation is safe:
+	We proceed to the construction of a reduced instance. Let $(C,H,R)$ be a crown decomposition of $G_{F,U}$. Let $D_F \subseteq F$ be the set of forced edges such that if we contract them, then $D_F$ becomes $C$. Finally, let $(G',F')$ be an instance formed from $(G,F)$ by removing vertices $D=V(D_F) \cup H$. We claim that the operation is safe.
 	
 	\begin{claim}
 		$(G,F)$ has a spanning star forest if and only if $(G',F')$ has a spanning star forest.
 	\end{claim}
 	\begin{proof}		
-		Let $S$ be a solution for $(G,F)$. We claim that $S' = S[V(G')]$, that is, $S$ restricted to the vertices of the graph $G'$, is a spanning star forest for $(G',F')$. Suppose there exists and edge $vu \in S$ such that $v \in D$ and $v \notin D$. Observe that $N_G[D_F] = D_U \cup D_F$ by the choice of sets for a crown decomposition. Hence, $v \in D_U$ and $u \in V(F) \setminus D_F$. Since $u$ is adjacent to a forced edge, we have that $u$ is not isolated in $S'$. We conclude that $S'$ is a spanning star forest for $(G',F')$.
+		Let $S$ be a solution for $(G,F)$. We claim that $S' = S[V(G')]$, that is, $S$ restricted to the vertices of the graph $G'$, is a spanning star forest for $(G',F')$. Suppose there exists and edge $vu \in S$ such that $v \in D$ and $v \notin D$. Observe that $N_G[V(D_F)] = H \cup V(D_F)$ by the choice of sets for a crown decomposition. Hence, $v \in H$ and $u \in V(F) \setminus V(D_F)$. Since $u$ is adjacent to a forced edge, we have that $u$ is not isolated in $S'$. We conclude that $S'$ is a spanning star forest for $(G',F')$.
 		
-		For the backward implication, let $S$ be a solution for $(G',F')$. Recall that $G_{F,U}$ has a crown decomposition $(C,H,R)$ such that $G_{F,U}[C \cup H] = G_{D_F,D_U}$. By the definition of a crown decomposition, there exists a matching of $D_U$ into $D_F$, say $M'$. Therefore, let $M$ be a matching between $D_F$ and $D_U$ in $G$ such that if we contract forced edges adjacent to $M$, then $M$ is equivalent to $M'$ in $G_{F,U}$. Observe that now $S \cup M$ is a spanning star forest for $(G,F)$.
+		For the backward implication, let $S$ be a solution for $(G',F')$. Recall that by $D_F$ we denoted the set of forced edges such that if we contract the edges, then $D_F$ becomes $C$. By the definition of a crown decomposition, there exists a matching of $H$ into $C$, say $M'$. Therefore, let $M$ be a matching between $V(D_F)$ and $H$ in $G$ such that if we contract forced edges adjacent to $M$, then $M$ becomes $M'$ in $G_{F,U}$. Observe that now $S \cup M$ is a spanning star forest for $(G,F)$.
 	\end{proof}
 	
 	Observe that a crown decomposition requires that $C$ is nonempty. Thus, $|F'| < |F|$ which concludes the proof. \qedhere
@@ -1079,19 +1080,19 @@ The lemma immediately proves the following theorem:
 
 \section{Parametrization by treewidth}
 
-In this section, we parameterize the problem by the treewidth of the input graph. As an input, we receive a tuple $(G,F,\mathcal{T})$ where $\mathcal{T}$ is a tree decomposition of $G$. We present a dynamic programming algorithm that works on a given tree decomposition. Later, we prove a lower bound of the running time based on a reduction from the \cnfsat{} problem. Note that we may only consider $(G,F)$ as a normalized instance based on Lemma \ref{norm-ssfe}.
+In this section, we parameterize the problem by the treewidth of the input graph. As an input, we receive a tuple $(G,F,\mathcal{T})$ where $\mathcal{T}$ is a tree decomposition of $G$. We present a dynamic programming algorithm that works on a given tree decomposition. Later, we prove a lower bound of the running time based on a reduction from the \cnfsat{} problem. Note that we may assume that $(G,F)$ is a normalized instance due to Lemma \ref{norm-ssfe}.
 
 \subsection{Preliminaries}
 
 We extend the notation of tree decomposition. Namely, for introduce vertex node, we distinguish \textit{introduce free vertex node} and \textit{introduce forced vertex node}. Similarly, we extend the definition for introduce edge and forget vertex node. Recall that a tree decomposition $\mathcal{T}$ of a graph $G$ consists of a tree $T$, and for every node $t \in T$ there exists a set $X_t \subseteq V(G)$. Every entry of a dynamic table $\text{dp}$ has three parameters: a tree decomposition node $t$ and two assignment functions $f,g$. An \textit{assignment function for forced vertices} $f: (X_t \cap V(F)) \rightarrow \{\true, \false\}$ is a mapping that distinguishes two states. If $f(v)=\true$, then we say that $v$ is a center whereas, if $f(v)=\false$, then $v$ is either a candidate or a ray. An \textit{assignment function for free vertices} $g: (X_t \cap U) \rightarrow \{\true, \false\}$ is a mapping that indicates whether a free vertex has been added to a star or not. Hence, for a free vertex $v$ we say that $v$ is in a star if $f(v)=\true$ and, if it is not, then $f(v)=\false$.
 
-For the sake of clarity, we introduce the following notation. Suppose $(G,F,\mathcal{T})$ is an input instance. Let $(t,X_t) \in \mathcal{T}$ be a node and the corresponding set of vertices of a tree decomposition. By $G_t$ we define a subgraph of $G$ such that $V(G_t) = X_t$ and $G_t$ has edges that have been introduced in the subtree rooted in $t$. Let $\mathcal{F}_t = \{(X_t \cap V(F)) \rightarrow \{\false,\true\}\}$ be the family of all assignment functions for forced vertices from $X_t$ and let $\mathcal{G}_t = \{(X_t \setminus V(F)) \rightarrow \{\false,\true\}\}$ be the family of all assignment functions for free vertices from $X_t$. For any assignment function $h$ and $X' \subseteq X$, where $X$ is the domain of $h$, we use $h|_{X'}$ to denote the restriction of $h$ to $X'$. For a subset $X \subseteq V(G)$ consider an assignment function $h$. For a vertex $v \in V(G)$ and a logic value $p \in \{\true, \false\}$ we define a new assignment $h_{v \rightarrow p}: X \cup \{v\} \rightarrow \{\true, \false\}$ as follows:
+For the sake of clarity, we introduce the following notation. Suppose $(G,F,\mathcal{T})$ is an input instance. Let $(t,X_t) \in \mathcal{T}$ be a node and the corresponding set of vertices in a tree decomposition. By $G_t$ we define a subgraph of $G$ such that $V(G_t) = X_t$ and $G_t$ has edges that have been introduced in the subtree rooted in $t$. Let $\mathcal{F}_t = \{(X_t \cap V(F)) \rightarrow \{\false,\true\}\}$ be the family of all assignment functions for forced vertices from $X_t$ and let $\mathcal{G}_t = \{(X_t \setminus V(F)) \rightarrow \{\false,\true\}\}$ be the family of all assignment functions for free vertices from $X_t$. For any assignment function $h$ and $X' \subseteq X$, where $X$ is the domain of $h$, we use $h|_{X'}$ to denote the restriction of $h$ to $X'$. For a subset $X \subseteq V(G)$ consider an assignment function $h$. For a vertex $v \in V(G)$ and a logic value $p \in \{\true, \false\}$ we define a new assignment $h_{v \rightarrow p}: X \cup \{v\} \rightarrow \{\true, \false\}$ as follows:
 
 \begin{equation*}
-	f_{v \rightarrow p} =
+	h_{v \rightarrow p}(u) =
 	\begin{cases}
 	\begin{aligned}
-		&f(u), & \text{if $u \neq v$} \\
+		&h(u), & \text{if $u \neq v$} \\
 		&p, &\text{if $u = v$}
 	\end{aligned}
 	\end{cases}
@@ -1105,7 +1106,7 @@ We provide formulas for every type of a node. To call an entry from a dynamic ta
 	\item $g^{-1}(\true) \subseteq N_{G_t}(C)$.
 \end{itemize}
 
-Observe that the existence of such an independent set for $t$ being the root is equivalent to the existence of a spanning star forest based on Lemma \ref{span-lemma}.
+Observe that the existence of such an independent set for $t$ being the root is equivalent to the existence of a spanning star forest due to Lemma \ref{span-lemma}.
 
 \paragraph{Leaf node} For a leaf node $t$ we have that $X_t=\emptyset$. An empty graph is a spanning star forest. Hence:
 
@@ -1132,14 +1133,11 @@ Observe that the existence of such an independent set for $t$ being the root is 
 \paragraph{Introduce free edge node} Let $t$ be an introduce free edge node labeled with an edge $vu \in E(G) \setminus F$ and let $t'$ be the child of $t$. Recall that $G$ is a normalized instance. Without loss of generality, assume that $v \in U$ and $u \in V(F)$ as every free edge has one end in a free vertex and the other one in a forced vertex. Let $f \in \mathcal{F}_t$ and $g \in \mathcal{G}_t$. Suppose that $g(v)=\false$. Then, we simply pass the value from the child's node. Otherwise, $g(v)=\true$. We need to find a vertex $u' \in V(F) \cap X_t$ such that $f(u')=\true$ and $v$ is a neighbor of $u'$ in $G_t$. It can be $u$ if $f(u)=\true$ or some other forced vertex for which we have already introduced the edge $vu'$. Thus, we obtain the following equations:
 
 \begin{equation*}
-\begin{split}
-	\dpt{t,f,g_{v \rightarrow \true}} & = 
+	\dpt{t,f,g} = 
 		\begin{cases}
-			\dpt{t',f,g_{v \rightarrow \true}} \lor \dpt{t',f,g_{v \rightarrow \false}}, & \text{if $f(u)$} \\
-			\dpt{t',f,g_{v \rightarrow \true}}, & \text{otherwise}
+			\dpt{t',f,g} \lor \dpt{t',f,g_{v \rightarrow \false}}, & \text{if $f(u)=\true$ and $g(v)=\true$} \\
+			\dpt{t',f,g}, & \text{otherwise}
 		\end{cases}	
-	\\
-	\dpt{t,f,g_{v \rightarrow \false}} & = \dpt{t',f,g_{v \rightarrow \false}}\end{split}
 \end{equation*}
 
 \paragraph{Introduce forced edge node} Let $t$ be an introduce free edge node labeled with an edge $vu \in F$, $t'$ be the child of $t$ and let $f \in \mathcal{F}_t$. Calculations for $t$ are simple. We set to $\false$ all the elements of dynamic table for which $f(v)=f(u)=\true$:
@@ -1152,7 +1150,7 @@ Observe that the existence of such an independent set for $t$ being the root is 
 	\end{cases}
 \end{equation*}
 
-\paragraph{Forget forced vertex node} Let $t$ be an forget forced vertex node with a child $t'$, such that $X_t = X_{t'} \setminus \{v\}$ and let $u \in V(F)$ such that $vu \in F$. Observe that for any $f \in \mathcal{F}_t$ that satisfies $f(v)=f(u)=\true$, $\dpt{t',f} = \false$ because we have already changed their values during introduce forced edge node. Thus, the formula looks as follows:
+\paragraph{Forget forced vertex node} Let $t$ be an forget forced vertex node with a child $t'$, such that $X_t = X_{t'} \setminus \{v\}$ and let $u \in V(F)$ such that $vu \in F$. Observe that for any $f \in \mathcal{F}_t$ that satisfies $f(v)=f(u)=\true$, $\dpt{t',f,g} = \false$ because we have already changed their values during introduce forced edge node. Thus, the formula looks as follows:
 
 \begin{equation*}
 	\dpt{t,f,g} = \dpt{t',f_{v \rightarrow \true},g} \lor \dpt{t',f_{v \rightarrow \false},g}
@@ -1168,7 +1166,7 @@ Observe that the existence of such an independent set for $t$ being the root is 
 
 \begin{enumerate}
 	\item For every forced vertex $v \in X_t \cap V(F)$, $f(v)=f_1(v)=f_2(v)$.
-	\item For every free vertex $v \in X_t \cap U$, $g(v)=g_1(v) \lor g_2(u)$, 
+	\item For every free vertex $v \in X_t \cap U$, $g(v)=g_1(v) \lor g_2(u)$.
 \end{enumerate}
 Hence, we get:
 
@@ -1179,9 +1177,9 @@ Hence, we get:
 
 \subsection{Complexity analysis}
 
-Now we proceed to the complexity analysis. Observe that introduction and forget nodes requires constant number of operations. We either copy a specific value from a child's node or perform a logical OR operation of two boolean values. 
+Now we proceed to the complexity analysis. Observe that each of the introduce and forget nodes can be computed in constant time. We either copy a specific value from a child's node or perform a logical OR operation of two boolean values. 
 
-Computing a join node is the bottleneck in this algorithm. A naive approach to obtain the value for a join node cell would result in time $\mathcal{O}^*(4^{\tw(G)})$. Thus, we could conclude with an algorithm solving \ssfep{} parameterized by treewidth in time $\mathcal{O}^*(8^{\tw(G)})$ as there are $O(|G| \cdot 2^{\tw(G)})$ array entries. However, we can improve the running time, using fast computation of the \textit{cover product}.
+Computing a join node is the bottleneck in this algorithm. A naive approach to obtain the value for a single join node entry would result in time $\mathcal{O}^(4^{\tw(G)})$. Thus, we could conclude with an algorithm solving \ssfep{} parameterized by treewidth in time $\mathcal{O}^*(8^{\tw(G)})$ as there are $\mathcal{O}(|G| \cdot 2^{\tw(G)})$ array entries. However, we can improve the running time using fast computation of the \textit{cover product}.
 
 \begin{definition}
 	The \textit{cover product} of two functions $f,g:2^V \rightarrow \mathbb{Z}$ is a function $(f *_c g):2^V \rightarrow \mathbb{Z}$ such that for every $Y \subseteq V$:
@@ -1191,39 +1189,41 @@ Computing a join node is the bottleneck in this algorithm. A naive approach to o
 	\end{equation*}
 \end{definition}
 
-Now, we state the theorem proved by Björklund, et al. \cite{CoverProduct}:
+Now, we state the theorem proved by Björklund et al. \cite{CoverProduct}:
 
 \begin{theorem}\label{cproduct}
-	For two functions $f,g:2^V \rightarrow \mathbb{Z}$, given all $2^n$ values of $f$ and $g$ in the input, all the $2^n$ values of the cover product $f*_cg$ can be computed in $\mathcal{O}(2^n\cdot n)$ arithmetic operations.
+	For two functions $f,g:2^V \rightarrow \mathbb{Z}$ with $|V|=n$, given all $2^n$ values of $f$ and $g$ in the input, all the $2^n$ values of the cover product $f*_cg$ can be computed using $\mathcal{O}(2^n\cdot n)$ arithmetic operations.
 \end{theorem}
 
 Note that the disjunction in every join node is nothing else than a cover product for a fixed forced vertices assignment. Thus, we formulate the lemma:
 
 \begin{lemma}\label{join lemma}
-	Given a join node $t$, one can calculate all values of $\dpt{t,f,g}$, for $f \in \mathcal{F}_t$ and $g \in \mathcal{G}_t$, in time $O(2^{\tw(G)})$.
+	Given a join node $t$, one can calculate all values of $\dpt{t,f,g}$, for $f \in \mathcal{F}_t$ and $g \in \mathcal{G}_t$, in time $O(2^w)$ where $w$ is the width of the decomposition.
 \end{lemma}
 
 \begin{proof}
 	Fix $f \in \mathcal{F}_t$. We define a function $c_{t,f}:2^{X_t \cap U} \rightarrow \mathbb{Z}$ as follows:
 	
 	\begin{equation*}
-		c_{t,f}(X) = dp[t,f,g] \text{, such that $g^{-1}(1) = X$}.
+		c_{t,f}(X) = dp[t,f,g] \text{, such that $g^{-1}(\true) = X$}.
 	\end{equation*}	
-	Now, for $X \subseteq X_t \cap U$, observe that: 
+	Note that the function $c_{t,f}$ should output an integer, not a Boolean value. Thus, we map $\true$ to $1$ and $\false$ to $0$. Now, for $X \subseteq X_t \cap U$, observe that: 
 	\begin{align*}
 		(c_{t_1,f} *_c c_{t_2,f})(X) &= \sum\limits_{A \cup B = X} c_{t_1,f}(A)c_{t_2,f}(B) \\
-		&= \sum\limits_{ g_1^{-1}(1)\ \cup\ g_2^{-1}(1) = X} dp[t_1,f,g_1]dp[t_2,f,g_2]	
+		&= \sum\limits_{ g_1^{-1}(\true)\ \cup\ g_2^{-1}(\true) = X} dp[t_1,f,g_1]dp[t_2,f,g_2]	
 	\end{align*}
-	which exactly reflects the computation that we perform during a join node. Thus, $\dpt{t,f,g} = (c_{t_1,f} *_c c_{t_2,f})(g^{-1}(1)) > 0$. 
+	which exactly reflects the computation that we perform during a join node. Thus, $\dpt{t,f,g} = \true$ if $(c_{t_1,f} *_c c_{t_2,f})(g^{-1}(1)) > 0$ and $\dpt{t,f,g} = \false$ otherwise. 
 	
-	Observe that $|\mathcal{F}_t| = 2^{|X_t \cap V(F)|}$. By Theorem \ref{cproduct}, for a fixed $f \in \mathcal{F}_t$ and every $g \in \mathcal{G}_t$ we can calculate values of $\dpt{t,f,g}$ in time $2^{|X_t \cap U|}$. Thus, we can fill all the entries corresponding to the node $t$ in time $\mathcal{O}^*(2^{|X_t \cap V(F)|} \cdot 2^{|X_t \cap U|}) = \mathcal{O}^*(2^{|X_t|}) \leq \mathcal{O}^*(2^{\tw(G)})$.
+	Observe that $|\mathcal{F}_t| = 2^{|X_t \cap V(F)|}$. By Theorem \ref{cproduct}, for a fixed $f \in \mathcal{F}_t$ and every $g \in \mathcal{G}_t$ we can calculate values of $\dpt{t,f,g}$ in time $2^{|X_t \cap U|}$. Thus, we can fill all the entries corresponding to the node $t$ in time $\mathcal{O}^*(2^{|X_t \cap V(F)|} \cdot 2^{|X_t \cap U|}) = \mathcal{O}^*(2^{|X_t|}) \leq \mathcal{O}^*(2^w)$.
 \end{proof}
 
 \thmssfeptwtime*
 
 \begin{proof}
-	Consider the algorithm described in the previous subsection. To calculate a single entry for introduce and forget nodes, we need constant time. By Lemma \ref{join lemma}, we showed that that the values for a join node can be calculated in $\mathcal{O}^*(2^{\tw(G)})$. There are polynomially many nodes in a tree decomposition. Thus, we can fill the entries of a dynamic table in time $\mathcal{O}^*(2^{\tw(G)})$ and provide the answer whether the input graph has a \ssf{}.
+	Consider the algorithm described in the previous subsection. To calculate a single entry for introduce and forget nodes we need constant time. By Lemma \ref{join lemma}, we showed that the values for a join node can be calculated in $\mathcal{O}^*(2^w)$. There are polynomially many nodes in a tree decomposition. Thus, we can fill the entries of a dynamic table in time $\mathcal{O}^*(2^{\tw(G)})$ and provide the answer whether the input graph has a \ssf{}.
 \end{proof}
+
+\subsection{Lower bound on a running time}
 
 We have just proven the complexity of the algorithm stated in the previous subsection. Now, we show a lower bound for the problem based on the \cnfsat{} problem.
 
@@ -1233,55 +1233,20 @@ We have just proven the complexity of the algorithm stated in the previous subse
 \end{figure}
 
 \begin{proof}
-	We provide a polynomial-time reduction that takes a \cnfsat{} instance $\phi$ of $n$ variables and $m$ clauses, and constructs an instance $(G,F)$ of width $n$. If there existed an algorithm solving \ssfep{} parameterized by the treewidth of the input graph in $\mathcal{O}^*((2-\epsilon)^n)$, then we could compose the reduction with this algorithm and solve \cnfsat{} in time  $\mathcal{O}^*((2-\epsilon')^n)$.
+	We provide a polynomial-time reduction that takes a \cnfsat{} instance $\phi$ of $n$ variables and $m$ clauses, and constructs an instance $(G,F)$ together with a tree decomposition of width $n$. If there existed an algorithm solving \ssfep{} parameterized by the width of a given tree decomposition in time  $\mathcal{O}^*((2-\epsilon)^n)$, then we could compose the reduction with this algorithm and solve \cnfsat{} in time  $\mathcal{O}^*((2-\epsilon)^n)$.
 	
-	We first give a brief overview of how the output graph looks like and provide a notation for referencing to the specific vertex. The output instance $(G,F)$ consists of $n+1$ copies of the \textit{formula graph}, denoted as $G_1,G_2,...,G_{n+1}$ and $n$ \textit{formula gadgets} $H^1_G,H^2_G,...,H^n_G$. Every formula graph $G_i$ consists of $m$ \textit{clause graphs} $C^i_1,C^i_2,...,C^i_m$. Every formula gadget $H^i_G$ consists of $m$ \textit{clause gadgets} $H^i_1,H^i_2,...,H^i_m$. By $v^i_j$ we reference to vertices in $j$-th clause graphs from $i$-th formula graph and by $g^i_j$ we reference to vertices in $j$-th clause gadget from $i$-th formula gadget.
+	We first give a brief overview of how the output graph looks like and provide a notation for referencing to specific vertices. The output instance $(G,F)$ consists of $n+1$ copies of the \textit{formula graph}, denoted as $G_1,G_2,...,G_{n+1}$. Every formula graph $G_i$ consists of $m$ \textit{clause graphs} $C^i_1,C^i_2,...,C^i_m$. Every two consecutive clause graphs, whether or not from the same copy of $G$, have a connection gadget $H^i_1,H^i_2,...,H^i_m$. For example, connection gadget $H^i_k$, for $i < n+1$ and $k < m$ connects clause graph $C^i_k$ and $C^i_{k+1}$ whereas connection gadget $H^i_m$ connects clause graph $C^i_m$ and $C^{i+1}_1$. By $v^i_j$ we reference to vertices in $j$-th clause graphs from $i$-th formula graph and by $g^i_j$ we reference to vertices in $j$-th clause gadget from $i$-th formula gadget.
 	
 	After the brief introduction, we present a construction of a clause graph $C^i_j$. We introduce a free vertex $v^i_j[c]$ and $n$ forced edges $v^i_j[x_k]v^i_j[\neg x_k]$. For every literal $l$ occurring in the clause $c_i$, we introduce an edge $v^i_j[l]v^i_j[c]$. Observe that every clause graph consists of $2n+1$ vertices and $n$ forced edges.
 	
-	Now, we present a construction of a clause gadget $H^i_j$. Firstly, we introduce $n$ free vertices $g^i_j[1],g^i_j[2],...,g^i_j[n]$. If $j < m$, then for every $g^i_j[k]$ we introduce edges $v^i_j[\neg x_k]g^i_j[k]$ and $g^i_j[k]v^i_{j+1}[x_k]$. Otherwise, if $j=m$, then we introduce edges $v^i_m[\neg x_k]g^i_m[k]$ and $g^i_m[k]v^{i+1}_1[x_k]$. Observe that for every clause gadget we introduced $n$ additional free vertices.
+	Now, we present the construction of a connection gadget $H^i_j$. Firstly, we introduce $n$ free vertices $g^i_j[1],g^i_j[2],...,g^i_j[n]$. If $j < m$, then for every $g^i_j[k]$ we introduce edges $v^i_j[\neg x_k]g^i_j[k]$ and $g^i_j[k]v^i_{j+1}[x_k]$. Otherwise, if $j=m$, then we introduce edges $v^i_m[\neg x_k]g^i_m[k]$ and $g^i_m[k]v^{i+1}_1[x_k]$. Note that there does not exist a connection gadget $H^{n+1}_m$ as $C^{n+1}_m$ is the last clause gadget.
 	
-	Intuitively, the graph consists of $n$ paths for each variable. Every two consecutive forced edges are separated by two free edges. Then, we have $n+1$ copies of vertices corresponding to clauses. Each clause has its own set of $n$ forced edges. 
 	
-	Let us discuss the specifications of the output graph. If every clause graph has $2n+1$ vertices and $n$ forced edges while every clause gadget has $n$ free vertices, we conclude that $|V(G)| = (n+1) \cdot m \cdot (2n+1) + n \cdot m \cdot n= \mathcal{O}(mn^2)$ and $|F|=(n+1) \cdot m \cdot n= \mathcal{O}(mn^2)$. Observe that $(G,F)$ is normalized as there are no isolated vertices, every clause vertex and every gadget vertex is adjacent to forced vertices only and $F$ is an induced matching. Note the following claim:
+	Intuitively, There are $(n+1)\cdot m$ clause graph $C^1_1,C^1_2,\ldots,C^1_m,C^2_1,\ldots,C^{n+1}_m$. Every clause graph has one free vertex and a set of $n$ forced edges. Every two consecutive sets of forced edges in clause graphs are joined by a connection gadget. See Figure \ref{fig2}.
 	
-	\begin{claim}
-		The reduction outputs an instance $(G,F)$ such that $tw(G) \leq n$.
-	\end{claim}
-
-	\begin{proof}
-		Observe that by simply sweeping the graph from $C^1_1$ to $C^{n+1}_m$ we can show that $\textrm{pw}(G) \leq n$. Hence, we conclude that $\textrm{pw}(G) \leq \textrm{tw}(G) \leq n$ because path decomposition is a specific case of a tree decomposition.
-	\end{proof}
-	
-	Finally, we show that $\phi$ is satisfiable if and only if $(G,F)$ has a spanning star forest. For the forward implication, let $\sigma$ be an evaluation such that $\sigma(\phi)=\true$. If $\sigma(\phi)=\textrm{True}$, then for every $C_i \in \textrm{Clauses}$ there exists a literal $l_i \in C_i$ such that $\sigma(l_i)=1$. Now, let $L = \{v^i_j[l]: \sigma(l)=1\text{, } 1 \leq i \leq n+1 \text{ and } 1 \leq j \leq m\}$. Clearly, $\{v^i_j[C_k]: C_k \in \textrm{Clauses} \text{, } 1 \leq i \leq n+1 \text{ and } 1 \leq j \leq m\} \subseteq N_G(L)$ because $\sigma$ satisfies the formula $\phi$. Moreover, for every $g^i_j[k]$, $g^i_j[k] \in N_G(L)$ as it is adjacent to vertices corresponding to both $k$-th literal and its negation. Moreover, observe that $L$ is an independent set in $G$ because for every forced edge $v^i_j[x_k]v^i_j[\neg x_k] \in F$ either $\sigma(x_i)=\false$ or $\sigma(\neg x_i)=\false$. Hence, by Lemma \ref{span-lemma}, there exists a spanning star forest for $(G,F)$.
-	
-	For the converse, let $S$ be a spanning star forest. We denote by $C$ a set of centers in $S$. Clearly, $C \subseteq V(F)$. Fix a constant $k$ such that $1 \leq k \leq n$. By $P_k$ we denote a path corresponding to $k$-th variable. Now, consider the set $K = P_k \cap C$. A \textit{switch} is a vertex $g^i_j[k]$ such that $|N_G(k)|=2$. In other words, the position of a center changes from a vertex corresponding to $\neg x_k$ to a vertex corresponding to $x_k$. Note the following:
-	
-	\begin{claim}
-		If $S$ is the solution for $(G,k)$, then for a path $P_k$ there exists at most one switch in $S$.
-	\end{claim}
-
-	\begin{proof}
-		Suppose contrary that there are two switches. So, there is a switch from $x_k$ to $\neg x_k$, say $g^i_j$. Then, $\degree{S}{g^i_j}=0$. Contradiction, $S$ is not a spanning star forest.
-	\end{proof}
-
-	Since there are $n$ paths, $S$ can have at most $n$ switches in total. Hence, there exists a copy of a graph formula $G_i$ such that it does not have any switches between the clauses. We create the evaluation $\sigma$ as follows:
-	
-	\begin{equation*}
-	\sigma(x_k) = 
-	\begin{cases}
-	\textrm{True}\text{, if there exists $j$, $1 \leq j \leq m$ such that $\degree{S}{v^i_j[x_k]} > 1$} \\
-	\textrm{False}\text{, otherwise}
-	\end{cases}
-	\end{equation*}
-	
-	\noindent
-	We claim that the evaluation satisfies $\phi$. Firstly, note that in $G_i$ there are no switches. Fix an arbitrary clause $C_j$. Now, observe that there exists a literal $l_k \in C_j$ such that $v^i_j[l_k]v^i_j[c] \in S$. Then, $\degree{S}{l_k}>1$. By the definition of $\sigma$, $\sigma(l_k)=\true$, and therefore $\sigma(C_j)=\true$. We conclude that $\sigma(\phi)=\true$ as we proved that an arbitrary clause in the formula is satisfied.\qedhere
-\end{proof}
-
-\begin{figure}
-	\centering
-	\begin{tikzpicture}
+	\begin{figure}
+		\centering
+		\begin{tikzpicture}
 		\tikzset{nodestyle/.style={draw,circle,fill=black,minimum size=20pt, scale=0.25}}
 		\tikzset{forcededge/.style={-,line width=1.5pt}}
 		
@@ -1293,19 +1258,19 @@ We have just proven the complexity of the algorithm stated in the previous subse
 		\newcommand\drawNode[4] % {width} {height} {label} {name}
 		{
 			\node[
-				nodestyle,
-				label={[below=0.1cm]:#3}
+			nodestyle,
+			label={[below=0.1cm]:#3}
 			] at (#1, #2) (#4) {};
 		}
-	
+		
 		\newcommand\drawClauseNode[4] % {width} {height} {label} {name}
 		{
 			\node[
-				nodestyle,
-				label={[above]:#3}
+			nodestyle,
+			label={[above]:#3}
 			] at (#1, #2) (#4) {};
 		}
-	
+		
 		\newcommand\frontPadding{1}
 		
 		\drawNode{1}{1}{$v^1_1[x_n]$}{x11n1}
@@ -1319,39 +1284,39 @@ We have just proven the complexity of the algorithm stated in the previous subse
 		\drawClauseNode{1.75}{6}{$v^1_1[c]$}{c11}
 		
 		\draw[forcededge] 
-			(x11n1) to (x11n0)
-			(x1121) to (x1120)
-			(x1111) to (x1110);
-			
+		(x11n1) to (x11n0)
+		(x1121) to (x1120)
+		(x1111) to (x1110);
+		
 		\draw[]
-			(x1110) to (c11)
-			(x11n1) to[out=120, in=220] (c11);
+		(x1110) to (c11)
+		(x11n1) to[out=120, in=220] (c11);
 		
 		\drawNode{4}{1}{$g^1_1[n]$}{g11n}
 		\drawNode{4}{3}{$g^1_1[2]$}{g112}
 		\drawNode{4}{4}{$g^1_1[1]$}{g111}
-
+		
 		\drawNode{5.5}{1}{$v^1_2[x_n]$}{x12n}
 		\drawNode{5.5}{3}{$v^1_2[x_2]$}{x122}
 		\drawNode{5.5}{4}{$v^1_2[x_1]$}{x121}
 		
 		\draw[]
-			(x11n0) to (g11n)
-			(x1120) to (g112)
-			(x1110) to (g111)
-			(g11n) to (x12n)
-			(g112) to (x122)
-			(g111) to (x121);
-			
+		(x11n0) to (g11n)
+		(x1120) to (g112)
+		(x1110) to (g111)
+		(g11n) to (x12n)
+		(g112) to (x122)
+		(g111) to (x121);
+		
 		\draw[forcededge]
-			(x12n) to ($(x12n) + (0.5,0)$)			
-			(x122) to ($(x122) + (0.5,0)$)
-			(x121) to ($(x121) + (0.5,0)$);
-			
+		(x12n) to ($(x12n) + (0.5,0)$)			
+		(x122) to ($(x122) + (0.5,0)$)
+		(x121) to ($(x121) + (0.5,0)$);
+		
 		\draw[dotted]
-			(x12n) to ($(x12n) + (1,0)$)			
-			(x122) to ($(x122) + (1,0)$)
-			(x121) to ($(x121) + (1,0)$);
+		(x12n) to ($(x12n) + (1,0)$)			
+		(x122) to ($(x122) + (1,0)$)
+		(x121) to ($(x121) + (1,0)$);
 		
 		\drawNode{8}{1}{$v^1_m[\neg x_n]$}{x1mn}
 		\drawNode{8}{3}{$v^1_m[\neg x_2]$}{x1m2}
@@ -1362,19 +1327,19 @@ We have just proven the complexity of the algorithm stated in the previous subse
 		\drawNode{9.5}{4}{$g^1_m[1]$}{g1m1}
 		
 		\draw[forcededge]
-			(x1mn) to ($(x1mn) - (0.5,0)$)			
-			(x1m2) to ($(x1m2) - (0.5,0)$)
-			(x1m1) to ($(x1m1) - (0.5,0)$);
-			
+		(x1mn) to ($(x1mn) - (0.5,0)$)			
+		(x1m2) to ($(x1m2) - (0.5,0)$)
+		(x1m1) to ($(x1m1) - (0.5,0)$);
+		
 		\draw[dotted]
-			(x1mn) to ($(x1mn) - (1,0)$)			
-			(x1m2) to ($(x1m2) - (1,0)$)
-			(x1m1) to ($(x1m1) - (1,0)$);
-			
+		(x1mn) to ($(x1mn) - (1,0)$)			
+		(x1m2) to ($(x1m2) - (1,0)$)
+		(x1m1) to ($(x1m1) - (1,0)$);
+		
 		\draw[]
-			(x1mn) to (g1mn)
-			(x1m2) to (g1m2)
-			(x1m1) to (g1m1);
+		(x1mn) to (g1mn)
+		(x1m2) to (g1m2)
+		(x1m1) to (g1m1);
 		
 		
 		\drawNode{11}{1}{$v^2_1[n]$}{v21n}
@@ -1386,29 +1351,29 @@ We have just proven the complexity of the algorithm stated in the previous subse
 		\drawNode{14}{4}{$v^{n+1}_m[\neg x_1]$}{xn1m1}
 		
 		\draw[]
-			(g1mn) to (v21n)
-			(g1m2) to (v212)
-			(g1m1) to (v211);
+		(g1mn) to (v21n)
+		(g1m2) to (v212)
+		(g1m1) to (v211);
 		
 		\draw[forcededge]
-			(xn1mn) to ($(xn1mn) - (0.5,0)$)			
-			(xn1m2) to ($(xn1m2) - (0.5,0)$)
-			(xn1m1) to ($(xn1m1) - (0.5,0)$);
+		(xn1mn) to ($(xn1mn) - (0.5,0)$)			
+		(xn1m2) to ($(xn1m2) - (0.5,0)$)
+		(xn1m1) to ($(xn1m1) - (0.5,0)$);
 		
 		\draw[dotted]
-			(xn1mn) to ($(xn1mn) - (1,0)$)			
-			(xn1m2) to ($(xn1m2) - (1,0)$)
-			(xn1m1) to ($(xn1m1) - (1,0)$);
-			
+		(xn1mn) to ($(xn1mn) - (1,0)$)			
+		(xn1m2) to ($(xn1m2) - (1,0)$)
+		(xn1m1) to ($(xn1m1) - (1,0)$);
+		
 		\draw[forcededge]
-			(v21n) to ($(v21n) + (0.5,0)$)			
-			(v212) to ($(v212) + (0.5,0)$)
-			(v211) to ($(v211) + (0.5,0)$);
+		(v21n) to ($(v21n) + (0.5,0)$)			
+		(v212) to ($(v212) + (0.5,0)$)
+		(v211) to ($(v211) + (0.5,0)$);
 		
 		\draw[dotted]
-			(v21n) to ($(v21n) + (1,0)$)			
-			(v212) to ($(v212) + (1,0)$)
-			(v211) to ($(v211) + (1,0)$);
+		(v21n) to ($(v21n) + (1,0)$)			
+		(v212) to ($(v212) + (1,0)$)
+		(v211) to ($(v211) + (1,0)$);
 		
 		\draw[rounded corners=10pt] (0,0) rectangle (3.25,7);
 		\node[label={:$C_1$}] at (3,6.8) {};
@@ -1437,10 +1402,45 @@ We have just proven the complexity of the algorithm stated in the previous subse
 		\drawClauseNode{11.5}{6}{$v^2_1[c]$}{c21}
 		
 		\drawClauseNode{13.25}{6}{$v^{n+1}_m[c]$}{cn1m}
-				
-	\end{tikzpicture}
-	\caption{Construction of an instance $(G,F)$ from a formula}
-\end{figure}
+		
+		\end{tikzpicture}
+		\caption{Construction of an instance $(G,F)$ from a formula}
+		\label{fig2}
+	\end{figure}
+	
+	Let us discuss the specifications of the output graph. As every clause graph has $2n+1$ vertices and $n$ forced edges while every connection gadget has $n$ free vertices, we conclude that $|V(G)| = (n+1) \cdot m \cdot (3n+1) -n= \mathcal{O}(mn^2)$ and $|F|=(n+1) \cdot m \cdot n= \mathcal{O}(mn^2)$. Observe that $(G,F)$ is normalized as there are no isolated vertices, every clause vertex and every gadget vertex is adjacent to forced vertices only and $F$ is an induced matching. Note the following claim:
+	
+	\begin{claim}
+		The reduction outputs an instance $(G,F)$ such that there exists a tree decomposition of width $|F|=n$.
+	\end{claim}
+
+	\begin{proof}
+		We show how to construct such a tree decomposition. We begin with abag $B_0=\{v^1_1[x_i]: 1 \leq i \leq n\}$. Observe that $|B_0|=n$. In further we show that every introduce bag is followed by forget one. Hence the maximum size of the intermediate bag is equal to $n+1$ and thus the width of such a decomposition is equal to $n$. 
+		
+		Now, for every $v \in B_0$ that follows $v \notin N_G(v^1_1[c])$ we introduce $v^1_1[\neg x_i]$ and forget $v^1_1[x_i]$. Let $B_{\alpha_1}$ be the output bag. Observe that $|B_{\alpha_1}|=n$. Since every neighbor of $v^1_1[c]$ is in $B_{\alpha_1}$ we introduce and immediately forget the vertex $v^1_1[c]$. Then, for every $v^1_1[x_k] \in N_G(v^1_1[c])$ we introduce $v^1_1[\neg x_k]$ and forget $v^1_1[x_k]$. Observe that now the output bag $B_{\alpha_2}$ follows $B_{\alpha_2} = \{v^1_1[\neg x_i]: 1 \leq i \leq n\}$, $|B_{\alpha_2}|=n$. Finally, for every $v^1_1[\neg x_i] \in B_\beta$ we do the following operations: introduce vertex $g^1_1[i]$, forget vertex $v^1_1[x_i]$, introduce vertex $v^1_2[x_i]$ and forget vertex $g^1_1[i]$. Let $B_{\alpha_3}$ be the output graph. Observe that now $B_{\alpha_3} = \{v^1_2[x_i]: 1 \leq i \leq n\}$. Thus, by applying the schema repeatedly for every clause graph, we show that there exists a tree decomposition of width $n$.
+	\end{proof}
+	
+	Finally, we show that $\phi$ is satisfiable if and only if $(G,F)$ has a spanning star forest. For the forward implication, let $\sigma$ be an evaluation such that $\sigma(\phi)=\true$. If $\sigma(\phi)=\textrm{True}$, then for every $C_i \in \textrm{Clauses}$ there exists a literal $l_i \in C_i$ such that $\sigma(l_i)=1$. Now, let $L = \{v^i_j[l]: \sigma(l)=1\text{, } 1 \leq i \leq n+1 \text{ and } 1 \leq j \leq m\}$. Clearly, $\{v^i_j[C_k]: C_k \in \textrm{Clauses} \text{, } 1 \leq i \leq n+1 \text{ and } 1 \leq j \leq m\} \subseteq N_G(L)$ because $\sigma$ satisfies the formula $\phi$. Moreover every $g^i_j[k]$ belongs to $N_G(L)$, as it is adjacent to vertices corresponding to both $k$-th literal and its negation. Moreover, observe that $L$ is an independent set in $G$ because for every forced edge $v^i_j[x_k]v^i_j[\neg x_k] \in F$ either $\sigma(x_i)=\false$ or $\sigma(\neg x_i)=\false$. Hence, by Lemma \ref{span-lemma}, there exists a spanning star forest for $(G,F)$.
+	
+	For the converse, let $S$ be a spanning star forest. We denote by $C$ the set of centers in $S$. Clearly, $C \subseteq V(F)$. Fix any $k$ such that $1 \leq k \leq n$. By $P_k$ we denote a path corresponding to $k$-th variable, that is a graph induced by vertices $v^i_j[x_k],v^i_j[\neg x_k]$ and $g^i_j[k]$. Now, consider the set $K = P_k \cap C$. A \textit{switch} is a vertex $g^i_j[k]$ such that $|N_S(g^i_j[k])|=2$. In other words, the position of a center changes from a vertex corresponding to $\neg x_k$ to a vertex corresponding to $x_k$. Note the following:
+	
+	\begin{claim}\label{switch}
+		If $S$ is the solution for $(G,k)$, then for a path $P_k$ there exists at most one switch in $S$.
+	\end{claim}
+
+	Since there are $n$ paths, $S$ can have at most $n$ switches in total. Hence, there exists a copy of a graph formula $G_i$ such that it does not have any switches between the clauses. We create the evaluation $\sigma$ as follows:
+	
+	\begin{equation*}
+	\sigma(x_k) = 
+	\begin{cases}
+	\textrm{True}\text{, if there exists $j$, $1 \leq j \leq m$, such that $\degree{S}{v^i_j[x_k]} > 1$} \\
+	\textrm{False}\text{, otherwise}
+	\end{cases}
+	\end{equation*}
+	
+	\noindent
+	We claim that the evaluation satisfies $\phi$. Fix an arbitrary clause $C_j$. Now, observe that there exists a literal $l_k \in C_j$ such that $v^i_j[l_k]v^i_j[c] \in S$. Since the formula graph $G_i$ does not have any switches, it follows that for all $1 \leq p \leq m$, $v^i_p[\neg x_k]v^i_p[c] \notin S$. Then, $\degree{S}{v^i_j[l_k]}>1$ and for every $1 \leq p \leq m$,  and $\degree{S}{\neg v^i_p[\neg l_k]}=1$. Thus, $\sigma$ is well defined that follows $\sigma(l_k)=\true$, and therefore $\sigma(C_j)=\true$. We conclude that $\sigma(\phi)=\true$, as we proved that an every clause in the formula is satisfied.\qedhere
+\end{proof}
 
 \bibliography{biblio} 
 \bibliographystyle{ieeetr}
