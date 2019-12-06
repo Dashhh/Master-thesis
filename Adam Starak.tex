@@ -70,7 +70,7 @@
 \klasyfikacja{ Theory of computation $\rightarrow$ Parameterized complexity and exact algorithms}
 
 % Słowa kluczowe:
-\keywords{parameterized algorithm, kernelization, Strong Expotential-Time Hypothesis, tree decomposition, cross-composition}
+\keywords{parameterized algorithm, kernelization, Strong Exponential-Time Hypothesis, tree decomposition, cross-composition}
 
 % Tu jest dobre miejsce na Twoje własne makra i~środowiska:
 
@@ -144,7 +144,7 @@
 
 %tu idzie streszczenie na strone poczatkowa
 \begin{abstract}
-	We present applications of parameterized techniques to the problem of finding spanning star forests in graphs. We examine three different variants of the problem and multiple parametrizations. We present positive results such as parameterized algorithms, kernelization procedures, algorithms over a tree decomposition of an input graph as well as negative ones, like hardness results based on the Strong Exponential-Time Hypothesis.
+	We present applications of parameterized techniques to the problem of finding spanning star forests in graphs. We examine three different variants of the problem and multiple parameterizations. We present positive results such as parameterized algorithms, kernelization procedures, algorithms over a tree decomposition of an input graph as well as negative ones, like hardness results based on the Strong Exponential-Time Hypothesis.
 \end{abstract}
 
 \tableofcontents
@@ -191,7 +191,7 @@ Finally, we introduce the last variant. In \ssfep{} we are given a graph and a s
 \end{restatable}
 
 \noindent
-For the parametrization by the number of forced edges, our reductions yield the following:
+For the parameterization by the number of forced edges, our reductions yield the following:
 
 \begin{restatable}{theorem}{thmssfepfetime}\label{thm-ssfep-fe-time}
 	\ssfep{} parameterized by the number of forced edges can be solved in time $\mathcal{O}^*(2^{|F|})$ where $|F|$ is the number of forced edges.
@@ -215,7 +215,7 @@ Recall that our reductions provides a link between free vertices and clauses. Th
 \end{restatable}
 
 \noindent
-Furthermore, unlike in the case of the previous parametrization, we provide an algorithm that outputs a linear kernel.
+Furthermore, unlike in the case of the previous parameterization, we provide an algorithm that outputs a linear kernel.
 
 \begin{restatable}{theorem}{thmssfepkernel}\label{thm-ssfep-kernel}
 	\ssfep{} parameterized by the number of free vertices admits a kernel with at most $k$ free vertices and at most $k$ forced edges.
@@ -760,7 +760,7 @@ Lemma \ref{ssfep reduction} and Lemma \ref{cnfsat reduction} directly imply the 
 
 \thmssfepnpc*
 
-\section{Parametrization by the number of forced edges}
+\section{Parameterization by the number of forced edges}
 
 In this section, in addition to an instance $(G,F)$ we receive a parameter $k$ which is equal to the number of forced edges. We show two results: \ssfep{} parameterized by the number of forced edges does not admit a kernel of polynomial size, and a lower bound under Strong Exponential-Time Hypothesis.
 
@@ -994,7 +994,7 @@ Immediately, by Theorem \ref{nokernel} and Lemma \ref{cross-ssfe} we obtain the 
 
 \thmssfepnokernel*
 
-\section{Parametrization by the number of free vertices}
+\section{Parameterization by the number of free vertices}
 
 In this section, we parameterize  \ssfep{} by the number of free vertices. We begin with an algorithm that solves the problem in time $\mathcal{O}^*(1.358^k)$ where $k$ is the number of free vertices. Then, unlike in the first variant, we present a kernelization algorithm. We show that the reduced instance has at most $3k$ vertices where $k$ is the parameter.
 
@@ -1047,7 +1047,7 @@ Finally, equipped with the above information, we are ready to show a linear kern
 
 
 \begin{proof}
-	By Lemma \ref{norm-ssfe}, we assume that $(G,F)$ is a normalized instance. Let $G_{F,U}$ be the bipartite graph formed from $(G,F)$ by contracting forced edges. A vertex obtained by contracting edge $e$ is named $e$ as well, thus the sides of bipartion are $F$ and $U$. We apply Hopcroft-Karp's algorithm to $G_{F,U}$. We either obtain a matching $M$ of $F$ into $U$ or an inclusion-wise minimal set $X \subseteq F$ such that $|N_{G_{F,U}}(X)| < |X|$.
+	By Lemma \ref{norm-ssfe}, we assume that $(G,F)$ is a normalized instance. Let $G_{F,U}$ be the bipartite graph formed from $(G,F)$ by contracting forced edges. A vertex obtained by contracting edge $e$ is named $e$ as well, thus the sides of bipartition are $F$ and $U$. We apply Hopcroft-Karp's algorithm to $G_{F,U}$. We either obtain a matching $M$ of $F$ into $U$ or an inclusion-wise minimal set $X \subseteq F$ such that $|N_{G_{F,U}}(X)| < |X|$.
 
 	Consider the first case in which Hoprocft-Karp's algorithm returns a matching. Then, we conclude that $(G,F)$ is a YES-instance due to the following claim:
 	\begin{claim}
@@ -1089,7 +1089,7 @@ The lemma immediately proves the following theorem:
 	Exhaustive application of Lemma \ref{kernel-ssfep} on a normalized instance $(G,F)$ either outputs that the instance is a YES-instance, or outputs an equivalent instance $(G',F')$ such that $|F'| < |F|$ and $|U'| \leq |U|$.
 \end{proof}
 
-\section{Parametrization by treewidth}
+\section{Parameterization by treewidth}
 
 In this section, we parameterize the problem by the treewidth of the input graph. As an input, we receive a tuple $(G,F,\mathcal{T})$ where $\mathcal{T}$ is a tree decomposition of $G$. We present a dynamic programming algorithm that works on a given tree decomposition. Later, we prove a lower bound of the running time based on a reduction from the \cnfsat{} problem. Note that we may assume that $(G,F)$ is a normalized instance due to Lemma \ref{norm-ssfe}.
 
@@ -1188,7 +1188,7 @@ Hence, we get:
 
 \subsection{Complexity analysis}
 
-Now we proceed to the complexity analysis. Observe that each of the introduce and forget nodes can be computed in constant time. We either copy a specific value from a child's node or perform a logical OR operation of two boolean values. 
+Now we proceed to the complexity analysis. Observe that each of the introduce and forget nodes can be computed in constant time. We either copy a specific value from a child's node or perform a logical OR operation of two Boolean values. 
 
 Computing a join node is the bottleneck in this algorithm. A naive approach to obtain the value for a single join node entry would result in time $\mathcal{O}^(4^{\tw(G)})$. Thus, we could conclude with an algorithm solving \ssfep{} parameterized by treewidth in time $\mathcal{O}^*(8^{\tw(G)})$ as there are $\mathcal{O}(|G| \cdot 2^{\tw(G)})$ array entries. However, we can improve the running time using fast computation of the \textit{cover product}.
 
