@@ -224,7 +224,7 @@ Furthermore, unlike in the case of the previous parametrization, we provide an a
 Finally, we study the parameterization of the extension variant by the width of the given tree decomposition. We propose a dynamic programming algorithm over a decomposition of a graph which uses fast cover product computation proposed by Björklund et al. \cite{CoverProduct}. In addition, we show that improving the running time would give a faster algorithm for the \cnfsat{} problem.
 
 \begin{restatable}{theorem}{thmssfeptwtime}\label{thm-ssfep-tw-time}
-	\ssfep{} can be solved in time $2^w\cdot poly(w)\cdot n$, where $w$ is the width of a given tree decomposition.
+	\ssfep{} can be solved in time $2^w\cdot \textup{poly}(w)\cdot n$, where $w$ is the width of a given tree decomposition.
 \end{restatable}
 
 \begin{restatable}{theorem}{thmssfeptwseth}\label{thm-ssfep-tw-seth}
@@ -602,7 +602,7 @@ In this chapter, we study a significantly different variant of the \ssfp{} probl
 
 We denote the set of \emph{forced edges} by $F$. Vertices that are adjacent to exactly one forced edge are called \emph{forced candidates}. Similarly, if a subset of $F$ forms a \emph{forced star} of size greater than $2$, then we call its parts a \emph{forced center} and \emph{forced rays} consequently. We denote by $F_R$ the set of all forced rays and by $F_C$ the set of all forced centers. Vertices that do not belong to $V(F)$ are called \emph{free vertices} and they are denoted by $U$. 
 
-We consider three different parameters for this problem: the number of forced edges, the number of free vertices and the treewidth. 
+We consider three different parameters for this problem: the number of forced edges, the number of free vertices and the width of a given tree decomposition. 
 
 \section{Instance normalization} 
 
@@ -800,9 +800,9 @@ Note that the described algorithm is a simple brute force. We do not optimize th
 \thmssfepseth*
 
 \begin{proof}
-	Suppose $\mathcal{A}$ is an algorithm that solves \cnfsat{} in time $\mathcal{O}^*((2-\epsilon)^n)$, where $n$ is the number of variables. Now, we show an algorithm solving \ssfep{} parameterized by the number of forced edges. Let $(G,F)$ be an arbitrary instance of \ssfep{} with a parameter equal to $|F|$. We apply the reduction from Lemma \ref{ssfep reduction} and obtain a formula $\phi$ that has at most $|F|$ variables. Then, we apply algorithm $\mathcal{A}$ to $\phi$ to obtain the result. Observe that the reduction works in polynomial time. Thus, the above algorithm works in time $\mathcal{O}^*((2-\epsilon)^|F|)$ where $|F| \leq n$.
+	Suppose $\mathcal{A}$ is an algorithm that solves \cnfsat{} in time $\mathcal{O}^*((2-\epsilon)^n)$, where $n$ is the number of variables. Now, we show an algorithm solving \ssfep{} parameterized by the number of forced edges. Let $(G,F)$ be an arbitrary instance of \ssfep{} with a parameter equal to $|F|$. We apply the reduction from Lemma \ref{cnfsat reduction} and obtain a formula $\phi$ that has at most $|F|$ variables. Then, we apply algorithm $\mathcal{A}$ to $\phi$ to obtain the result. Observe that the reduction works in polynomial time. Thus, the above algorithm works in time $\mathcal{O}^*((2-\epsilon)^{|F|})$ where $|F| \leq n$.
 	
-	For the converse implication, assume $\mathcal{A}$ is an algorithm that solves \ssfep{} parameterized by the number of forced edges in time $\mathcal{O}^*((2-\epsilon)^n)$, where $n$ is the number of forced edges. We show an algorithm for \cnfsat{} problem now. Let $\phi$ be an arbitrary CNF-formula with $n$ variables. We apply the reduction from Lemma \ref{cnfsat reduction} and obtain a normalized instance $(G,F)$ of \ssfep{}, such that $|F|=n$. Now, we run the algorithm $\mathcal{A}$ on $(G,F)$, and hence we get the answer. The described algorithm works in time $\mathcal{O}^*((2-\epsilon)^n)$.
+	For the converse implication, assume $\mathcal{A}$ is an algorithm that solves \ssfep{} parameterized by the number of forced edges in time $\mathcal{O}^*((2-\epsilon)^n)$, where $n$ is the number of forced edges. We show an algorithm for \cnfsat{} problem now. Let $\phi$ be an arbitrary CNF-formula with $n$ variables. We apply the reduction from Lemma \ref{ssfep reduction} and obtain a normalized instance $(G,F)$ of \ssfep{}, such that $|F|=n$. Now, we run the algorithm $\mathcal{A}$ on $(G,F)$, and hence we get the answer. The described algorithm works in time $\mathcal{O}^*((2-\epsilon)^n)$.
 \end{proof}
 
 \subsection{Lower bound for a kernel}
@@ -1066,7 +1066,7 @@ Finally, equipped with the above information, we are ready to show a linear kern
 		Observe that $C$ is nonempty and $C$ is an independent set as $F$ is an induced matching in $G$. Moreover, $H$ separates $C$ from $R$ because $H$ is the set of all the neighbors of $C$. Now, we prove that there exists a matching of $H$ into $C$. Select an arbitrary $v \in C$. There is a matching of $C \setminus \{v\}$ into $H$ since $|N_{G_{F,U}}(C')| \geq |C|$ for every $C' \subsetneq C$. Since $|C| > |H|$, we have that the matching of $C \setminus \{v\}$ into $H$ is actually a matching of $H$ into $C$. Therefore, $(C,H,R)$ is a crown decomposition of $G_{F,U}$.
 	\end{proof}
 
-	We proceed to the construction of a reduced instance. Let $(C,H,R)$ be the crown decomposition of $G_{F,U}$ described above. Let $D_F \subseteq F$ be the set of forced edges such that if we contract them, then $D_F$ becomes $C$. Finally, let $(G',F')$ be an instance formed from $(G,F)$ by removing vertices $D=V(D_F) \cup H$. We claim that the operation is safe.
+	We proceed to the construction of a reduced instance. Let $(C,H,R)$ be the crown decomposition of $G_{F,U}$ described above. Let $D_F \subseteq F$ be the set of forced edges such that if we contract them, then $D_F$ becomes $C$. Finally, let $(G',F')$ be the instance formed from $(G,F)$ by removing vertices $D=V(D_F) \cup H$. We claim that the operation is safe.
 	
 	\begin{claim}
 		$(G,F)$ has a spanning star forest if and only if $(G',F')$ has a spanning star forest.
@@ -1086,7 +1086,7 @@ The lemma immediately proves the following theorem:
 \thmssfepkernel*
 
 \begin{proof}
-	Exhaustive application of Lemma \ref{kernel-ssfep} on a normalized instance $(G,F)$ either outputs that the instance is a YES-instance, or outputs an equivalent instance $(G',F')$ such that $|F'| \leq |U'|$ and $|U'| \leq |U|$.
+	Exhaustive application of Lemma \ref{kernel-ssfep} on a normalized instance $(G,F)$ either outputs that the instance is a YES-instance, or outputs an equivalent instance $(G',F')$ such that $|F'| < |F|$ and $|U'| \leq |U|$.
 \end{proof}
 
 \section{Parametrization by treewidth}
@@ -1095,7 +1095,7 @@ In this section, we parameterize the problem by the treewidth of the input graph
 
 \subsection{Preliminaries}
 
-We extend the notation of tree decomposition. Namely, for introduce vertex node, we distinguish \textit{introduce free vertex node} and \textit{introduce forced vertex node}. Similarly, we extend the definition for introduce edge and forget vertex node. Recall that a tree decomposition $\mathcal{T}$ of a graph $G$ consists of a tree $T$, and for every node $t \in T$ there exists a set $X_t \subseteq V(G)$. Every entry of a dynamic table $\text{dp}$ has three parameters: a tree decomposition node $t$ and two assignment functions $f,g$. An \textit{assignment function for forced vertices} $f: (X_t \cap V(F)) \rightarrow \{\true, \false\}$ is a mapping that distinguishes two states. If $f(v)=\true$, then we say that $v$ is a center whereas, if $f(v)=\false$, then $v$ is either a candidate or a ray. An \textit{assignment function for free vertices} $g: (X_t \cap U) \rightarrow \{\true, \false\}$ is a mapping that indicates whether a free vertex has been added to a star or not. Hence, for a free vertex $v$ we say that $v$ is in a star if $f(v)=\true$ and, if it is not, then $f(v)=\false$.
+We extend the notation of tree decomposition. Namely, for introduce vertex node, we distinguish \textit{introduce free vertex node} and \textit{introduce forced vertex node}. Similarly, we extend the definition for introduce edge and forget vertex node. Recall that a tree decomposition $\mathcal{T}$ of a graph $G$ consists of a tree $T$, and for every node $t \in T$ there exists a set $X_t \subseteq V(G)$. Every entry of a dynamic table $\text{dp}$ has three parameters: a tree decomposition node $t$ and two assignment functions $f,g$. An \textit{assignment function for forced vertices} $f: (X_t \cap V(F)) \rightarrow \{\true, \false\}$ is a mapping that distinguishes two states. If $f(v)=\true$, then we say that $v$ is a center whereas, if $f(v)=\false$, then $v$ is either a candidate or a ray. An \textit{assignment function for free vertices} $g: (X_t \cap U) \rightarrow \{\true, \false\}$ is a mapping that indicates whether a free vertex has been added to a star or not. Hence, for a free vertex $v$ we say that $v$ is in a star if $g(v)=\true$ and, if it is not, then $g(v)=\false$.
 
 For the sake of clarity, we introduce the following notation. Suppose $(G,F,\mathcal{T})$ is an input instance. Let $(t,X_t) \in \mathcal{T}$ be a node and the corresponding set of vertices in a tree decomposition. By $G_t$ we define a subgraph of $G$ such that $V(G_t) = X_t$ and $G_t$ has edges that have been introduced in the subtree rooted in $t$. Let $\mathcal{F}_t = \{(X_t \cap V(F)) \rightarrow \{\false,\true\}\}$ be the family of all assignment functions for forced vertices from $X_t$ and let $\mathcal{G}_t = \{(X_t \setminus V(F)) \rightarrow \{\false,\true\}\}$ be the family of all assignment functions for free vertices from $X_t$. For any assignment function $h$ and $X' \subseteq X$, where $X$ is the domain of $h$, we use $h|_{X'}$ to denote the restriction of $h$ to $X'$. For a subset $X \subseteq V(G)$ consider an assignment function $h$. For a vertex $v \in V(G)$ and a logic value $p \in \{\true, \false\}$ we define a new assignment $h_{v \rightarrow p}: X \cup \{v\} \rightarrow \{\true, \false\}$ as follows:
 
@@ -1209,7 +1209,7 @@ Now, we state the theorem proved by Björklund et al. \cite{CoverProduct}:
 Note that the disjunction in every join node is nothing else than a cover product for a fixed forced vertices assignment. Thus, we formulate the lemma:
 
 \begin{lemma}\label{join lemma}
-	Given a join node $t$, one can calculate all values of $\dpt{t,f,g}$, for $f \in \mathcal{F}_t$ and $g \in \mathcal{G}_t$, in time $O(2^w)$ where $w$ is the width of the decomposition.
+	Given a join node $t$, one can calculate all values of $\dpt{t,f,g}$, for $f \in \mathcal{F}_t$ and $g \in \mathcal{G}_t$, in time $O(2^w \cdot w)$ where $w$ is the width of the decomposition.
 \end{lemma}
 
 \begin{proof}
@@ -1225,13 +1225,13 @@ Note that the disjunction in every join node is nothing else than a cover produc
 	\end{align*}
 	which exactly reflects the computation that we perform during a join node. Thus, $\dpt{t,f,g} = \true$ if $(c_{t_1,f} *_c c_{t_2,f})(g^{-1}(1)) > 0$ and $\dpt{t,f,g} = \false$ otherwise. 
 	
-	Observe that $|\mathcal{F}_t| = 2^{|X_t \cap V(F)|}$. By Theorem \ref{cproduct}, for a fixed $f \in \mathcal{F}_t$ and every $g \in \mathcal{G}_t$ we can calculate values of $\dpt{t,f,g}$ in time $2^{|X_t \cap U|}$. Thus, we can fill all the entries corresponding to the node $t$ in time $\mathcal{O}^*(2^{|X_t \cap V(F)|} \cdot 2^{|X_t \cap U|}) = \mathcal{O}^*(2^{|X_t|}) \leq \mathcal{O}^*(2^w)$.
+	Observe that $|\mathcal{F}_t| = 2^{|X_t \cap V(F)|}$. By Theorem \ref{cproduct}, for a fixed $f \in \mathcal{F}_t$ and every $g \in \mathcal{G}_t$ we can calculate values of $\dpt{t,f,g}$ with $\mathcal{O}(2^{|X_t \cap U|} \cdot w)$ operations. Thus, we can fill all the entries corresponding to the node $t$ in time $\mathcal{O}(2^{|X_t \cap V(F)|} \cdot 2^{|X_t \cap U|} \cdot w) = \mathcal{O}(2^{|X_t|} \cdot w) \leq \mathcal{O}(2^w \cdot w)$.
 \end{proof}
 
 \thmssfeptwtime*
 
 \begin{proof}
-	Consider the algorithm described in the previous subsection. To calculate a single entry for introduce and forget nodes we need constant time. By Lemma \ref{join lemma}, we showed that the values for a join node can be calculated in $\mathcal{O}^*(2^w)$. There are polynomially many nodes in a tree decomposition. Thus, we can fill the entries of a dynamic table in time $\mathcal{O}^*(2^{w})$ and provide the answer whether the input graph has a \ssf{}.
+	Consider the algorithm described in the previous subsection. To calculate a single entry for introduce and forget nodes we need constant time. By Lemma \ref{join lemma}, we showed that the values for a join node can be calculated in $\mathcal{O}(2^w \cdot w)$. There are polynomially many nodes in a tree decomposition. Thus, we can fill the entries of a dynamic table in time $2^w \cdot \textrm{poly}(w) \cdot n$ and provide the answer whether the input graph has a \ssf{}.
 \end{proof}
 
 \subsection{Lower bound on a running time}
@@ -1431,9 +1431,9 @@ We have just proven the complexity of the algorithm stated in the previous subse
 		Now, for every $v \in B_0$ that follows $v \notin N_G(v^1_1[c])$ we introduce $v^1_1[\neg x_i]$ and forget $v^1_1[x_i]$. Let $B_{\alpha_1}$ be the output bag. Observe that $|B_{\alpha_1}|=n$. Since every neighbor of $v^1_1[c]$ is in $B_{\alpha_1}$ we introduce and immediately forget the vertex $v^1_1[c]$. Then, for every $v^1_1[x_k] \in N_G(v^1_1[c])$ we introduce $v^1_1[\neg x_k]$ and forget $v^1_1[x_k]$. Observe that now the output bag $B_{\alpha_2}$ follows $B_{\alpha_2} = \{v^1_1[\neg x_i]: 1 \leq i \leq n\}$, $|B_{\alpha_2}|=n$. Finally, for every $v^1_1[\neg x_i] \in B_\beta$ we do the following operations: introduce vertex $g^1_1[i]$, forget vertex $v^1_1[x_i]$, introduce vertex $v^1_2[x_i]$ and forget vertex $g^1_1[i]$. Let $B_{\alpha_3}$ be the output graph. Observe that now $B_{\alpha_3} = \{v^1_2[x_i]: 1 \leq i \leq n\}$. Thus, by applying the schema repeatedly for every clause graph, we show that there exists a tree decomposition of width $n$. Observe that the construction uses only introduce and forget bags. Indeed, the tree decomposition described above can be computed in polynomial time.
 	\end{proof}
 	
-	Finally, we show that $\phi$ is satisfiable if and only if $(G,F)$ has a spanning star forest. For the forward implication, let $\sigma$ be an evaluation such that $\sigma(\phi)=\true$. If $\sigma(\phi)=\textrm{True}$, then for every $C_i \in \textrm{Clauses}$ there exists a literal $l_i \in C_i$ such that $\sigma(l_i)=1$. Now, let $L = \{v^i_j[l]: \sigma(l)=1\text{, } 1 \leq i \leq n+1 \text{ and } 1 \leq j \leq m\}$. Clearly, $\{v^i_j[C_k]: C_k \in \textrm{Clauses} \text{, } 1 \leq i \leq n+1 \text{ and } 1 \leq j \leq m\} \subseteq N_G(L)$ because $\sigma$ satisfies the formula $\phi$. Moreover every $g^i_j[k]$ belongs to $N_G(L)$, as it is adjacent to vertices corresponding to both $k$-th literal and its negation. Moreover, observe that $L$ is an independent set in $G$ because for every forced edge $v^i_j[x_k]v^i_j[\neg x_k] \in F$ either $\sigma(x_i)=\false$ or $\sigma(\neg x_i)=\false$. Hence, by Lemma \ref{span-lemma}, there exists a spanning star forest for $(G,F)$.
+	Finally, we show that $\phi$ is satisfiable if and only if $(G,F)$ has a spanning star forest. For the forward implication, let $\sigma$ be an evaluation such that $\sigma(\phi)=\true$. If $\sigma(\phi)=\textrm{True}$, then for every $C_i \in \textrm{Clauses}$ there exists a literal $l_i \in C_i$ such that $\sigma(l_i)=1$. Now, let $L = \{v^i_j[l]: \sigma(l)=1\text{, } 1 \leq i \leq n+1 \text{ and } 1 \leq j \leq m\}$. Clearly, $\{v^i_j[C_k]: C_k \in \textrm{Clauses} \text{, } 1 \leq i \leq n+1 \text{ and } 1 \leq j \leq m\} \subseteq N_G(L)$ because $\sigma$ satisfies the formula $\phi$. Moreover every $g^i_j[k]$ belongs to $N_G(L)$, as it is adjacent to vertices corresponding to both $k$-th literal and its negation. Also, observe that $L$ is an independent set in $G$ because for every forced edge $v^i_j[x_k]v^i_j[\neg x_k] \in F$ either $\sigma(x_i)=\false$ or $\sigma(\neg x_i)=\false$. Hence, by Lemma \ref{span-lemma}, there exists a spanning star forest for $(G,F)$.
 	
-	For the converse, let $S$ be a spanning star forest. We denote by $C$ the set of centers in $S$. Clearly, $C \subseteq V(F)$. Fix any $k$ such that $1 \leq k \leq n$. By $P_k$ we denote a path corresponding to the $k$-th variable, that is a graph induced by vertices $v^i_j[x_k],v^i_j[\neg x_k]$ and $g^i_j[k]$. Now, consider the set $K = P_k \cap C$. A \textit{switch} is a vertex $g^i_j[k]$ such both of its neighbors in $G$ are centers in $S$. In other words, the position of a center changes from a vertex corresponding to~~$\neg x_k$ to a vertex corresponding to $x_k$. Note the following:
+	For the converse, let $S$ be a spanning star forest. We denote by $C$ the set of centers in $S$. Clearly, $C \subseteq V(F)$. Fix any $k$ such that $1 \leq k \leq n$. By $P_k$ we denote a path corresponding to the $k$-th variable, that is a graph induced by vertices $v^i_j[x_k],v^i_j[\neg x_k]$ and $g^i_j[k]$. Now, consider the set $K = P_k \cap C$. A \textit{switch} is a vertex $g^i_j[k]$ such that both of its neighbors in $G$ are centers in $S$. In other words, the position of a center changes from a vertex corresponding to~~$\neg x_k$ to a vertex corresponding to $x_k$. Note the following:
 	
 	\begin{claim}\label{switch}
 		If $S$ is the solution for $(G,k)$, then for a path $P_k$ there exists at most one switch in $S$.
@@ -1446,7 +1446,7 @@ We have just proven the complexity of the algorithm stated in the previous subse
 	\end{claim}
 
 	\begin{proof}
-		By the definition, $v^i_j[l_k]$ is a center in $S$. Since there are no switches in $G_i$ observe that none of the vertices $v^i_{j'}[\neg l_k]$,  for $1 \leq j \leq m$, can be a center. Thus, we conclude that $v^i_{j'}[\neg l_k]$ has exactly one neighbor in $S$.
+		By the definition, $v^i_j[l_k]$ is a center in $S$. Since there are no switches in $G_i$ observe that none of the vertices $v^i_{j'}[\neg l_k]$,  for $1 \leq j' \leq m$, can be a center. Thus, we conclude that every $v^i_{j'}[\neg l_k]$ has exactly one neighbor in $S$.
 	\end{proof}
 
 	\noindent
